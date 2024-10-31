@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Entorno virtual
+venv/
+*.egg-info/
+
+# Base de datos SQLite
+db.sqlite3
+
+# Archivos de log
+error.log
+
+# Archivos de configuración
+.env
+
+# Archivos generados
+*.pyc
+*.pyo
+*.pyd
+*.db
+
+# Archivos de caché
+*.cache
+
+# Archivos de cobertura
+.coverage
+
+# Ignorar manage.py
+manage.py
+
+# Ignorar directorio de imágenes
+imagenes/

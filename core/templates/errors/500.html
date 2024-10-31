@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}500 - Error del Servidor{% endblock %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <h1 class="display-4 text-danger">500 - Error del Servidor</h1>
+    <p class="lead">Ha ocurrido un error interno en el servidor. Por favor, inténtalo de nuevo más tarde.</p>
+    <a href="{% url 'home' %}" class="btn btn-primary mt-3">Volver a la página de inicio</a>
+</div>
+{% endblock %}

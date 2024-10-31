@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="card shadow bg-light">
+        <div class="card-header text-center bg-light border-0">
+            <h2 class="h4 fw-bold text-primary mb-0">
+                <i class="fas fa-user-edit me-2 text-info"></i> Edita tu Perfil
+            </h2>
+        </div>
+        
+        <div class="card-body">
+            <p class="text-muted mb-4 text-center">Actualiza tu información personal aquí. Todos los campos son opcionales, pero te recomendamos que mantengas tu perfil actualizado.</p>
+
+            <!-- Información actual del usuario -->
+            <div class="card mx-auto mb-5 rounded-3 col-12 col-sm-8 col-md-6 col-lg-4" style="max-width: 100%;">
+                <div class="card-header main-title ">
+                    Información del Usuario
+                </div>
+                <div class="card-body">
+                    <p class="card-text"><strong>Nombre de Usuario:</strong> {{ username }}</p>
+                    <p class="card-text"><strong>Correo Electrónico:</strong> {{ current_email }}</p>
+                    <p class="card-text"><strong>Teléfono Actual:</strong> {{ current_phone }}</p>
+                </div>
+            </div>      
+            
+            <!-- Formulario de edición -->
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+
+                <!-- Formulario de Usuario -->
+                <div class="mb-3 text-light">
+                    <h4>Correo Electrónico actual</h4>
+                    {{ user_form.non_field_errors }}
+                    {% for field in user_form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in field.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Formulario de Perfil -->
+                <div class="mb-3 text-light">
+                    <h4>Actualizar información</h4>
+                    {{ profile_form.non_field_errors }}
+                    {% for field in profile_form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in field.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Formulario de Cambio de Contraseña -->
+                <div class="mb-3 text-light">
+                    <h4>Cambiar Contraseña</h4>
+                    {{ password_form.non_field_errors }}
+                    {% for field in password_form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in field.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-success">Guardar Cambios</button>
+            </form>
+        </div>
+        <div class="card-footer text-center">
+            <a href="{% url 'users:perfil_usuario' %}" class="btn btn-outline-primary">Volver al Perfil</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

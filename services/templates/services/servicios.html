@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Servicios - Cabigote Barber Shop{% endblock %}
+
+{% block content %}
+<div class="container mb-5 mt-5">
+    <div class="card shadow-sm bg-light text-center p-3 border-0">
+        <h2 class="h4 fw-bold text-secondary mb-0">
+            <i class="fas fa-cut me-2 text-primary"></i> Servicios
+        </h2>
+    </div>    
+
+    <div class="row  g-4">
+        {% for servicio in servicios %}
+        <div class="col-md-4 mt-5 card-img-top">
+            <div class="card">
+                {% if servicio.imagen %}
+                <img src="{{ servicio.imagen.url }}" alt="{{ servicio.nombre }}" loading="lazy">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ servicio.nombre }}</h5>
+                    <p class="card-text">{{ servicio.descripcion }}</p>
+                    <p class="card-text"><strong>Precio:</strong> {{ servicio.precio }} €</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
