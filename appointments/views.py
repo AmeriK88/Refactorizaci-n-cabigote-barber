@@ -15,7 +15,7 @@ from core.decorators import handle_exceptions
 @login_required
 @handle_exceptions
 def reservar_cita(request):
-    # Obtener fechas completamente reservadas
+    # Obtener fechas completamente reservadas & excluye la opción vacía
     horas_por_dia = Cita.objects.values('fecha__date').annotate(total_citas=Count('hora')).filter(total_citas=len(CitaForm.HORA_CHOICES) - 1)
     fechas_ocupadas = [entry['fecha__date'].isoformat() for entry in horas_por_dia]
 
@@ -31,6 +31,7 @@ def reservar_cita(request):
         if form.is_valid():
             cita = form.save(commit=False)
             cita.usuario = request.user
+            # Añade información sobre la zona horaria actual del sistema
             cita.fecha = timezone.make_aware(datetime.combine(form.cleaned_data['fecha'], form.cleaned_data['hora']))
             cita.save()
             enviar_confirmacion_cita(request.user.email, cita)
@@ -38,13 +39,15 @@ def reservar_cita(request):
             return redirect('users:perfil_usuario')
     else:
         form = CitaForm()
+        if not request.user.is_anonymous and not request.session.get('bienvenido_mostrado', False):
+            messages.success(request, f'¡Mi niño¡ ¡Bienvenido {request.user.username}!')
+            request.session['bienvenido_mostrado'] = True
 
     return render(request, 'appointments/reservar_cita.html', {
         'form': form,
         'fechas_ocupadas': fechas_ocupadas,
-        'horas_ocupadas_por_fecha': horas_ocupadas_por_fecha,
+        'horas_ocupadas_por_fecha': horas_ocupadas_por_fecha
     })
-
 
 # Función ver citas & historial
 @login_required

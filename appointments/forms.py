@@ -2,7 +2,7 @@ from django import forms
 from datetime import datetime, time
 from django.utils import timezone
 
-from .models import Cita 
+from .models import Cita, Servicio  
 
 # Formulario cita
 class CitaForm(forms.ModelForm):
@@ -26,6 +26,7 @@ class CitaForm(forms.ModelForm):
     ]
 
     hora = forms.ChoiceField(choices=HORA_CHOICES, label='Hora')
+    servicio = forms.ModelChoiceField(queryset=Servicio.objects.all(), label='Servicio')
     # Campos para el formulario
     class Meta:
         model = Cita
