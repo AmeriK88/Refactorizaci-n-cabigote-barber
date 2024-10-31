@@ -33,3 +33,5 @@ manage.py
 
 # Ignorar directorio de imágenes
 imagenes/
+productos/
+servicios/
