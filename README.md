@@ -1,54 +1,74 @@
 # Cabigote Barber Shop
 
-Este es un proyecto de gestión de citas y reseñas desarrollado con Django. La aplicación permite a los usuarios registrar, iniciar sesión, reservar citas, ver y gestionar sus citas (editar y eliminar), recibir confirmación vía email de la cita generada, y agregar reseñas. También incluye la edición del perfil y datos del usuario como contraseña, email y teléfono, así como una sección de productos con vista detallada del producto seleccionado. La aplicación maneja errores y excepciones, así como vistas personalizadas de plantillas de error. Además, proporciona un panel de administración mejorado mediante el uso de la biblioteca Grappelli.
+## Descripción
 
-# Estructura del Proyecto
+Cabigote Barber Shop es una aplicación web diseñada para gestionar reservas de citas y reseñas en un salón de belleza. Permite a los usuarios reservar servicios, ver citas activas y pasadas, así como dejar comentarios sobre su experiencia. La aplicación está construida utilizando Django como framework backend y Bootstrap para el diseño frontend.
 
-## Models
-- **Servicio**: Modela los servicios disponibles con nombre, descripción, precio e imagen.
-- **Resena**: Permite a los usuarios dejar reseñas sobre los servicios.
-- **Imagen**: Almacena imágenes relacionadas con los productos.
-- **Cita**: Modela las citas que los usuarios pueden reservar.
-- **UserProfile**: Almacena información adicional del usuario como correo electrónico y teléfono.
+## Estructura del Proyecto
 
-## Forms
-- **CitaForm**: Formulario para reservar o editar citas con validación de fecha y hora.
-- **ResenaForm**: Formulario para agregar reseñas.
-- **CustomUserCreationForm**: Formulario de registro personalizado que incluye correo electrónico y teléfono.
-- **UserProfileForm**: Formulario para editar el perfil del usuario.
-- **UserForm**: Formulario para actualizar el correo electrónico del usuario.
+El proyecto está compuesto por varias aplicaciones que manejan diferentes funcionalidades:
 
-## Views
-- **home**: Página de inicio.
-- **servicios**: Muestra todos los servicios y las citas del usuario si está autenticado.
-- **register**: Registro de nuevos usuarios.
-- **login_view**: Inicio de sesión de usuarios.
-- **reservar_cita**: Reserva de una cita.
-- **ver_citas**: Visualización de las citas del usuario.
-- **editar_cita**: Edición de una cita.
-- **eliminar_cita**: Eliminación de una cita.
-- **logout_view**: Cierre de sesión.
-- **ver_resenas**: Visualización y adición de reseñas.
-- **agregar_resena**: Adición de una nueva reseña.
-- **ver_imagenes**: Visualización de imágenes.
-- **detalle_producto**: Detalle de un producto.
-- **perfil_usuario**: Perfil del usuario con citas asociadas.
-- **editar_perfil_usuario**: Edición del perfil del usuario.
+### 1. Appointments
 
-## Contribución
-Las contribuciones son bienvenidas. Si deseas contribuir a este proyecto, por favor sigue estos pasos:
+- **Modelos**: 
+  - `Cita`: Modelo que representa una cita, incluyendo campos como usuario, servicio, fecha, hora y comentario.
+- **Formularios**: 
+  - `CitaForm`: Formulario para crear y editar citas, con validación de fecha y hora.
+- **Vistas**: 
+  - `reservar_cita`: Permite a los usuarios reservar citas.
+  - `ver_citas`: Muestra las citas activas y pasadas del usuario.
 
-1. **Haz un fork** del repositorio.
-2. **Crea una nueva rama** para tu funcionalidad o corrección de errores.
-3. **Realiza tus cambios** y haz commit.
-4. **Envía un pull request** con una descripción clara de tus cambios.
+### 2. Users
+
+- **Modelos**: 
+  - `UserProfile`: Modelo que almacena información adicional del usuario.
+- **Formularios**: 
+  - `CustomUserCreationForm`: Formulario de registro personalizado.
+- **Vistas**: 
+  - `login_view`: Vista para iniciar sesión.
+  - `register`: Vista para registrar nuevos usuarios.
+  - `perfil_usuario`: Vista que muestra el perfil del usuario.
+
+### 3. Reviews
+
+- **Modelos**: 
+  - `Resena`: Modelo que permite a los usuarios dejar reseñas sobre los servicios.
+- **Formularios**: 
+  - `ResenaForm`: Formulario para agregar reseñas.
+- **Vistas**: 
+  - `ver_resenas`: Vista que muestra todas las reseñas y permite agregar nuevas.
+
+### 4. Services
+
+- **Modelos**: 
+  - `Servicio`: Modelo que representa los servicios ofrecidos en la barbería.
+- **Formularios**: 
+  - `ServicioForm`: Formulario para crear y editar servicios.
+- **Vistas**: 
+  - `ver_servicios`: Muestra todos los servicios disponibles.
+
+### 5. Media
+
+- **Modelos**: 
+  - `Imagen`: Modelo que almacena imágenes de los productos.
+- **Vistas**: 
+  - `ver_imagenes`: Vista que muestra todas las imágenes de productos.
+  - `detalle_producto`: Muestra detalles de un producto específico.
+
+## Instalación
+
+### Requisitos Previos
+
+- Python 3.8 o superior
+- Django 3.2 o superior
 
 ## Características
 
 - **Registro y Autenticación de Usuarios**: Los usuarios pueden registrarse, iniciar sesión y actualizar su perfil.
 - **Gestión de Citas**: Permite a los usuarios reservar, ver, editar y cancelar citas.
 - **Reseñas de Servicios**: Los usuarios pueden agregar reseñas a los servicios y ver las reseñas existentes.
-- **Galería de Imágenes**: Los usuarios pueden ver detalles de productos a través de imágenes.
+- **Galería de Servicios**: Los usuarios pueden ver detalles de servicios a través de imágenes y descripciones.
+- **Galería de Priductos**: Los usuarios pueden ver detalles de productos a través de imágenes.
 - **Panel de Administración Mejorado**: Utiliza Grappelli para una interfaz de administración más intuitiva y atractiva.
 
 ## Requisitos
@@ -91,10 +111,9 @@ Ejecuta generate_qr.py - asegúrate de incluir la URL de tu sitio.
 pip install -r requirements.txt
 
 
-## Instalación
 
-1. **Clona el Repositorio**
 
-   ```bash
-   git clone https://github.com/<username>/<repo-name>.git
-   cd <repo-name>
+
+
+
+
