@@ -31,7 +31,8 @@ error.log
 # Ignorar manage.py
 manage.py
 
-# Ignorar directorio de imágenes
-imagenes/
+# Ignorar directorio de staticfiles
+staticfiles/
 productos/
 servicios/
+imagenes/
