@@ -1,12 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('loader');
-
+    const overlay = document.getElementById('overlay');
+    // Muestra el overlay & // Muestra el loader
     const showLoader = () => {
-        loader.style.display = 'block';
+        overlay.style.display = 'block'; 
+        loader.style.display = 'block'; 
     };
-
+    // Oculta el overlay & laoder
     const hideLoader = () => {
-        loader.style.display = 'none';
+        overlay.style.display = 'none'; 
+        loader.style.display = 'none'; 
     };
 
     // Mostrar el loader al enviar un formulario
@@ -29,5 +32,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ocultar el loader cuando la página ha terminado de cargar
     window.addEventListener('load', () => {
         hideLoader();
+    });
+
+    // Ocultar el loader y overlay al cargar la página por primera vez
+    hideLoader();
+
+    // Ocultar el loader y overlay al volver a la pestaña
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            hideLoader();
+        }
     });
 });
