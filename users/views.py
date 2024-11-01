@@ -18,7 +18,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
-            messages.success(request, f'¡Bienvenido a Ca\'Bigote, {user.username}!')
+            messages.success(request, f'¡¡Échale mojo! Bienvenido a Ca\'Bigote, {user.username}! Cuenta operativa.!')
             return redirect('users:perfil_usuario') 
     else:
         form = CustomUserCreationForm()
@@ -32,10 +32,10 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             auth_login(request, user)
-            messages.success(request, f'¡Bienvenido de nuevo, {user.username}!') 
+            messages.success(request, f'¿¡Que pasó viejito!?¡Bienvenido de nuevo, {user.username}!') 
             return redirect('users:perfil_usuario')  
         else:
-            messages.error(request, 'Usuario o contraseña incorrectos.')
+            messages.error(request, '¡Eres un tolete! Nombre de usuario o contraseña incorrectos.')
     else:
         form = AuthenticationForm()
     return render(request, 'users/login.html', {'form': form})
@@ -46,7 +46,7 @@ def login_view(request):
 def logout_view(request):
     username = request.user.username
     auth_logout(request)
-    messages.success(request, f'¡Nos vemos pronto, {username}!')
+    messages.success(request, f'¡Nos vemos, {username}, vuelve pronto puntalillo!')
     return redirect('home')  
 
 # Perfil de usuario
