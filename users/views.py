@@ -8,7 +8,7 @@ from django.utils import timezone
 from .models import UserProfile
 from .forms import CustomUserCreationForm, UserProfileForm, UserForm
 from core.decorators import handle_exceptions
-from appointments.models import Cita  # Importa el modelo de Cita desde la app correspondiente
+from appointments.models import Cita 
 
 # Registro de usuario
 @handle_exceptions
@@ -19,10 +19,10 @@ def register(request):
             user = form.save()
             auth_login(request, user)
             messages.success(request, f'¡Bienvenido a Ca\'Bigote, {user.username}!')
-            return redirect('users:perfil_usuario')  # Redirige a la URL correspondiente de perfil en la app users
+            return redirect('users:perfil_usuario') 
     else:
         form = CustomUserCreationForm()
-    return render(request, 'users/register.html', {'form': form})  # Ajusta la plantilla
+    return render(request, 'users/register.html', {'form': form})  
 
 # Inicio de sesión
 @handle_exceptions
@@ -32,13 +32,13 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             auth_login(request, user)
-            messages.success(request, f'¡Bienvenido de nuevo, {user.username}!')
-            return redirect('users:perfil_usuario')  # Redirige a la URL correspondiente de perfil en la app users
+            messages.success(request, f'¡Bienvenido de nuevo, {user.username}!') 
+            return redirect('users:perfil_usuario')  
         else:
             messages.error(request, 'Usuario o contraseña incorrectos.')
     else:
         form = AuthenticationForm()
-    return render(request, 'users/login.html', {'form': form})  # Ajusta la plantilla
+    return render(request, 'users/login.html', {'form': form})
 
 # Cierre de sesión
 @login_required
@@ -47,7 +47,7 @@ def logout_view(request):
     username = request.user.username
     auth_logout(request)
     messages.success(request, f'¡Nos vemos pronto, {username}!')
-    return redirect('home')  # Asegúrate de que esta URL esté correctamente configurada en el proyecto
+    return redirect('home')  
 
 # Perfil de usuario
 @login_required
