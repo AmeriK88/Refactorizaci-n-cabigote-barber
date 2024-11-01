@@ -12,7 +12,7 @@
 
     <div class="row  g-4">
         {% for servicio in servicios %}
-        <div class="col-md-4 mt-5 card-img-top">
+        <div class="col-md-6 col-lg-4 mt-5 card-img-top">
             <div class="card">
                 {% if servicio.imagen %}
                 <img src="{{ servicio.imagen.url }}" alt="{{ servicio.nombre }}" loading="lazy">

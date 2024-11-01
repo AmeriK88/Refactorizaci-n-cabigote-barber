@@ -13,7 +13,7 @@
     <div class="row">
         {% if imagenes %}
             {% for imagen in imagenes %}
-                <div class="col-12 {% if imagenes|length > 1 %}col-md-6 col-lg-6{% else %}col-md-12{% endif %} mb-5 card-img-top">
+                <div class="col-12 {% if imagenes|length > 1 %}col-md-6 col-lg-4{% else %}col-md-12{% endif %} mb-5 card-img-top">
                     <div class="card">
                         <a href="{% url 'media:detalle_producto' producto_id=imagen.id %}">
                             <img src="{{ imagen.imagen.url }}" alt="{{ imagen.titulo }}" class="img-fluid" loading="lazy">
