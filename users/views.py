@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.utils import timezone
 
 from .models import UserProfile
-from .forms import CustomUserCreationForm, UserProfileForm, UserForm
+from .forms import CustomUserCreationForm, UserProfileForm, UserForm, CustomAuthenticationForm  
 from core.decorators import handle_exceptions
 from appointments.models import Cita 
 
@@ -28,7 +28,7 @@ def register(request):
 @handle_exceptions
 def login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
+        form = CustomAuthenticationForm(data=request.POST)  
         if form.is_valid():
             user = form.get_user()
             auth_login(request, user)
@@ -37,7 +37,7 @@ def login_view(request):
         else:
             messages.error(request, '¡Eres un tolete! Nombre de usuario o contraseña incorrectos.')
     else:
-        form = AuthenticationForm()
+        form = CustomAuthenticationForm()  
     return render(request, 'users/login.html', {'form': form})
 
 # Cierre de sesión
@@ -73,10 +73,10 @@ def editar_perfil_usuario(request):
             password_form.save()
             
             update_session_auth_hash(request, request.user)
-            messages.success(request, 'Tu perfil ha sido actualizado.')
+            messages.success(request, '!El que quiera lapas que se moje el culo¡. Perfil actualizado exitosamente.')
             return redirect('users:perfil_usuario')  
         else:
-            messages.error(request, 'Hubo un problema al actualizar tu perfil.')
+            messages.error(request, 'Tu o el servidor están en la parra. prueba de nuevo.')
     else:
         profile_form = UserProfileForm(instance=user_profile)
         user_form = UserForm(instance=request.user)
