@@ -14,45 +14,57 @@ from appointments.models import Cita
 @handle_exceptions
 def register(request):
     if request.method == 'POST':
+        # Crea un formulario de registro con los datos del usuario
         form = CustomUserCreationForm(request.POST)
+        # Verifica si el formulario es válido
         if form.is_valid():
+            # Guarda el nuevo usuario y lo autentica
             user = form.save()
             auth_login(request, user)
             messages.success(request, f'¡¡Échale mojo! Bienvenido a Ca\'Bigote, {user.username}! Cuenta operativa.!')
-            return redirect('users:perfil_usuario') 
+            # Redirige al perfil del usuario
+            return redirect('users:perfil_usuario')  
     else:
-        form = CustomUserCreationForm()
-    return render(request, 'users/register.html', {'form': form})  
+        # Si no es POST, muestra el formulario vacío
+        form = CustomUserCreationForm() 
+    return render(request, 'users/register.html', {'form': form})
 
 # Inicio de sesión
 @handle_exceptions
 def login_view(request):
     if request.method == 'POST':
+        # Crea un formulario de autenticación con los datos de la solicitud
         form = CustomAuthenticationForm(data=request.POST)  
+        # Verifica si el formulario es válido
         if form.is_valid():
-            user = form.get_user()
-            auth_login(request, user)
+            # Obtiene el usuario autenticado & inicia sesión
+            user = form.get_user()  
+            auth_login(request, user)  
             messages.success(request, f'¿¡Que pasó viejito!?¡Bienvenido de nuevo, {user.username}!') 
             return redirect('users:perfil_usuario')  
         else:
-            messages.error(request, '¡Eres un tolete! Nombre de usuario o contraseña incorrectos.')
+            messages.error(request, '¡Eres un tolete! Nombre de usuario o contraseña incorrectos.')  
     else:
+        # Si no es POST, muestra el formulario vacío
         form = CustomAuthenticationForm()  
-    return render(request, 'users/login.html', {'form': form})
+    return render(request, 'users/login.html', {'form': form}) 
 
 # Cierre de sesión
 @login_required
 @handle_exceptions
 def logout_view(request):
-    username = request.user.username
-    auth_logout(request)
-    messages.success(request, f'¡Nos vemos, {username}, vuelve pronto puntalillo!')
+    # Obtiene el nombre de usuario
+    username = request.user.username  
+    # Cierra la sesión del usuario
+    auth_logout(request)  
+    messages.success(request, f'¡Nos vemos, {username}, vuelve pronto puntalillo!')  
     return redirect('home')  
 
 # Perfil de usuario
 @login_required
 @handle_exceptions
 def perfil_usuario(request):
+    # Obtiene las citas activas del usuario, ordenadas por fecha
     citas_activas = Cita.objects.filter(usuario=request.user, fecha__gte=timezone.now()).order_by('fecha')
     return render(request, 'users/perfil_usuario.html', {'citas': citas_activas})  
 
@@ -60,24 +72,30 @@ def perfil_usuario(request):
 @login_required
 @handle_exceptions
 def editar_perfil_usuario(request):
+    # Obtiene o crea el perfil de usuario relacionado
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
     
     if request.method == 'POST':
+        # Crea formularios con los datos enviados por el usuario
         profile_form = UserProfileForm(request.POST, instance=user_profile)
         user_form = UserForm(request.POST, instance=request.user)
         password_form = PasswordChangeForm(user=request.user, data=request.POST)
         
+        # Verifica si los formularios son válidos
         if profile_form.is_valid() and user_form.is_valid() and password_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            password_form.save()
+            user_form.save()  
+            # Guarda los cambios del perfil & cambia contraseña
+            profile_form.save()  
+            password_form.save() 
             
-            update_session_auth_hash(request, request.user)
-            messages.success(request, '!El que quiera lapas que se moje el culo¡. Perfil actualizado exitosamente.')
+            # Mantiene la sesión activa después de cambiar la contraseña
+            update_session_auth_hash(request, request.user)  
+            messages.success(request, '!El que quiera lapas que se moje el culo¡. Perfil actualizado exitosamente.') 
             return redirect('users:perfil_usuario')  
         else:
-            messages.error(request, 'Tu o el servidor están en la parra. prueba de nuevo.')
+            messages.error(request, 'Tu o el servidor están en la parra. prueba de nuevo.') 
     else:
+        # Si no es POST, muestra los formularios con los datos actuales
         profile_form = UserProfileForm(instance=user_profile)
         user_form = UserForm(instance=request.user)
         password_form = PasswordChangeForm(user=request.user)
@@ -91,4 +109,4 @@ def editar_perfil_usuario(request):
         'current_phone': user_profile.telefono
     }
     
-    return render(request, 'users/editar_perfil_usuario.html', context) 
+    return render(request, 'users/editar_perfil_usuario.html', context)  
