@@ -193,6 +193,8 @@ img:hover {
     flex-direction: column;
     justify-content: space-between;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    margin: auto;
 }
 
 .card:hover, .card-user-profile:hover {
