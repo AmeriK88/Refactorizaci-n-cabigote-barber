@@ -30,6 +30,7 @@ error.log
 
 # Ignorar manage.py
 manage.py
+registro_qr.png
 
 # Ignorar directorio de staticfiles e imgs
 staticfiles/
