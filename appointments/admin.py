@@ -15,8 +15,17 @@ from django.db.models.functions import TruncMonth
 from django.urls import reverse  # Importa reverse para generar URLs
 
 class CitaAdmin(admin.ModelAdmin):
-    list_display = ('usuario', 'servicio', 'fecha', 'hora', 'mostrar_grafico', 'ver_grafico_link')
+    list_display = ('usuario', 'servicio', 'fecha', 'hora', 'mostrar_grafico', 'ver_grafico_link', 'estado_vista')  
     search_fields = ('usuario__username', 'servicio__nombre')
+    list_filter = ('vista', 'servicio', 'fecha')
+
+    def estado_vista(self, obj):
+        """ Devuelve un ícono o texto basado en el estado de vista de la cita. """
+        if obj.vista:
+            return format_html('<span style="color: green;">Vista</span>')  
+        else:
+            return format_html('<span style="color: red;">No Vista</span>')  
+    estado_vista.short_description = 'Estado'
 
     def mostrar_grafico(self, obj):
         """ Muestra gráfico en la lista de citas en el admin. """
@@ -42,7 +51,8 @@ class CitaAdmin(admin.ModelAdmin):
         meses = []
         total_citas = []
         for cita in citas_por_mes:
-            meses.append(cita['mes'].strftime('%Y-%m'))  # Formatear el mes para mostrarlo
+            # Formatear el mes para mostrarlo
+            meses.append(cita['mes'].strftime('%Y-%m'))  
             total_citas.append(cita['total'])
 
         # Configurar gráfico con Seaborn
@@ -58,6 +68,7 @@ class CitaAdmin(admin.ModelAdmin):
         buf.seek(0)
         string = base64.b64encode(buf.read())
         uri = 'data:image/png;base64,' + urllib.parse.quote(string)
+        plt.close()
 
         return uri
 
