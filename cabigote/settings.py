@@ -102,7 +102,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
+# Internationalization & zona horaria
 
 LANGUAGE_CODE = 'es'
 
@@ -111,12 +111,9 @@ LANGUAGES = [
     ('es', 'Español'),
 ]
 
-TIME_ZONE = 'UTC'
-
+TIME_ZONE = 'Atlantic/Canary'
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 # Configuración envío email

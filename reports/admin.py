@@ -1,17 +1,26 @@
 from django.urls import path
 from django.template.response import TemplateResponse
 from .models import ReporteMensual
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.utils.translation import gettext_lazy as _
+from .utils import calcular_reporte, limpiar_reportes
 from django.utils.timezone import now
-from appointments.models import Cita
-from django.db.models import Sum
-from datetime import timedelta
 
 @admin.register(ReporteMensual)
 class ReporteMensualAdmin(admin.ModelAdmin):
     list_display = ('mes', 'total_citas', 'ingresos_totales', 'ingresos_proyectados')
     readonly_fields = ('mes', 'total_citas', 'ingresos_totales', 'ingresos_proyectados', 'creado_el')
+
+    # Define la acción personalizada
+    actions = ['eliminar_reportes_seleccionados']
+
+    # Función para eliminar reportes seleccionados
+    def eliminar_reportes_seleccionados(self, request, queryset):
+        count = queryset.count()
+        queryset.delete()
+        self.message_user(request, f"{count} reportes eliminados.", messages.SUCCESS)
+
+    eliminar_reportes_seleccionados.short_description = _("Eliminar reportes seleccionados")
 
     def get_urls(self):
         urls = super().get_urls()
@@ -21,30 +30,9 @@ class ReporteMensualAdmin(admin.ModelAdmin):
         return custom_urls + urls
 
     def custom_report_view(self, request):
-        current_month = now().date().replace(day=1)
-
-        reports = []
-        for i in range(3):  # Mes actual y dos meses siguientes
-            month = (current_month + timedelta(days=30 * i)).replace(day=1)
-            next_month = (month.replace(day=28) + timedelta(days=4)).replace(day=1)
-
-            # Filtrar las citas del mes actual
-            citas = Cita.objects.filter(fecha__gte=month, fecha__lt=next_month)
-            total_citas = citas.count()
-            total_ingresos = citas.aggregate(Sum('servicio__precio'))['servicio__precio__sum'] or 0
-            ingresos_proyectados = citas.aggregate(Sum('servicio__precio'))['servicio__precio__sum'] or 0
-
-            # Actualizar o crear el reporte mensual
-            report, created = ReporteMensual.objects.update_or_create(
-                mes=month,
-                defaults={
-                    'total_citas': total_citas,
-                    'ingresos_totales': total_ingresos,
-                    'ingresos_proyectados': ingresos_proyectados,
-                }
-            )
-            reports.append(report)
-
+         # Limpia los reportes sin citas antes de recalcular
+        limpiar_reportes() 
+        reports = calcular_reporte(now().date().replace(day=1))
         context = dict(
             self.admin_site.each_context(request),
             reportes=reports,
