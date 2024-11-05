@@ -2,9 +2,9 @@
 
 {% block content %}
 <div class="container">
-    <h2>Gráfico de Citas</h2>
-    <div style="overflow-x: auto;">
-        <img src="{{ grafico }}" alt="Gráfico de Citas" style="width: 100%; height: auto;">
+    <h2 class="text-center mt-4">Gráfico de Citas</h2>
+    <div class="grafico-container" style="max-width: 100%; overflow-x: auto; text-align: center; margin: 20px auto;">
+        <img src="{{ grafico }}" alt="Gráfico de Citas" style="max-width: 100%; height: auto; border: 2px solid #ddd; border-radius: 5px;">
     </div>
 </div>
 {% endblock %}

@@ -3,7 +3,8 @@ from django.utils.html import format_html
 from .models import Imagen
 
 class ImagenAdmin(admin.ModelAdmin):
-    list_display = ('titulo', 'precio', 'mostrar_imagen', 'descripcion')  # Mostrar todos los campos
+    # Mostrar todos los campos
+    list_display = ('titulo', 'precio', 'mostrar_imagen', 'descripcion')  
     search_fields = ('titulo',)
     ordering = ('titulo',)
 
