@@ -13,17 +13,6 @@ class ReporteMensualAdmin(admin.ModelAdmin):
     list_display = ('mes', 'total_citas', 'ingresos_totales', 'ingresos_proyectados', 'descargar_reporte_link')
     readonly_fields = ('mes', 'total_citas', 'ingresos_totales', 'ingresos_proyectados', 'creado_el')
 
-    # Define la acción personalizada
-    actions = ['eliminar_reportes_seleccionados']
-
-    # Función para eliminar reportes seleccionados
-    def eliminar_reportes_seleccionados(self, request, queryset):
-        count = queryset.count()
-        queryset.delete()
-        self.message_user(request, f"{count} reportes eliminados.", messages.SUCCESS)
-
-    eliminar_reportes_seleccionados.short_description = _("Eliminar reportes seleccionados")
-
     # Enlace de descarga en la lista de reportes
     def descargar_reporte_link(self, obj):
         url = reverse('admin:descargar_reporte')
@@ -64,6 +53,9 @@ class ReporteMensualAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False
-
+    
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+   
