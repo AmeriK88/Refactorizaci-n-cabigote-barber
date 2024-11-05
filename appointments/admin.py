@@ -8,24 +8,17 @@ import urllib, base64
 from django.utils.html import format_html
 from django.db.models import Count
 from django.utils import timezone
-from django.urls import path
+from django.urls import path, reverse
 from django.shortcuts import render
 import seaborn as sns
 from django.db.models.functions import TruncMonth
-from django.urls import reverse  # Importa reverse para generar URLs
 
+@admin.register(Cita)
 class CitaAdmin(admin.ModelAdmin):
-    list_display = ('usuario', 'servicio', 'fecha', 'hora', 'mostrar_grafico', 'ver_grafico_link', 'estado_vista')  
-    search_fields = ('usuario__username', 'servicio__nombre')
-    list_filter = ('vista', 'servicio', 'fecha')
-
-    def estado_vista(self, obj):
-        """ Devuelve un ícono o texto basado en el estado de vista de la cita. """
-        if obj.vista:
-            return format_html('<span style="color: green;">Vista</span>')  
-        else:
-            return format_html('<span style="color: red;">No Vista</span>')  
-    estado_vista.short_description = 'Estado'
+    list_display = ('usuario', 'servicio', 'fecha', 'hora', 'comentario', 'vista', 'mostrar_grafico', 'ver_grafico_link')
+    search_fields = ('usuario__username', 'servicio__nombre', 'fecha')
+    list_filter = ('fecha', 'servicio')
+    ordering = ('-fecha',)
 
     def mostrar_grafico(self, obj):
         """ Muestra gráfico en la lista de citas en el admin. """
@@ -34,10 +27,6 @@ class CitaAdmin(admin.ModelAdmin):
     def ver_grafico_link(self, obj):
         """ Devuelve un enlace que permite ver el gráfico en una página separada. """
         return format_html('<a href="{}">Ver Gráfico</a>', reverse('admin:graficar_citas'))
-
-    def get_grafico_url(self):
-        """ Devuelve la URL donde se puede acceder al gráfico. """
-        return 'admin/appointments/graficar/'
 
     def generar_grafico(self):
         """ Genera el gráfico de citas por mes utilizando Seaborn y devuelve una imagen codificada en base64. """
@@ -51,13 +40,12 @@ class CitaAdmin(admin.ModelAdmin):
         meses = []
         total_citas = []
         for cita in citas_por_mes:
-            # Formatear el mes para mostrarlo
             meses.append(cita['mes'].strftime('%Y-%m'))  
             total_citas.append(cita['total'])
 
         # Configurar gráfico con Seaborn
         plt.figure(figsize=(10, 5)) 
-        sns.barplot(x=meses, y=total_citas, hue=meses, palette='viridis', legend=False)
+        sns.barplot(x=meses, y=total_citas, hue=meses, palette='viridis', dodge=False, legend=False)
         plt.title('Citas por Mes')
         plt.xlabel('Meses')
         plt.ylabel('Total de Citas')
@@ -86,5 +74,3 @@ class CitaAdmin(admin.ModelAdmin):
             'grafico': self.generar_grafico(),
         }
         return render(request, 'admin/grafico_citas.html', context)
-
-admin.site.register(Cita, CitaAdmin)

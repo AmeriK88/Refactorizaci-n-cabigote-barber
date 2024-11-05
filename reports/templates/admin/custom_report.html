@@ -1,5 +1,6 @@
 {% load i18n %}
 <h1>{% trans "Reporte Mensual" %}</h1>
+<a href="{% url 'admin:descargar_reporte' %}" class="btn btn-primary">{% trans "Descargar Reporte Completo" %}</a>
 {% for reporte in reportes %}
     <h2>{% trans "Reporte para" %} {{ reporte.mes|date:"F Y" }}</h2>
     <p><strong>{% trans "Total de Citas:" %}</strong> {{ reporte.total_citas }}</p>
