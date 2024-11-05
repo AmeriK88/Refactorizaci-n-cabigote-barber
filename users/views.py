@@ -93,7 +93,7 @@ def editar_perfil_usuario(request):
             messages.success(request, '!El que quiera lapas que se moje el culo¡. Perfil actualizado exitosamente.') 
             return redirect('users:perfil_usuario')  
         else:
-            messages.error(request, 'Tu o el servidor están en la parra. prueba de nuevo.') 
+            messages.error(request, '!Chacho¡ Tu o el servidor están en la parra. Prueba de nuevo.') 
     else:
         # Si no es POST, muestra los formularios con los datos actuales
         profile_form = UserProfileForm(instance=user_profile)

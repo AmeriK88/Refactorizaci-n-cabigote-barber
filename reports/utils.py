@@ -4,7 +4,7 @@ from django.db.models import Sum
 from .models import ReporteMensual
 from appointments.models import Cita
 
-def calcular_reporte(mes_actual, meses_ahead=4):
+def calcular_reporte(mes_actual, meses_ahead=5):
     reports = []
     for i in range(meses_ahead):
         mes = (mes_actual + timedelta(days=30 * i)).replace(day=1)
@@ -31,7 +31,7 @@ def calcular_reporte(mes_actual, meses_ahead=4):
 
 def limpiar_reportes():
     mes_actual = now().date().replace(day=1)
-    for i in range(4):
+    for i in range(5):
         mes = (mes_actual + timedelta(days=30 * i)).replace(day=1)
         siguiente_mes = (mes.replace(day=28) + timedelta(days=4)).replace(day=1)
 

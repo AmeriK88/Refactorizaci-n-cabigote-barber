@@ -39,7 +39,7 @@ def reservar_cita(request):
             cita.fecha = timezone.make_aware(datetime.combine(form.cleaned_data['fecha'], form.cleaned_data['hora']))
             cita.save()
             enviar_confirmacion_cita(request.user.email, cita)
-            messages.success(request, '¡Viejito! Ya tienes tu cita confirmada.')
+            messages.success(request, '¡Viejito! Ya tienes tu cita confirmada ¡Esa es niñote!.')
             return redirect('users:perfil_usuario')
     else:
         form = CitaForm()

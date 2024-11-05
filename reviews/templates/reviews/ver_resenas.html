@@ -60,15 +60,15 @@
                 <form method="post">
                     {% csrf_token %}
                     <div class="mb-3">
-                        {{ form.servicio.label_tag }}
-                        {{ form.servicio }}
+                        <strong>{{ form.servicio.label_tag }}</strong>
+                                {{ form.servicio }}
                     </div>
                     <div class="mb-3">
-                        {{ form.texto.label_tag }}
-                        {{ form.texto }}
+                        <strong>{{ form.texto.label_tag }}</strong>
+                                {{ form.texto }}
                     </div>
                     <div class="mb-3">
-                        {{ form.puntuacion.label_tag }}
+                        <strong>{{ form.puntuacion.label_tag }}</strong>
                         <div class="d-flex flex-row">
                             {% for radio in form.puntuacion %}
                                 <div class="form-check form-check-inline me-2">
