@@ -26,13 +26,17 @@ document.addEventListener('DOMContentLoaded', () => {
         updateOccupiedHours();
 
         inputFecha.addEventListener('focus', () => {
-            const disabledDates = fechasOcupadas.map(fecha => new Date(fecha).toISOString().split('T')[0]);
+            const reservedDates = fechasOcupadas.map(fecha => new Date(fecha).toISOString().split('T')[0]);
+            const blockedDates = fechasBloqueadas.map(fecha => new Date(fecha).toISOString().split('T')[0]);
 
             inputFecha.addEventListener('input', () => {
                 const selectedDate = inputFecha.value;
 
-                if (disabledDates.includes(selectedDate)) {
-                    alert("La fecha seleccionada está completamente reservada. Por favor, selecciona otra.");
+                if (blockedDates.includes(selectedDate)) {
+                    alert("¡Estás bonito! Te recuerdo que este día es festivo.");
+                    inputFecha.value = '';
+                } else if (reservedDates.includes(selectedDate)) {
+                    alert("!Chacho loco¡ La fecha seleccionada está completamente reservada.");
                     inputFecha.value = '';
                 } else {
                     updateOccupiedHours();

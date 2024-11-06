@@ -43,6 +43,7 @@
 <!-- Script para deshabilitar fechas ocupadas -->
 <script>
     const fechasOcupadas = {{ fechas_ocupadas|safe }};
+    const fechasBloqueadas = {{ fechas_bloqueadas|safe }};  
     const horasOcupadasPorFecha = {{ horas_ocupadas_por_fecha|safe }};
 </script>
 <script src="{% static 'js/disableDates.js' %}"></script>
