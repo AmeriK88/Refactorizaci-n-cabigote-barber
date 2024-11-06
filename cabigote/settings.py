@@ -159,16 +159,21 @@ LOGGING = {
     'handlers': {
         'file': {
             'level': 'ERROR',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'error.log'),
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'logs/log.error',  # Asegúrate de que este sea el único archivo especificado
+            'maxBytes': 500000,
+            'backupCount': 5,
+            'formatter': 'verbose',
         },
     },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'ERROR',
-            'propagate': True,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         },
+    },
+    'root': {
+        'handlers': ['file'],
+        'level': 'ERROR',
     },
 }
 

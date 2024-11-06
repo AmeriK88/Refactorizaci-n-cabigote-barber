@@ -10,8 +10,9 @@ venv/
 # Base de datos SQLite
 db.sqlite3
 
-# Archivos de log
-error.log
+# Ignorar archivos de log específicos
+logs/*.log
+logs/*.error
 
 # Archivos de configuración
 .env

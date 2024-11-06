@@ -16,7 +16,7 @@ def ver_resenas(request):
         resena = form.save(commit=False)
         resena.usuario = request.user
         resena.save()
-        return redirect('reviews:ver_resenas')  # Ajusta la redirección según la configuración en urls.py
+        return redirect('reviews:ver_resenas') 
     
     # Lista de estrellas para la valoración
     estrellas = list(range(1, 6))

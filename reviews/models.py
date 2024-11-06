@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils import timezone
 from services.models import Servicio  
 
+# Modelo para las reseñas
 class Resena(models.Model):
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     servicio = models.ForeignKey(Servicio, on_delete=models.CASCADE)
