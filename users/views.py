@@ -64,9 +64,13 @@ def logout_view(request):
 @login_required
 @handle_exceptions
 def perfil_usuario(request):
-    # Obtiene las citas activas del usuario, ordenadas por fecha
-    citas_activas = Cita.objects.filter(usuario=request.user, fecha__gte=timezone.now()).order_by('fecha')
-    return render(request, 'users/perfil_usuario.html', {'citas': citas_activas})  
+    # Obtener citas activas ordenadas por fecha (incluso las horas)
+    citas_activas = Cita.objects.filter(
+        usuario=request.user, 
+        fecha__gte=timezone.now()
+    ).order_by('fecha', 'hora')
+    return render(request, 'users/perfil_usuario.html', {'citas': citas_activas})
+
 
 # Edición de perfil
 @login_required

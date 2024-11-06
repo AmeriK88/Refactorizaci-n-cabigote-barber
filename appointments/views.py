@@ -61,19 +61,24 @@ def reservar_cita(request):
         'horas_ocupadas_por_fecha': horas_ocupadas_por_fecha
     })
 
-
-
 # Función ver citas & historial
 @login_required
 @handle_exceptions
 def ver_citas(request):
-    citas_activas = Cita.objects.filter(usuario=request.user, fecha__gte=timezone.now())  
-    citas_pasadas = Cita.objects.filter(usuario=request.user, fecha__lt=timezone.now()) 
+    citas_activas = Cita.objects.filter(
+        usuario=request.user,
+        fecha__gte=timezone.now()
+    ).order_by('fecha', 'hora')
+    
+    citas_pasadas = Cita.objects.filter(
+        usuario=request.user,
+        fecha__lt=timezone.now()
+    ).order_by('-fecha', '-hora')  # Orden descendente para mostrar las citas más recientes primero
+
     return render(request, 'appointments/ver_citas.html', {
         'citas_activas': citas_activas,
         'citas_pasadas': citas_pasadas
     })
-
 
 # Editar citas según disponibilidad & manejo excepciones
 @login_required
