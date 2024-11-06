@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import io
 import urllib
 
-from .models import Cita  
+from .models import Cita, FechaBloqueada  
 from .forms import CitaForm  
 from core.utils import enviar_confirmacion_cita  
 from core.utils import enviar_notificacion_modificacion_cita
@@ -20,9 +20,13 @@ from core.decorators import handle_exceptions
 @login_required
 @handle_exceptions
 def reservar_cita(request):
-    # Obtener fechas completamente reservadas & excluye la opción vacía
+    # Obtener fechas completamente reservadas
     horas_por_dia = Cita.objects.values('fecha__date').annotate(total_citas=Count('hora')).filter(total_citas=len(CitaForm.HORA_CHOICES) - 1)
     fechas_ocupadas = [entry['fecha__date'].isoformat() for entry in horas_por_dia]
+
+    # Obtener fechas bloqueadas
+    fechas_bloqueadas = FechaBloqueada.objects.values_list('fecha', flat=True)
+    fechas_bloqueadas = [fecha.isoformat() for fecha in fechas_bloqueadas]
 
     # Crear un diccionario de horas ocupadas por fecha
     citas = Cita.objects.all()
@@ -30,25 +34,33 @@ def reservar_cita(request):
     for cita in citas:
         horas_ocupadas_por_fecha[cita.fecha.date().isoformat()].append(cita.fecha.strftime("%H:%M"))
 
-    # Validar formulario y mostrar mensaje
     if request.method == 'POST':
         form = CitaForm(request.POST)
         if form.is_valid():
-            cita = form.save(commit=False)
-            cita.usuario = request.user
-            cita.fecha = timezone.make_aware(datetime.combine(form.cleaned_data['fecha'], form.cleaned_data['hora']))
-            cita.save()
-            enviar_confirmacion_cita(request.user.email, cita)
-            messages.success(request, '¡Viejito! Ya tienes tu cita confirmada ¡Esa es niñote!.')
-            return redirect('users:perfil_usuario')
+            fecha = form.cleaned_data['fecha']
+            hora = form.cleaned_data['hora']
+            fecha_hora = timezone.make_aware(datetime.combine(fecha, hora))
+
+            if fecha.isoformat() in fechas_bloqueadas:
+                form.add_error('fecha', 'Esta fecha está bloqueada. Por favor, selecciona otra fecha.')
+            else:
+                cita = form.save(commit=False)
+                cita.usuario = request.user
+                cita.fecha = fecha_hora
+                cita.save()
+                enviar_confirmacion_cita(request.user.email, cita)
+                messages.success(request, '¡Viejito! Ya tienes tu cita confirmada ¡Esa es niñote!.')
+                return redirect('users:perfil_usuario')
     else:
         form = CitaForm()
 
     return render(request, 'appointments/reservar_cita.html', {
         'form': form,
         'fechas_ocupadas': fechas_ocupadas,
+        'fechas_bloqueadas': fechas_bloqueadas,
         'horas_ocupadas_por_fecha': horas_ocupadas_por_fecha
     })
+
 
 
 # Función ver citas & historial
@@ -69,37 +81,33 @@ def ver_citas(request):
 def editar_cita(request, cita_id):
     cita = get_object_or_404(Cita, id=cita_id, usuario=request.user)
     
-    # Verifica si la fecha ya ha pasado
     if cita.fecha < timezone.now():
         messages.error(request, '¡Ñooosss! ¡Se te fue el baifo! La fecha ya pasó.')
         return redirect('appointments:ver_citas')
-    
-    # Obtiene las fechas ocupadas en las que todas las horas están reservadas
+
     horas_por_dia = Cita.objects.values('fecha__date').annotate(total_citas=Count('hora')).filter(total_citas=len(CitaForm.HORA_CHOICES))
     fechas_ocupadas = [entry['fecha__date'].isoformat() for entry in horas_por_dia]
+    fechas_bloqueadas = FechaBloqueada.objects.values_list('fecha', flat=True)
+    fechas_bloqueadas = [fecha.isoformat() for fecha in fechas_bloqueadas]
 
-    # Crea un diccionario para almacenar las horas ocupadas
     horas_ocupadas_por_fecha = {cita_existente.fecha.date().isoformat(): [] for cita_existente in Cita.objects.all()}
     for cita_existente in Cita.objects.all():
         horas_ocupadas_por_fecha[cita_existente.fecha.date().isoformat()].append(cita_existente.fecha.strftime("%H:%M"))
 
-    # Verifica si el método de la petición es POST
     if request.method == 'POST':
         form = CitaForm(request.POST, instance=cita)
         if form.is_valid():
             fecha = form.cleaned_data['fecha']
             hora = form.cleaned_data['hora']
-            # Convierte fecha y hora a aware si es necesario
-            fecha_hora = timezone.make_aware(datetime.combine(fecha, hora)) if timezone.is_naive(datetime.combine(fecha, hora)) else datetime.combine(fecha, hora)
+            fecha_hora = timezone.make_aware(datetime.combine(fecha, hora))
 
-            # Verifica existencia de cita en la fecha y hora seleccionada excluyendo la editada
-            if Cita.objects.filter(fecha=fecha_hora).exclude(id=cita_id).exists():
+            if fecha.isoformat() in fechas_bloqueadas:
+                form.add_error('fecha', 'Esta fecha está bloqueada. Por favor, selecciona otra fecha.')
+            elif Cita.objects.filter(fecha=fecha_hora).exclude(id=cita_id).exists():
                 form.add_error(None, "Ya existe una cita reservada en esa fecha y hora.")
             else:
-                # Actualiza la fecha y hora de la cita
                 cita.fecha = fecha_hora
                 form.save()
-                # Envío de notificación y mensaje de éxito
                 enviar_notificacion_modificacion_cita(request.user.email, cita)
                 messages.success(request, '¡Eres un puntal! Actualizaste tu cita.')
                 return redirect('appointments:ver_citas')
@@ -109,8 +117,10 @@ def editar_cita(request, cita_id):
     return render(request, 'appointments/editar_cita.html', {
         'form': form,
         'fechas_ocupadas': fechas_ocupadas,
-        'horas_ocupadas_por_fecha': horas_ocupadas_por_fecha,
+        'fechas_bloqueadas': fechas_bloqueadas,
+        'horas_ocupadas_por_fecha': horas_ocupadas_por_fecha
     })
+
 
 # Función para eliminar cita & manejo excepciones
 @login_required

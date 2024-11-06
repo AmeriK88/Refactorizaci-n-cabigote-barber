@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Cita
+from .models import Cita, FechaBloqueada
 import matplotlib
 matplotlib.use('Agg') 
 import matplotlib.pyplot as plt
@@ -72,3 +72,9 @@ class CitaAdmin(admin.ModelAdmin):
             'grafico': self.generar_grafico(),
         }
         return render(request, 'admin/grafico_citas.html', context)
+    
+@admin.register(FechaBloqueada)
+class FechaBloqueadaAdmin(admin.ModelAdmin):
+    list_display = ('fecha', 'razon')
+    search_fields = ('fecha', 'razon')
+    list_filter = ('fecha',)
