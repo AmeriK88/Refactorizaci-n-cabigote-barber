@@ -1,0 +1,5 @@
+Copyright (C) 2024 José Félix Gordo Castaño
+
+Este software, Cabigote Barber Shop, está autorizado para ser utilizado exclusivamente con fines educativos y de aprendizaje. No se permite la venta, redistribución comercial o cualquier uso con fines de lucro de este software, en su totalidad o en partes, sin el permiso expreso del autor.
+
+Cualquier violación de estos términos será perseguida legalmente. Para obtener autorización para otro tipo de uso, comuníquese con el autor.

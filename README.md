@@ -111,8 +111,9 @@ Ejecuta generate_qr.py - asegúrate de incluir la URL de tu sitio.
 pip install -r requirements.txt
 
 
+## Licencia
 
-
+Este proyecto, Cabigote Barber Shop, desarrollado por José Félix Gordo Castaño, está licenciado para uso exclusivo con fines educativos y de aprendizaje. No se permite su venta, redistribución comercial o cualquier uso con fines de lucro sin autorización expresa del autor.
 
 
 

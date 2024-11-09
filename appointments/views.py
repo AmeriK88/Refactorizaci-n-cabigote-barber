@@ -73,7 +73,7 @@ def ver_citas(request):
     citas_pasadas = Cita.objects.filter(
         usuario=request.user,
         fecha__lt=timezone.now()
-    ).order_by('-fecha', '-hora')  # Orden descendente para mostrar las citas más recientes primero
+    ).order_by('-fecha', '-hora') 
 
     return render(request, 'appointments/ver_citas.html', {
         'citas_activas': citas_activas,
@@ -155,3 +155,8 @@ def eliminar_cita(request, cita_id):
         return redirect('appointments:ver_citas')
 
     return render(request, 'appointments/eliminar_cita.html', {'cita': cita})
+
+# Autor: José Félix Gordo Castaño
+# Copyright (C) 2024 José Félix Gordo Castaño
+# Este archivo está licenciado para uso exclusivo con fines educativos y de aprendizaje. 
+# No se permite la venta ni el uso comercial sin autorización expresa del autor.
