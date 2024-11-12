@@ -114,33 +114,33 @@
                     <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Inicio</a>
+                                <a class="nav-link" href="{% url 'home' %}">Inicio</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% if request.resolver_match.url_name == 'reservar_cita' %}active{% endif %}" href="{% url 'appointments:reservar_cita' %}">Citas</a>
+                                <a class="nav-link" href="{% url 'appointments:reservar_cita' %}">Citas</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% if request.resolver_match.url_name == 'ver_servicios' %}active{% endif %}" href="{% url 'services:ver_servicios' %}">Servicios</a>
+                                <a class="nav-link" href="{% url 'services:ver_servicios' %}">Servicios</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% if request.resolver_match.url_name == 'ver_resenas' %}active{% endif %}" href="{% url 'reviews:ver_resenas' %}">Reseñas</a>
+                                <a class="nav-link" href="{% url 'reviews:ver_resenas' %}">Reseñas</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% if request.resolver_match.url_name == 'ver_imagenes' %}active{% endif %}" href="{% url 'media:ver_imagenes' %}">Productos</a>
+                                <a class="nav-link" href="{% url 'media:ver_imagenes' %}">Productos</a>
                             </li>
                             {% if user.is_authenticated %}
-                            <li class="nav-item">
-                                <a class="nav-link {% if request.resolver_match.url_name == 'perfil_usuario' %}active{% endif %}" href="{% url 'users:perfil_usuario' %}">Perfil</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'users:logout' %}">Salir</a>
-                            </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'users:perfil_usuario' %}">Perfil</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'users:logout' %}">Salir</a>
+                                </li>
                             {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link {% if request.resolver_match.url_name == 'login' %}active{% endif %}" href="{% url 'users:login' %}">Acceder</a>
-                            </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'users:login' %}">Acceder</a>
+                                </li>
                             {% endif %}
-                        </ul>
+                        </ul>                                                
                     </div>                
                 </nav>
             </header>

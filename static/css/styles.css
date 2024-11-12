@@ -346,6 +346,7 @@ footer a:hover {
     color: var(--link-hover-background); 
 }
 
+
 /* Botones */
 .btn-primary {
     background-color: var(--primary-color); 
