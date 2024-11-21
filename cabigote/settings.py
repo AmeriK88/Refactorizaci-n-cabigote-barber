@@ -76,16 +76,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cabigote.wsgi.application'
 
-
-# Database SQLite
-
-# DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': BASE_DIR / 'db.sqlite3',
-#    }
-# }
-
+# Database config
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -117,7 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization & zona horaria
+# Internationalization & config zona horaria
 
 LANGUAGE_CODE = 'es'
 
@@ -167,7 +158,7 @@ STATICFILES_DIRS = [
 ]
 
 
-# Logging de errores
+# Config logging de errores
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -175,7 +166,7 @@ LOGGING = {
         'file': {
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/log.error',  # Asegúrate de que este sea el único archivo especificado
+            'filename': 'logs/log.error', 
             'maxBytes': 500000,
             'backupCount': 5,
             'formatter': 'verbose',
@@ -191,7 +182,6 @@ LOGGING = {
         'level': 'ERROR',
     },
 }
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
