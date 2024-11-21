@@ -40,3 +40,5 @@ productos/
 servicios/
 imagenes/
 admin-interface/
+
+migrations/
