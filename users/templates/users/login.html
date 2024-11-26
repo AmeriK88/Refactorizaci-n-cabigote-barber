@@ -19,7 +19,7 @@
         {% endif %}
         
         <div class="form-group {% if form.username.errors %}is-invalid{% endif %}">
-            {{ form.username.label_tag }}
+            <strong>{{ form.username.label_tag }}</strong>
             {{ form.username }}
             {% for error in form.username.errors %}
             <div class="invalid-feedback">
@@ -29,7 +29,7 @@
         </div>
         
         <div class="form-group {% if form.password.errors %}is-invalid{% endif %}">
-            {{ form.password.label_tag }}
+            <strong>{{ form.password.label_tag }}</strong>
             {{ form.password }}
             {% for error in form.password.errors %}
             <div class="invalid-feedback">
@@ -39,7 +39,7 @@
         </div>
         
         <div class="form-group">
-            {{ form.captcha.label }}
+            <strong>{{ form.captcha.label }}</strong>
             {{ form.captcha }}
             {% if form.captcha.errors %}
                 <div class="alert alert-danger">{{ form.captcha.errors }}</div>
