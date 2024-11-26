@@ -2,7 +2,7 @@
 
 ## Descripción
 
-Cabigote Barber Shop es una aplicación web diseñada para gestionar reservas de citas y reseñas en un salón de belleza. Permite a los usuarios reservar servicios, ver citas activas y pasadas, así como dejar comentarios sobre su experiencia. La aplicación está construida utilizando Django como framework backend y Bootstrap para el diseño frontend.
+Cabigote Barber Shop es una aplicación web integral diseñada para gestionar reservas de citas, reseñas y servicios en un salón de belleza. Los usuarios pueden reservar servicios personalizados, visualizar citas activas y pasadas, y dejar comentarios detallados sobre su experiencia, mejorando así la interacción cliente-negocio. La aplicación incluye características como la separación de perfiles para clientes y administradores, notificaciones automáticas para confirmaciones y recordatorios, y una interfaz de usuario responsiva y amigable. Está construida utilizando Django como framework backend, Bootstrap para un diseño moderno y atractivo, y se complementa con una base de datos escalable para manejar eficientemente múltiples usuarios y transacciones.
 
 ## Estructura del Proyecto
 
