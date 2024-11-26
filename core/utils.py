@@ -22,10 +22,9 @@ def enviar_confirmacion_cita(usuario_email, cita):
 
     ---
 
-    Dirección: Calle Ejemplo 123, Ciudad
-    Teléfono: +123 456 789
-    Instagram: @cabigote_barber_shop
-    ¡Síguenos para más novedades!git a
+    Dirección: calle el rafael 43, Arrecife
+    Teléfono: +34 699 85 99 61
+    ¡Síguenos para más novedades!
     """
     send_mail(
         asunto,
@@ -60,9 +59,8 @@ def enviar_notificacion_eliminacion_cita(usuario_email, cita_detalle):
 
     ---
 
-    Dirección: Calle Ejemplo 123, Ciudad
-    Teléfono: +123 456 789
-    Instagram: @cabigote_barber_shop
+    Dirección: calle el rafael 43, Arrecife
+    Teléfono: +34 699 85 99 61
     ¡Síguenos para más novedades!
     """
     send_mail(
@@ -102,9 +100,8 @@ def enviar_notificacion_modificacion_cita(usuario_email, cita):
 
     ---
 
-    Dirección: Calle Ejemplo 123, Ciudad
-    Teléfono: +123 456 789
-    Instagram: @cabigote_barber_shop
+    Dirección: calle el rafael 43, Arrecife
+    Teléfono: +34 699 85 99 61
     ¡Síguenos para más novedades!
     """
     send_mail(
