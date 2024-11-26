@@ -1,10 +1,23 @@
-# Cabigote Barber Shop
+# ✂️ **Cabigote Barber Shop** 🌟
 
-## Descripción
+## 📝 **Descripción**
 
-Cabigote Barber Shop es una aplicación web integral diseñada para gestionar reservas de citas, reseñas y servicios en un salón de belleza. Los usuarios pueden reservar servicios personalizados, visualizar citas activas y pasadas, y dejar comentarios detallados sobre su experiencia, mejorando así la interacción cliente-negocio. La aplicación incluye características como la separación de perfiles para clientes y administradores, notificaciones automáticas para confirmaciones y recordatorios, y una interfaz de usuario responsiva y amigable. Está construida utilizando Django como framework backend, Bootstrap para un diseño moderno y atractivo, y se complementa con una base de datos escalable para manejar eficientemente múltiples usuarios y transacciones.
+Cabigote Barber Shop es una aplicación web integral diseñada para gestionar reservas de citas, reseñas y servicios en un Barber-Shop. Los usuarios pueden reservar servicios personalizados, visualizar citas activas y pasadas, y dejar comentarios detallados sobre su experiencia, mejorando así la interacción cliente-negocio. La aplicación incluye características como la separación de perfiles para clientes y administradores, notificaciones automáticas para confirmaciones y recordatorios, y una interfaz de usuario responsiva y amigable. Está construida utilizando Django como framework backend, Bootstrap para un diseño moderno y atractivo, y se complementa con una base de datos escalable para manejar eficientemente múltiples usuarios y transacciones.
 
-## Estructura del Proyecto
+## 🛠️ **Tecnologías Utilizadas**
+
+| **Tecnología**    | **Descripción**                                |
+|--------------------|-----------------------------------------------|
+| 🐍 **Django**      | Framework backend para una gestión robusta.  |
+| 🎨 **Bootstrap**   | Diseño moderno, responsivo y estilizado.     |
+| 🗄️ **MySQL**        | Base de datos escalable para múltiples usuarios. |
+| 🖼️ **Pillow**      | Gestión de imágenes y galería de productos.  |
+| 🖋️ **QRCode**      | Generación de códigos QR para enlaces.       |
+| 🔐 **reCAPTCHA**   | Seguridad adicional contra bots.             |
+
+---
+
+## 📂 **Estructura del Proyecto**
 
 El proyecto está compuesto por varias aplicaciones que manejan diferentes funcionalidades:
 
@@ -62,14 +75,27 @@ El proyecto está compuesto por varias aplicaciones que manejan diferentes funci
 - Python 3.8 o superior
 - Django 3.2 o superior
 
-## Características
+## 🚀 **Características Principales**
 
-- **Registro y Autenticación de Usuarios**: Los usuarios pueden registrarse, iniciar sesión y actualizar su perfil.
-- **Gestión de Citas**: Permite a los usuarios reservar, ver, editar y cancelar citas.
-- **Reseñas de Servicios**: Los usuarios pueden agregar reseñas a los servicios y ver las reseñas existentes.
-- **Galería de Servicios**: Los usuarios pueden ver detalles de servicios a través de imágenes y descripciones.
-- **Galería de Priductos**: Los usuarios pueden ver detalles de productos a través de imágenes.
-- **Panel de Administración Mejorado**: Utiliza Grappelli para una interfaz de administración más intuitiva y atractiva.
+✅ **Gestión de Usuarios:**
+- Registro, inicio de sesión y personalización de perfil.
+
+✅ **Reservas de Citas:**
+- Crear, editar, cancelar y gestionar el historial de citas.
+
+✅ **Reseñas de Servicios:**
+- Los usuarios pueden agregar y consultar reseñas con puntuaciones.
+
+✅ **Galería de Servicios y Productos:**
+- Información detallada con imágenes y descripciones.
+
+✅ **Notificaciones Automáticas:**
+- Recordatorios y confirmaciones vía correo electrónico.
+
+✅ **Panel de Administración Personalizado:**
+- Integración con Django Grappelli para una interfaz moderna.
+
+---
 
 ## Requisitos
 
@@ -110,8 +136,14 @@ Ejecuta generate_qr.py - asegúrate de incluir la URL de tu sitio.
 
 pip install -r requirements.txt
 
+## ⚙️ **Instalación**
 
-## Licencia
+### **1. Requisitos Previos**
+- Python 3.8 o superior.
+- Django 3.2 o superior.
+
+
+## 🔒 Licencia
 
 Este proyecto, Cabigote Barber Shop, desarrollado por José Félix Gordo Castaño, está licenciado para uso exclusivo con fines educativos y de aprendizaje. No se permite su venta, redistribución comercial o cualquier uso con fines de lucro sin autorización expresa del autor.
 
