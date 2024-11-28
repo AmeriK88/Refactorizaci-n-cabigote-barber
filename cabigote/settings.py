@@ -157,6 +157,13 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),  
 ]
 
+# Define la ruta absoluta para el archivo de logs
+LOG_FILE_DIR = os.path.join(BASE_DIR, 'logs')
+LOG_FILE_PATH = os.path.join(LOG_FILE_DIR, 'log.error')
+
+# Verifica si el directorio de logs existe; si no, créalo
+if not os.path.exists(LOG_FILE_DIR):
+    os.makedirs(LOG_FILE_DIR)
 
 # Config logging de errores
 LOGGING = {
@@ -166,7 +173,7 @@ LOGGING = {
         'file': {
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/log.error', 
+            'filename': LOG_FILE_PATH, 
             'maxBytes': 500000,
             'backupCount': 5,
             'formatter': 'verbose',
