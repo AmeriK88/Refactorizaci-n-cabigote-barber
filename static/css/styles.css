@@ -270,7 +270,7 @@ img:hover {
 
 .card-img-top:hover,
 .social-icon i:hover {
-    transform: scale(1.1);
+    transform: scale(1.2);
 }
 
 /* Estilo para la superposición oscura */
@@ -309,10 +309,35 @@ img:hover {
     opacity: 1; 
 }
 
+/* Animación  */
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+.icon {
+    margin: 0;
+    animation: spin 4s linear infinite;
+    outline: none;
+    border: none !important;
+    height: 50px;
+    vertical-align: middle;
+    display: inline-block;
+    transition: transform 0.3s ease;
+    mix-blend-mode:multiply ;
+}
+
+
+/* Animación  */
+@keyframes spin {
+    from {
+        transform: rotateY(360deg);
+    }
+    to {
+        transform: rotateX(0deg);
+    }
+}
+
 
 /* Footer */
 footer {

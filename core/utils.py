@@ -39,11 +39,20 @@ def enviar_confirmacion_cita(usuario_email, cita):
         admin_emails = [admin[1] for admin in settings.ADMINS]
         send_mail(
             'Nueva cita reservada en Ca´Bigote',
-            f'Un usuario ha reservado una cita:\n\nServicio: {cita.servicio.nombre}\nFecha: {cita.fecha}\nHora: {cita.hora}',
+            f'''Un usuario ha reservado una cita:
+
+    Usuario: {cita.usuario.username if hasattr(cita, 'usuario') else 'Usuario no disponible'}
+    Comentario: {cita.comentario if cita.comentario else 'Sin comentarios'}
+
+    Servicio: {cita.servicio.nombre}
+    Fecha: {cita.fecha}
+    Hora: {cita.hora}
+    ''',
             settings.EMAIL_HOST_USER,
             admin_emails,
             fail_silently=False,
         )
+
 
 def enviar_notificacion_eliminacion_cita(usuario_email, cita_detalle):
     asunto = 'Tu cita en Ca´Bigote Barber Shop ha sido eliminada'
@@ -76,11 +85,20 @@ def enviar_notificacion_eliminacion_cita(usuario_email, cita_detalle):
         admin_emails = [admin[1] for admin in settings.ADMINS]
         send_mail(
             'Cita eliminada en Ca´Bigote',
-            f'Un usuario ha eliminado una cita:\n\nServicio: {cita_detalle["servicio"]}\nFecha: {cita_detalle["fecha"]}\nHora: {cita_detalle["hora"]}',
+            f'''Un usuario ha eliminado una cita:
+
+    Usuario: {cita_detalle["usuario"] if "usuario" in cita_detalle else 'Usuario no disponible'}
+    Comentario: {cita_detalle["comentario"] if "comentario" in cita_detalle else 'Sin comentarios'}
+
+    Servicio: {cita_detalle["servicio"]}
+    Fecha: {cita_detalle["fecha"]}
+    Hora: {cita_detalle["hora"]}
+    ''',
             settings.EMAIL_HOST_USER,
             admin_emails,
             fail_silently=False,
         )
+
 
 
 def enviar_notificacion_modificacion_cita(usuario_email, cita):
@@ -117,7 +135,15 @@ def enviar_notificacion_modificacion_cita(usuario_email, cita):
         admin_emails = [admin[1] for admin in settings.ADMINS]
         send_mail(
             'Cita modificada en Ca´Bigote',
-            f'Un usuario ha modificado una cita:\n\nServicio: {cita.servicio.nombre}\nNueva fecha: {cita.fecha}\nNueva hora: {cita.hora}',
+            f'''Un usuario ha modificado una cita:
+            
+    Usuario: {cita.usuario.username if cita.usuario else 'Usuario no disponible'}
+    Comentario: {cita.comentario if cita.comentario else 'Sin comentarios'}
+
+    Servicio: {cita.servicio.nombre}
+    Nueva fecha: {cita.fecha}
+    Nueva hora: {cita.hora}
+    ''',
             settings.EMAIL_HOST_USER,
             admin_emails,
             fail_silently=False,
