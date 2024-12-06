@@ -80,20 +80,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cabigote.wsgi.application'
 
-# Database configurations
-
+# Configura la base de datos según el entorno
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': env('DB_HOST'),
-        'PORT': env('DB_PORT'),
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-        },
-    }
+    'default': env.db(
+        'DATABASE_URL',  # Usa Railway o cualquier variable de entorno definida
+        default=f"mysql://{env('DB_USER', default='root')}:"
+                f"{env('DB_PASSWORD', default='//123-$aAnN')}@"
+                f"{env('DB_HOST', default='127.0.0.1')}:"
+                f"{env('DB_PORT', default='3306')}/"
+                f"{env('DB_NAME', default='cabigote2')}"
+    )
 }
 
 """
