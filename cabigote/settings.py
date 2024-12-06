@@ -80,17 +80,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cabigote.wsgi.application'
 
-# Configura la base de datos según el entorno
+# Configuración de la base de datos
 DATABASES = {
     'default': env.db(
-        'DATABASE_URL',  # Usa Railway o cualquier variable de entorno definida
-        default=f"mysql://{env('DB_USER', default='root')}:"
-                f"{env('DB_PASSWORD', default='//123-$aAnN')}@"
-                f"{env('DB_HOST', default='127.0.0.1')}:"
-                f"{env('DB_PORT', default='3306')}/"
-                f"{env('DB_NAME', default='cabigote2')}"
+        'DATABASE_URL',  # Variable de entorno para producción
+        default=None     # Sin valor predeterminado
     )
 }
+
+if not DATABASES['default']:
+    raise ValueError("DATABASE_URL no está configurada en las variables de entorno")
 
 """
 # Configuración para producción (Railway)
