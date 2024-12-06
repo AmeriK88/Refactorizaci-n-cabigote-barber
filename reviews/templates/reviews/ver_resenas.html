@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Reseñas - Cabigote Barber Shop{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow text-center mb-5 p-3 border-0">
+        <h2 class="h2 fw-bold text-secondary mb-0 position-relative d-inline-block">
+            <i class="fas fa-star me-2 text-warning"></i> Reseñas
+        </h2>
+    </div>
+    
+    <!-- Mostrar reseñas existentes -->
+    <div class="mb-4">
+        {% if resenas %}
+            {% for resena in resenas %}
+                <div class="card mb-4 shadow-sm border-0">
+                    <div class="card-body">
+                        <p class="card-text fs-5 text-dark mb-3">{{ resena.texto }}</p>
+                        <div class="d-flex justify-content-between align-items-center text-muted small">
+                            <div class="text-center">
+                                <i class="fas fa-user me-1 d-block"></i> 
+                                <span>{{ resena.usuario }}</span>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-star me-1 text-warning d-block"></i> 
+                                <span>{{ resena.puntuacion }} / 5</span>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-cut me-1 d-block"></i> 
+                                <span>{{ resena.servicio.nombre }}</span>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-calendar-alt me-1 d-block"></i> 
+                                <span>{{ resena.fecha|date:"d/m/Y H:i" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <!-- Mostrar tarjeta si no hay reseñas -->
+            <div class="container mt-5">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">¡Vaya! Aún no hay reseñas.</h5>
+                        <p class="text-center text-secondary">Sé el primero en comentar.</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Mostrar formulario solo si el usuario está autenticado -->
+    {% if user.is_authenticated %}
+    <div class="container mt-5">
+        <div class="card mb-4">
+            <h3 class="m-3 card-header text-center display-5 font-weight-bold">Añadir Reseña</h3>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <strong>{{ form.servicio.label_tag }}</strong>
+                                {{ form.servicio }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>{{ form.texto.label_tag }}</strong>
+                                {{ form.texto }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>{{ form.puntuacion.label_tag }}</strong>
+                        <div class="d-flex flex-row">
+                            {% for radio in form.puntuacion %}
+                                <div class="form-check form-check-inline me-2">
+                                    {{ radio.tag }}
+                                    <label for="{{ radio.id_for_label }}" class="form-check-label">{{ radio.choice_label }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {{ form.puntuacion.errors }}
+                    </div>
+                    <div class="col-12"> 
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                    </div>
+                </form>                
+            </div>
+        </div>
+    </div>
+    {% else %}
+        <div class="card bg-white">
+            <p class="m-auto text-danger"><a href="{% url 'users:login' %}">Inicia sesión</a> para agregar una reseña.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

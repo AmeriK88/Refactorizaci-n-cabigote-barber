@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Citas{% endblock %}
+
+{% block content %}
+    <div class="container mt-5 mb-5">
+        <div class="container mt-3"> 
+            <div class="card shadow-sm bg-light text-center p-3 border-0">
+                <h2 class="h4 fw-bold text-secondary mb-0">
+                    <i class="fas fa-calendar-alt me-2 text-primary"></i> Citas de 
+                    <span class="text-primary">{{ user.username }}</span>
+                </h2>
+            </div>            
+
+            <!-- Sección de Citas Activas -->
+            <h2 class="mt-5 text-center display-5 font-weight-bold">Citas Activas</h2>
+            {% if citas_activas %}
+                <div class="row g-4">
+                    {% for cita in citas_activas %}
+                    <div class="col-12 {% if citas_activas|length > 1 %}col-md-6 col-lg-4{% endif %} mt-5">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ cita.servicio.nombre }}</h5>
+                                
+                                <!-- Campo Fecha -->
+                                <p class="card-text d-flex align-items-center">
+                                    <i class="m-3 bi bi-calendar-event me-2 text-primary"></i>
+                                    <span><strong>Fecha:</strong> {{ cita.fecha }}</span>
+                                </p>
+                                
+                                <!-- Campo Hora -->
+                                <p class="card-text d-flex align-items-center">
+                                    <i class="m-3 bi bi-clock me-2 text-success"></i>
+                                    <span><strong>Hora:</strong> {{ cita.hora }}</span>
+                                </p>
+                                
+                                <!-- Campo Comentario -->
+                                <p class="card-text d-flex align-items-center">
+                                    <i class="m-3 bi bi-chat-left-dots me-2 text-secondary"></i>
+                                    <span><strong>Comentario:</strong> {{ cita.comentario }}</span>
+                                </p>
+                                
+                                <div class="mt-auto d-flex justify-content-between">
+                                    <a href="{% url 'appointments:editar_cita' cita.id %}" class="btn btn-primary">Editar</a>
+                                    <a href="{% url 'appointments:eliminar_cita' cita.id %}" class="btn btn-outline-danger">Eliminar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="container mt-5">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">No tienes citas activas</h5>
+                            <p class="card-text">No esperes más y reserva tu cita.</p>
+                            <a href="{% url 'appointments:reservar_cita' %}" class="btn btn-primary">Reservar cita</a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Sección de Historial de Citas -->
+            <h2 class="mt-5 text-center display-5 font-weight-bold">Historial de Citas</h2>
+            {% if citas_pasadas %}
+                <div class="row g-4">
+                    {% for cita in citas_pasadas %}
+                    <div class="col-12 {% if citas_pasadas|length > 1 %}col-md-6 col-lg-4{% endif %} mt-5">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ cita.servicio.nombre }}</h5>
+                                
+                                <!-- Campo Fecha -->
+                                <p class="card-text d-flex align-items-center">
+                                    <i class="m-3 bi bi-calendar-event me-2 text-primary"></i>
+                                    <span><strong>Fecha:</strong> {{ cita.fecha }}</span>
+                                </p>
+                                
+                                <!-- Campo Hora -->
+                                <p class="card-text d-flex align-items-center">
+                                    <i class="m-3 bi bi-clock me-2 text-success"></i>
+                                    <span><strong>Hora:</strong> {{ cita.hora }}</span>
+                                </p>
+                                
+                                <!-- Campo Comentario -->
+                                <p class="card-text d-flex align-items-center">
+                                    <i class="m-3 bi bi-chat-left-dots me-2 text-secondary"></i>
+                                    <span><strong>Comentario:</strong> {{ cita.comentario }}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="container mt-5">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">No tienes citas pasadas</h5>
+                            <p class="card-text">Pero no te preocupes, puedes ver nuestros servicios.</p>
+                            <a href="{% url 'services:ver_servicios' %}" class="btn btn-primary">Ver servicios</a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+    </div>
+{% endblock %}

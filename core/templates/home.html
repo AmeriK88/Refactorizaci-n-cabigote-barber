@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Inicio - Cabigote Barber Shop{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <!-- Hero Section -->
+    <div class="row">
+        <div class="col-lg-6 d-flex flex-column justify-content-center">
+            <div class="hero-content">
+                <h2 class="display-4 fw-bold">Bienvenido a Ca´Bigote</h2>
+                <p class="lead mb-4">Donde el estilo se encuentra con la tradición. Ubicados en el corazón de Arrecife, ofrecemos cortes de cabello y arreglos de barba con la máxima calidad y atención al detalle.</p>
+                <a href="{% url 'services:ver_servicios' %}" class="btn btn-primary btn-lg mb-5">Descubre Nuestros Servicios</a>
+            </div>
+        </div>
+        <div class="col-lg-6 d-flex align-items-center justify-content-center">
+            <img src="{% static 'imagenes/logo-cabigote.png' %}" alt="Imagen de la barbería" class="img-fluid rounded hero-image" loading="lazy">
+        </div>
+    </div>   
+      
+    <!-- About Section -->
+    <div class="row mt-5">
+        <div class="col-lg-12">
+            <div class="card shadow bg-light text-center p-4">
+                <h2 class="display-5 fw-bold mb-3">¿Por Qué Elegirnos?</h2>
+                <p class="lead">En Ca´Bigote Barber Shop, cada visita es una experiencia personalizada. Nuestro equipo de barberos altamente capacitados está dedicado a brindarte el mejor servicio en un ambiente acogedor y moderno. Ya sea que busques un corte clásico o una barba perfectamente arreglada, tenemos todo lo que necesitas.</p>
+                <a href="{% url 'appointments:reservar_cita' %}" class="btn btn-primary btn-lg mt-3">Agenda Tu Cita</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

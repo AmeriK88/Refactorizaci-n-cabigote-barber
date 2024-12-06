@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Productos - Cabigote Barber Shop{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="mb-5 card shadow-sm bg-light text-center p-4 border-0">
+        <h2 class="h4 fw-bold text-primary mb-0">
+            <i class="fas fa-box-open me-2 text-success"></i> Nuestros Productos
+        </h2>
+    </div>
+    
+    <div class="row">
+        {% if imagenes %}
+            {% for imagen in imagenes %}
+                <!-- Si la imagen del Producto es menos de uno ocupará todo el espacio -->
+                <div class="col-12 {% if imagenes|length > 1 %}col-md-6 col-lg-6{% else %}col-md-12{% endif %} mb-5 card-img-top">
+                    <div class="card">
+                        <a href="{% url 'products:detalle_producto' producto_id=imagen.id %}">
+                            <img src="{{ imagen.imagen.url }}" alt="{{ imagen.titulo }}" class="img-fluid" loading="lazy">
+                        </a>
+                        <div class="card-body text-center">
+                            <p class="card-text"><strong>{{ imagen.titulo }}</strong></p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No hay productos disponibles.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
