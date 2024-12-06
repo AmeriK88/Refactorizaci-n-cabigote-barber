@@ -1,0 +1,9 @@
+[phases]
+# Instalar dependencias
+setup = "pip install -r requirements.txt"
+
+# Ejecutar migraciones y recopilar archivos estáticos antes de iniciar el servidor
+install = "python manage.py migrate && python manage.py collectstatic --noinput"
+
+# Comando para iniciar el servidor
+start = "gunicorn cabigote.wsgi:application --bind 0.0.0.0:$PORT"
