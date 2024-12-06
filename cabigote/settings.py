@@ -49,7 +49,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-   'django.middleware.security.SecurityMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -165,11 +166,15 @@ LOGOUT_REDIRECT_URL = '/'
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 # Directorio donde se almacenarán los archivos estáticos recogidos
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 # Directorios adicionales para archivos estáticos
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),  
 ]
+
+# Configuración adicional para WhiteNoise
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
