@@ -22,17 +22,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copia todo el código del proyecto
 COPY . .
 
-# Configura las variables de entorno
+# Configura las variables de entorno necesarias para la ejecución
 ENV PYTHONUNBUFFERED=1
-
-# Configura una clave secreta temporal solo para la construcción
-ENV SECRET_KEY="temp-secret-key"
-
-# Ejecuta las migraciones y recopila los archivos estáticos
-RUN python manage.py collectstatic --noinput && python manage.py migrate
 
 # Expone el puerto para el servidor
 EXPOSE 8000
 
-# Comando para iniciar Gunicorn
-CMD ["gunicorn", "cabigote.wsgi:application", "--bind", "0.0.0.0:8000"]
+# Ejecuta migraciones, collectstatic y Gunicorn
+CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn cabigote.wsgi:application --bind 0.0.0.0:8000"]
