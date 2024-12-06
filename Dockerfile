@@ -25,6 +25,9 @@ COPY . .
 # Configura las variables de entorno
 ENV PYTHONUNBUFFERED=1
 
+# Configura una clave secreta temporal durante la construcción
+ENV SECRET_KEY=temp-secret-key
+
 # Ejecuta las migraciones y recopila los archivos estáticos
 RUN python manage.py collectstatic --noinput && python manage.py migrate
 
