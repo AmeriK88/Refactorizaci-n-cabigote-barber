@@ -5,7 +5,6 @@
 
 from pathlib import Path
 import environ
-import dj_database_url
 import os
 import pymysql
 pymysql.install_as_MySQLdb()
