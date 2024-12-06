@@ -60,7 +60,7 @@ El proyecto está compuesto por varias aplicaciones que manejan diferentes funci
 - **Vistas**: 
   - `ver_servicios`: Muestra todos los servicios disponibles.
 
-### 5. Media
+### 5. Products
 
 - **Modelos**: 
   - `Imagen`: Modelo que almacena imágenes de los productos.
