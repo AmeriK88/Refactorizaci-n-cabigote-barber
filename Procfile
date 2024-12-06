@@ -1,1 +1,1 @@
-web: python manage.py migrate && guinicorn.wsgi
+web: python manage.py migrate && gunicorn cabigote.wsgi:application
