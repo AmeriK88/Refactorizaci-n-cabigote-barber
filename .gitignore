@@ -29,5 +29,5 @@ registro_qr.png
 # Archivos generados por Django
 staticfiles/
 static/
-media/
+
 

@@ -148,7 +148,6 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 # Leer y procesar ADMINS desde el archivo .env
 admins_env = env('ADMINS', default='')
 
-# Convertir el valor en una lista de tuplas
 ADMINS = [tuple(admin.split(',')) for admin in admins_env.split(';')] if admins_env else []
 
 # Configuraciones capchat
@@ -218,6 +217,18 @@ LOGGING = {
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Config CSRF token 
+CSRF_TRUSTED_ORIGINS = [
+    'https://refactorizaci-n-cabigote-barber-production.up.railway.app',
+    'https://cabigotebarbershop.com',
+    'https://www.cabigotebarbershop.com',
+]
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 # Banned usernames
 BLACKLISTED_USERNAMES = ['admin', 'root', 'superuser', 'test']
