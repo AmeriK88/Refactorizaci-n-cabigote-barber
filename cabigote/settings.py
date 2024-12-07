@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'cabigote.wsgi.application'
 """
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',  # Cambia a 'postgresql', 'sqlite3', etc., si usas otra base de datos
+        'ENGINE': 'django.db.backends.mysql', 
         'NAME': env('DB_NAME'),
         'USER': env('DB_USER'),
         'PASSWORD': env('DB_PASSWORD'),
