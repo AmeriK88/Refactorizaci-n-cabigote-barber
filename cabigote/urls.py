@@ -23,4 +23,6 @@ urlpatterns += i18n_patterns(
     path('accounts/', include('django.contrib.auth.urls')),
 )
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# **Rutas para archivos media fuera de i18n_patterns**
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

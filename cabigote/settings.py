@@ -161,23 +161,19 @@ LOGIN_REDIRECT_URL = '/users/perfil/'
 LOGOUT_REDIRECT_URL = '/' 
 
 
+# Archivos subidos por el usuario (Media)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Archivos estáticos (CSS, JavaScript, Imágenes)
 STATIC_URL = '/static/'
 
 # Directorio donde se almacenarán los archivos estáticos recolectados (con collectstatic)
+STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# Directorios adicionales donde buscar archivos estáticos
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),  
-]
 
 # Configuración adicional para WhiteNoise
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# Archivos subidos por el usuario (Media)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Define la ruta absoluta para el archivo de logs
