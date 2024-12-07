@@ -79,27 +79,30 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cabigote.wsgi.application'
 
+"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',  # Cambia a 'postgresql', 'sqlite3', etc., si usas otra base de datos
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'), 
+        'PORT': env('DB_PORT'), 
+    }
+}
+
+"""
 # Configuración de la base de datos
 DATABASES = {
     'default': env.db(
-        'DATABASE_URL',  # Variable de entorno para producción
-        default=None     # Sin valor predeterminado
+        'DATABASE_URL',
+        default=None,
     )
 }
 
 if not DATABASES['default']:
     raise ValueError("DATABASE_URL no está configurada en las variables de entorno")
 
-"""
-# Configuración para producción (Railway)
-DATABASES = {
-    'default': dj_database_url.config(
-        env='MYSQL_URL',
-        conn_max_age=600,
-        ssl_require=False,  # Desactiva SSL
-    ),
-}
-"""
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
