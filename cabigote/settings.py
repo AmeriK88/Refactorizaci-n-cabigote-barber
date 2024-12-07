@@ -160,7 +160,7 @@ LOGOUT_REDIRECT_URL = '/'
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 # Directorio donde se almacenarán los archivos estáticos recogidos
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = BASE_DIR / "/staticfiles/"
 
 # Directorios adicionales para archivos estáticos
 STATICFILES_DIRS = [

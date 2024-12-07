@@ -30,5 +30,3 @@ registro_qr.png
 staticfiles/
 media/
 
-# Ignorar imágenes de ejemplo
-static/imagenes/
