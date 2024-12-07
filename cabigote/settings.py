@@ -175,6 +175,10 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Configuración adicional para WhiteNoise
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# Configuración de WhiteNoise para media
+WHITENOISE_ALLOW_ALL_ORIGINS = True
+WHITENOISE_MEDIA_PREFIX = "/media/"
+
 
 # Define la ruta absoluta para el archivo de logs
 LOG_FILE_DIR = os.path.join(BASE_DIR, 'logs')
