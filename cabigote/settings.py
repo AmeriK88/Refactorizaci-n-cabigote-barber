@@ -173,6 +173,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# Configuraciones SSL
+SECURE_SSL_REDIRECT = True
+
 # Define la ruta absoluta para el archivo de logs
 LOG_FILE_DIR = os.path.join(BASE_DIR, 'logs')
 LOG_FILE_PATH = os.path.join(LOG_FILE_DIR, 'log.error')
