@@ -22,8 +22,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
-print(f"DEBUG leído directamente: {DEBUG}")
+DEBUG = os.getenv('DEBUG') 
 
 ALLOWED_HOSTS = ['127.0.0.1','localhost','refactorizaci-n-cabigote-barber-production.up.railway.app', 'cabigotebarbershop.com', 'www.cabigotebarbershop.com',]
 
