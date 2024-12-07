@@ -25,7 +25,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 print(f"DEBUG leído directamente: {DEBUG}")
 
-ALLOWED_HOSTS = ['127.0.0.1','localhost','refactorizaci-n-cabigote-barber-production.up.railway.app']
+ALLOWED_HOSTS = ['127.0.0.1','localhost','refactorizaci-n-cabigote-barber-production.up.railway.app', 'cabigotebarbershop.com', 'www.cabigotebarbershop.com',]
 
 
 # Application definition
