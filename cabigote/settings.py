@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ['127.0.0.1','localhost','refactorizaci-n-cabigote-barber-produc
 
 # Application definition
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
     'admin_interface',
     'django.contrib.admin',
     'django.contrib.auth',
