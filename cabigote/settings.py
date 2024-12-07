@@ -169,15 +169,15 @@ MEDIA_ROOT = BASE_DIR / 'media'
 STATIC_URL = '/static/'
 
 # Directorio donde se almacenarán los archivos estáticos recolectados (con collectstatic)
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = [BASE_DIR / 'staticfiles']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Configuración adicional para WhiteNoise
+# Configuración adicional para WhiteNoise   
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Configuración de WhiteNoise para media
 WHITENOISE_ALLOW_ALL_ORIGINS = True
-WHITENOISE_MEDIA_PREFIX = "/media/"
+WHITENOISE_MEDIA_PREFIX = "/static/"
 
 
 # Define la ruta absoluta para el archivo de logs
