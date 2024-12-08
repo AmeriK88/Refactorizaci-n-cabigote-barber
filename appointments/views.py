@@ -5,10 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.db.models import Count
 from django.utils.html import format_html
-import base64
 import matplotlib.pyplot as plt
-import io
-import urllib
 
 from .models import Cita, FechaBloqueada  
 from .forms import CitaForm  

@@ -57,5 +57,8 @@ class ReporteMensualAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
-
+# Autor: José Félix Gordo Castaño
+# Copyright (C) 2024 José Félix Gordo Castaño
+# Este archivo está licenciado para uso exclusivo con fines educativos y de aprendizaje. 
+# No se permite la venta ni el uso comercial sin autorización expresa del autor.
    

@@ -23,3 +23,8 @@ def ver_resenas(request):
     
     # Renderizar la plantilla con el formulario y las reseñas
     return render(request, 'reviews/ver_resenas.html', {'form': form, 'resenas': resenas, 'estrellas': estrellas})
+
+# Autor: José Félix Gordo Castaño
+# Copyright (C) 2024 José Félix Gordo Castaño
+# Este archivo está licenciado para uso exclusivo con fines educativos y de aprendizaje. 
+# No se permite la venta ni el uso comercial sin autorización expresa del autor.

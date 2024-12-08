@@ -148,3 +148,8 @@ def enviar_notificacion_modificacion_cita(usuario_email, cita):
             admin_emails,
             fail_silently=False,
         )
+
+# Autor: José Félix Gordo Castaño
+# Copyright (C) 2024 José Félix Gordo Castaño
+# Este archivo está licenciado para uso exclusivo con fines educativos y de aprendizaje. 
+# No se permite la venta ni el uso comercial sin autorización expresa del autor.

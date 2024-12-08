@@ -44,6 +44,11 @@ class CitaForm(forms.ModelForm):
         if fecha.date() < today:
             raise forms.ValidationError("¡Ñooosss! ¡Se te fue el baifo! La fecha ya pasó.")
         return fecha
+    
+    # Autor: José Félix Gordo Castaño
+    # Copyright (C) 2024 José Félix Gordo Castaño
+    # Este archivo está licenciado para uso exclusivo con fines educativos y de aprendizaje. 
+    # No se permite la venta ni el uso comercial sin autorización expresa del autor.
 
     def clean_hora(self):
         hora = self.cleaned_data.get('hora')
