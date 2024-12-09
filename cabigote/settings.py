@@ -33,31 +33,26 @@ ALLOWED_HOSTS = [
 ]
 
 
-# Application definition
 INSTALLED_APPS = [
-
-    # Django apps predeterminadas
+# Application definition
+    'whitenoise.runserver_nostatic',
+    'admin_interface',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    # Apps de terceros
-    'whitenoise.runserver_nostatic',
-    'admin_interface',
     'django_recaptcha',
-    'colorfield',
-
-    # Apps propias del proyecto
     'appointments',
     'products',
     'services',
     'reviews',
     'reports',
     'users',
+    'colorfield',
 ]
+
 
 
 
