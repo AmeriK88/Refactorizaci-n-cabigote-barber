@@ -25,7 +25,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = os.getenv('DEBUG') 
 
 ALLOWED_HOSTS = [
-    '127.0.0.1','localhost',
+    '127.0.0.1','localhost', '0.0.0.0',
     'refactorizaci-n-cabigote-barber-production.up.railway.app', 
     'cabigotebarbershop.com', 
     'www.cabigotebarbershop.com',
@@ -42,13 +42,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_recaptcha',
     'appointments',
     'products',
     'services',
     'reviews',
     'reports',
     'users',
-    'django_recaptcha',
     'colorfield',
 ]
 
