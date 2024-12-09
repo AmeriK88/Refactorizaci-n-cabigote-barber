@@ -33,7 +33,7 @@ def register(request):
 @handle_exceptions
 def login_view(request):
     if request.method == 'POST':
-        # Crea un formulario de autenticación con los datos de la solicitud
+        # Crea formulario de autenticación con los datos de la solicitud
         form = CustomAuthenticationForm(data=request.POST)  
         # Verifica si el formulario es válido
         if form.is_valid():
