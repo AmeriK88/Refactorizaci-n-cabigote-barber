@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block title %}Login{% endblock %}
 
 {% block content %}
@@ -62,4 +64,7 @@
             </a>
         </div>
     </div>
+
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 {% endblock %}

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% load i18n %}
+
+{% load static %}
 
 {% block content %}
     <div class="mb-5 card shadow-sm bg-white text-center p-4 border-0">
@@ -52,4 +53,6 @@
         </div>
         <button type="submit" class="btn btn-primary">Registrarse</button>
     </form>
+
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 {% endblock %}
