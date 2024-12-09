@@ -25,7 +25,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = os.getenv('DEBUG') 
 
 ALLOWED_HOSTS = [
-    'if9hv3ou.up.railway.app'
+    'if9hv3ou.up.railway.app',
     '127.0.0.1','localhost', '0.0.0.0',
     'refactorizaci-n-cabigote-barber-production.up.railway.app', 
     'cabigotebarbershop.com', 
