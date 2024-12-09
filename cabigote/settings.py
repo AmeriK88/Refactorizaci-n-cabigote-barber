@@ -35,23 +35,31 @@ ALLOWED_HOSTS = [
 
 # Application definition
 INSTALLED_APPS = [
-    'whitenoise.runserver_nostatic',
-    'admin_interface',
+
+    # Django apps predeterminadas
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Apps de terceros
+    'whitenoise.runserver_nostatic',
+    'admin_interface',
     'django_recaptcha',
+    'colorfield',
+
+    # Apps propias del proyecto
     'appointments',
     'products',
     'services',
     'reviews',
     'reports',
     'users',
-    'colorfield',
 ]
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -226,7 +234,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Config CSRF token 
 CSRF_TRUSTED_ORIGINS = [
-    'https://if9hv3ou.up.railway.app'
+    'https://if9hv3ou.up.railway.app',
     'https://refactorizaci-n-cabigote-barber-production.up.railway.app',
     'https://cabigotebarbershop.com',
     'https://www.cabigotebarbershop.com',
