@@ -25,6 +25,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = os.getenv('DEBUG') 
 
 ALLOWED_HOSTS = [
+    'if9hv3ou.up.railway.app'
     '127.0.0.1','localhost', '0.0.0.0',
     'refactorizaci-n-cabigote-barber-production.up.railway.app', 
     'cabigotebarbershop.com', 
@@ -225,6 +226,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Config CSRF token 
 CSRF_TRUSTED_ORIGINS = [
+    'https://if9hv3ou.up.railway.app'
     'https://refactorizaci-n-cabigote-barber-production.up.railway.app',
     'https://cabigotebarbershop.com',
     'https://www.cabigotebarbershop.com',
