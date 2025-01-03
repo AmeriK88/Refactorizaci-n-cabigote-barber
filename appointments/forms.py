@@ -1,8 +1,8 @@
 from django import forms
 from datetime import datetime, time
 from django.utils import timezone
-
 from .models import Cita, Servicio  
+
 
 # Formulario cita
 class CitaForm(forms.ModelForm):
@@ -26,7 +26,20 @@ class CitaForm(forms.ModelForm):
     ]
 
     hora = forms.ChoiceField(choices=HORA_CHOICES, label='Hora')
-    servicio = forms.ModelChoiceField(queryset=Servicio.objects.all(), label='Servicio')
+
+    # Personalizar cómo se muestra el servicio en el menú desplegable
+    servicio = forms.ModelChoiceField(
+        queryset=Servicio.objects.all(),
+        label='Servicio',
+        empty_label="Seleccione un servicio",
+        to_field_name='id',
+        widget=forms.Select,
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['servicio'].label_from_instance = lambda obj: f"{obj.nombre} - {obj.precio} €"
+
     # Campos para el formulario
     class Meta:
         model = Cita
@@ -44,6 +57,7 @@ class CitaForm(forms.ModelForm):
         if fecha.date() < today:
             raise forms.ValidationError("¡Ñooosss! ¡Se te fue el baifo! La fecha ya pasó.")
         return fecha
+
     
     # Autor: José Félix Gordo Castaño
     # Copyright (C) 2024 José Félix Gordo Castaño
