@@ -9,11 +9,13 @@ from django.conf import settings
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True, label='Correo electrónico')
     phone = forms.CharField(max_length=15, required=True, label='Teléfono')
+    nombre = forms.CharField(max_length=30, required=True, label='Nombre')
+    apellido = forms.CharField(max_length=30, required=True, label='Apellido')
     captcha = ReCaptchaField()
 
     class Meta:
         model = User
-        fields = ("username", "email", "phone", "password1", "password2")
+        fields = ("username", "email", "phone", "nombre", "apellido", "password1", "password2")
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -31,12 +33,23 @@ class CustomUserCreationForm(UserCreationForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         user.email = self.cleaned_data["email"]
+        user.first_name = self.cleaned_data["nombre"] 
+        user.last_name = self.cleaned_data["apellido"]  
         if commit:
             user.save()
+        # Guardar datos adicionales en el perfil
         phone = self.cleaned_data["phone"]
-        UserProfile.objects.create(user=user, telefono=phone, email=user.email)
+        nombre = self.cleaned_data["nombre"]
+        apellido = self.cleaned_data["apellido"]
+        UserProfile.objects.create(
+            user=user,
+            telefono=phone,
+            email=user.email,
+            nombre=nombre,
+            apellido=apellido
+        )
         return user
-    
+
     def clean_username(self):
         username = self.cleaned_data.get('username')
 

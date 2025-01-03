@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 
-
-
 {% block content %}
     <div class="mb-5 card shadow-sm bg-white text-center p-4 border-0">
         <h2 class="h4 fw-bold text-secondary mb-0">
@@ -27,18 +25,37 @@
             </div>
         {% endif %}
         
+        <!-- Campo para el nombre -->
+        <div class="form-group">
+            <strong>{{ form.nombre.label_tag }}</strong>
+            {{ form.nombre }}
+        </div>
+
+        <!-- Campo para el apellido -->
+        <div class="form-group">
+            <strong>{{ form.apellido.label_tag }}</strong>
+            {{ form.apellido }}
+        </div>
+
+        <!-- Campo para el nombre de usuario -->
         <div class="form-group">
             <strong>{{ form.username.label_tag }}</strong>
             {{ form.username }}
         </div>
+
+        <!-- Campo para el correo electrónico -->
         <div class="form-group">
             <strong>{{ form.email.label_tag }}</strong>
             {{ form.email }}
         </div>
+
+        <!-- Campo para el teléfono -->
         <div class="form-group">
             <strong>{{ form.phone.label_tag }}</strong>
             {{ form.phone }}
         </div>
+
+        <!-- Contraseña -->
         <div class="form-group">
             <strong>{{ form.password1.label_tag }}</strong>
             {{ form.password1 }}
@@ -47,12 +64,14 @@
             <strong>{{ form.password2.label_tag }}</strong>
             {{ form.password2 }}
         </div>
+
+        <!-- CAPTCHA -->
         <div class="form-group">
             <strong>{{ form.captcha.label_tag }}</strong>
             {{ form.captcha }}
         </div>
+
+        <!-- Botón para enviar -->
         <button type="submit" class="btn btn-primary">Registrarse</button>
     </form>
-
-
 {% endblock %}
