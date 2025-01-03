@@ -1,5 +1,6 @@
 from django.utils.timezone import now, make_aware
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 from django.db.models import Sum
 from .models import ReporteMensual
 from appointments.models import Cita
@@ -7,8 +8,9 @@ from appointments.models import Cita
 def calcular_reporte(mes_actual, meses_ahead=5):
     reports = []
     for i in range(meses_ahead):
-        mes = (mes_actual + timedelta(days=30 * i)).replace(day=1)
-        siguiente_mes = (mes.replace(day=28) + timedelta(days=4)).replace(day=1)
+        # Calcular el mes actual y el siguiente mes correctamente
+        mes = mes_actual + relativedelta(months=i)
+        siguiente_mes = mes + relativedelta(months=1)
 
         # Asegurarse de que las fechas son "aware"
         mes = make_aware(datetime.combine(mes, datetime.min.time()))
@@ -32,8 +34,9 @@ def calcular_reporte(mes_actual, meses_ahead=5):
 def limpiar_reportes():
     mes_actual = now().date().replace(day=1)
     for i in range(5):
-        mes = (mes_actual + timedelta(days=30 * i)).replace(day=1)
-        siguiente_mes = (mes.replace(day=28) + timedelta(days=4)).replace(day=1)
+        # Usar relativedelta para avanzar correctamente de mes
+        mes = mes_actual + relativedelta(months=i)
+        siguiente_mes = mes + relativedelta(months=1)
 
         # Asegurarse de que las fechas son "aware"
         mes = make_aware(datetime.combine(mes, datetime.min.time()))
