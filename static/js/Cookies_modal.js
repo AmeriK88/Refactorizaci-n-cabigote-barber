@@ -1,35 +1,33 @@
-$(document).ready(function() {
-    // Mostrar el modal de cookies si el usuario no ha aceptado ni rechazado
-    if (!localStorage.getItem('cookiesAccepted') && !localStorage.getItem('cookiesRejected')) {
-        var cookiesModal = new bootstrap.Modal(document.getElementById('cookiesModal'));
+$(document).ready(function () {
+    const cookiesModal = new bootstrap.Modal(document.getElementById('cookiesModal'));
+
+    // Verificar si el usuario ya ha aceptado o rechazado las cookies
+    const cookiesPreference = localStorage.getItem('cookiesPreference');
+    if (!cookiesPreference) {
+        // Mostrar el modal solo si no hay preferencia almacenada
         cookiesModal.show();
     }
 
-    // Función para manejar la aceptación o rechazo de cookies
-    function handleCookieConsent(action) {
-        localStorage.setItem(action, 'true');
-        var cookiesModal = bootstrap.Modal.getInstance(document.getElementById('cookiesModal'));
-        if (cookiesModal) {
-            cookiesModal.hide();
-        }
-        console.log(`Cookies ${action === 'cookiesAccepted' ? 'accepted' : 'rejected'}.`);
+    // Función para manejar el consentimiento de cookies
+    function setCookiePreference(preference) {
+        localStorage.setItem('cookiesPreference', preference);
+        cookiesModal.hide();
+        console.log(`Cookies ${preference}.`);
     }
 
-    $('#cookiesModal .btn-primary').click(function() {
-        handleCookieConsent('cookiesAccepted');
+    // Botón "Aceptar"
+    $('#cookiesModal .btn-primary').click(function () {
+        setCookiePreference('accepted');
     });
 
-    $('#cookiesModal .btn-secondary').click(function() {
-        handleCookieConsent('cookiesRejected');
+    // Botón "Rechazar" y Guardar como rechazado
+    $('#cookiesModal .btn-outline-secondary').click(function () {
+        setCookiePreference('rejected');
     });
 
-    $('#cookiesPolicyLink').click(function(event) {
-        event.preventDefault(); 
-        $('#cookiesModal').modal('show'); 
-    });
-
-    $('#privacyPolicyLink').click(function(event) {
-        event.preventDefault(); 
-        $('#privacyPolicyModal').modal('show'); 
+    // Mostrar enlace a la política de privacidad
+    $('#privacyPolicyLink').click(function (event) {
+        event.preventDefault();
+        $('#privacyPolicyModal').modal('show');
     });
 });
