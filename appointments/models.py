@@ -4,10 +4,12 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from services.models import Servicio
 from django.utils.translation import gettext_lazy as _
+from products.models import Imagen
 
 class Cita(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     servicio = models.ForeignKey(Servicio, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Imagen, on_delete=models.SET_NULL, blank=True, null=True)
     fecha = models.DateTimeField()
     hora = models.TimeField()
     comentario = models.TextField(blank=True, null=True)

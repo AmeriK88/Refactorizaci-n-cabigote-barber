@@ -1,7 +1,7 @@
 from django import forms
 from datetime import datetime, time
 from django.utils import timezone
-from .models import Cita, Servicio  
+from .models import Cita, Servicio, Imagen
 
 
 # Formulario cita
@@ -27,6 +27,13 @@ class CitaForm(forms.ModelForm):
 
     hora = forms.ChoiceField(choices=HORA_CHOICES, label='Hora')
 
+    # Producto opcional
+    producto = forms.ModelChoiceField(
+        queryset=Imagen.objects.all(),
+        label='Producto (Opcional)',
+        required=False,  # No obligatorio
+    )
+
     # Personalizar cómo se muestra el servicio en el menú desplegable
     servicio = forms.ModelChoiceField(
         queryset=Servicio.objects.all(),
@@ -38,12 +45,17 @@ class CitaForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        # Personaliza cómo se muestran los servicios (nombre + precio)
         self.fields['servicio'].label_from_instance = lambda obj: f"{obj.nombre} - {obj.precio} €"
+
+        # Personaliza cómo se muestran los productos (nombre + precio)
+        self.fields['producto'].label_from_instance = lambda obj: f"{obj.titulo} - €{obj.precio:.2f}"
 
     # Campos para el formulario
     class Meta:
         model = Cita
-        fields = ['servicio', 'fecha', 'hora', 'comentario']
+        fields = ['servicio', 'producto', 'fecha', 'hora', 'comentario']
         widgets = {
             'fecha': forms.DateInput(attrs={'type': 'date'}),
         }
