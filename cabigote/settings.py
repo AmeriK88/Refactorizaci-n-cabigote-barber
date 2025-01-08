@@ -88,19 +88,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cabigote.wsgi.application'
 
-"""
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql', 
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': env('DB_HOST'), 
-        'PORT': env('DB_PORT'), 
-    }
-}
-
-"""
 # Configuración de la base de datos
 DATABASES = {
     'default': env.db(
@@ -111,6 +98,12 @@ DATABASES = {
 
 if not DATABASES['default']:
     raise ValueError("DATABASE_URL no está configurada en las variables de entorno")
+
+# Forzar el charset utf8mb4
+DATABASES['default']['OPTIONS'] = {
+    'charset': 'utf8mb4',
+    'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
+}
 
 
 # Password validation
