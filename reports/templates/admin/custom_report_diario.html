@@ -1,0 +1,13 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<h1>{% trans "Reporte Diario" %}</h1>
+{% for reporte in reportes %}
+    <h2>{% trans "Día:" %} {{ reporte.dia|date:"d/m/Y" }}</h2>
+    <p><strong>{% trans "Total de Citas:" %}</strong> {{ reporte.total_citas }}</p>
+    <p><strong>{% trans "Ingresos Totales:" %}</strong> {{ reporte.ingresos_totales }}</p>
+    <hr>
+{% endfor %}
+<a href="{% url 'admin:descargar_reporte_diario' %}" class="btn btn-primary">{% trans "Descargar Reporte Diario" %}</a>
+{% endblock %}

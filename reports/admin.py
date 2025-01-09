@@ -4,9 +4,11 @@ from django.contrib import admin, messages
 from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import now
-from .models import ReporteMensual
-from .utils import calcular_reporte, limpiar_reportes
+from .models import ReporteMensual, ReporteDiario
+from .utils import calcular_reporte, limpiar_reportes, calcular_reporte_diario, limpiar_reportes_diarios
 from django.utils.html import format_html
+from django.shortcuts import redirect
+
 
 @admin.register(ReporteMensual)
 class ReporteMensualAdmin(admin.ModelAdmin):
@@ -50,6 +52,61 @@ class ReporteMensualAdmin(admin.ModelAdmin):
             response.write("-" * 40 + "\n")
 
         return response
+
+    def has_add_permission(self, request):
+        return False
+    
+    def has_delete_permission(self, request, obj=None):
+        return False
+    
+
+@admin.register(ReporteDiario)
+class ReporteDiarioAdmin(admin.ModelAdmin):
+    list_display = ('dia', 'total_citas', 'ingresos_totales', 'creado_el')
+    readonly_fields = ('dia', 'total_citas', 'ingresos_totales', 'creado_el')
+
+    def get_urls(self):
+        """
+        Añade URLs personalizadas para generar y descargar reportes diarios.
+        """
+        urls = super().get_urls()
+        custom_urls = [
+            path('generar-diario/', self.admin_site.admin_view(self.generar_reporte_diario), name='generar_reporte_diario'),
+            path('descargar-diario/', self.admin_site.admin_view(self.descargar_reporte_diario), name='descargar_reporte_diario'),
+        ]
+        return custom_urls + urls
+
+    def generar_reporte_diario(self, request):
+        """
+        Generar o recalcular el reporte diario para la fecha de hoy.
+        """
+        calcular_reporte_diario()
+        self.message_user(request, "Reportes diarios recalculados para el mes en curso.")
+        return redirect('admin:reports_reportediario_changelist')
+
+    def descargar_reporte_diario(self, request):
+        """
+        Descargar el reporte diario en un archivo de texto.
+        """
+        reportes = ReporteDiario.objects.all().order_by('-dia')
+        response = HttpResponse(content_type='text/plain')
+        response['Content-Disposition'] = 'attachment; filename="reporte_diario.txt"'
+
+        for report in reportes:
+            response.write(f"Día: {report.dia.strftime('%d/%m/%Y')}\n")
+            response.write(f"Total de Citas: {report.total_citas}\n")
+            response.write(f"Ingresos Totales: {report.ingresos_totales}\n")
+            response.write("-" * 40 + "\n")
+
+        return response
+
+    def get_queryset(self, request):
+        """
+        Filtrar los reportes diarios para mostrar solo los días del mes en curso.
+        """
+        queryset = super().get_queryset(request)
+        inicio_mes = now().replace(day=1).date()  # Inicio del mes actual
+        return queryset.filter(dia__gte=inicio_mes)
 
     def has_add_permission(self, request):
         return False
