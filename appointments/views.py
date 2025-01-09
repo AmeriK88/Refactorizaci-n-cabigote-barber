@@ -70,7 +70,7 @@ def ver_citas(request):
     citas_pasadas = Cita.objects.filter(
         usuario=request.user,
         fecha__lt=timezone.now()
-    ).order_by('-fecha', '-hora')  # Enviar todas las citas pasadas
+    ).order_by('-fecha', '-hora') 
 
     return render(request, 'appointments/ver_citas.html', {
         'citas_activas': citas_activas,
