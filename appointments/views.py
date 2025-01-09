@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.db.models import Count
 from django.utils.html import format_html
 import matplotlib.pyplot as plt
-
+from django.http import JsonResponse
 from .models import Cita, FechaBloqueada  
 from .forms import CitaForm  
 from core.utils import enviar_confirmacion_cita  
@@ -70,12 +70,13 @@ def ver_citas(request):
     citas_pasadas = Cita.objects.filter(
         usuario=request.user,
         fecha__lt=timezone.now()
-    ).order_by('-fecha', '-hora') 
+    ).order_by('-fecha', '-hora')  # Enviar todas las citas pasadas
 
     return render(request, 'appointments/ver_citas.html', {
         'citas_activas': citas_activas,
         'citas_pasadas': citas_pasadas
     })
+
 
 # Editar citas según disponibilidad & manejo excepciones
 @login_required

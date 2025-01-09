@@ -64,9 +64,12 @@
             <!-- Sección de Historial de Citas -->
             <h2 class="mt-5 text-center display-5 font-weight-bold">Historial de Citas</h2>
             {% if citas_pasadas %}
-                <div class="row g-4">
+                <p class="text-center text-muted">
+                    Mostrando las 5 citas más recientes del historial.
+                </p>
+                <div id="historial-citas" class="row g-4">
                     {% for cita in citas_pasadas %}
-                    <div class="col-12 {% if citas_pasadas|length > 1 %}col-md-6 col-lg-4{% endif %} mt-5">
+                    <div class="col-12 {% if citas_pasadas|length > 1 %}col-md-6 col-lg-4{% endif %} mt-5 historial-item" {% if forloop.counter > 5 %}style="display: none;"{% endif %}>
                         <div class="card h-100 shadow-sm">
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title">{{ cita.servicio.nombre }}</h5>
@@ -93,6 +96,13 @@
                     </div>
                     {% endfor %}
                 </div>
+                
+                {% if citas_pasadas|length > 5 %}
+                <div class="text-center mt-3">
+                    <button id="cargar-mas-btn" class="btn btn-primary">Cargar más</button>
+                </div>
+                {% endif %}
+                
             {% else %}
                 <div class="container mt-5">
                     <div class="card text-center">
