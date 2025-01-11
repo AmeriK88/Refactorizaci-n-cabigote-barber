@@ -20,6 +20,9 @@ class CitaAdmin(admin.ModelAdmin):
     list_filter = ('fecha', 'servicio')
     ordering = ('-fecha',)
 
+    # Limitar a 25 registros por página
+    list_per_page = 25
+
     # Muestra un gráfico en la lista de objetos
     def mostrar_grafico(self, obj):
         return format_html('<img src="{}" style="max-height: 200px; max-width: 100%;" />', self.generar_grafico())
