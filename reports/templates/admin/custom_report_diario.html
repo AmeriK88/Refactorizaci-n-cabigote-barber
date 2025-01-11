@@ -2,12 +2,37 @@
 {% load i18n %}
 
 {% block content %}
-<h1>{% trans "Reporte Diario" %}</h1>
-{% for reporte in reportes %}
-    <h2>{% trans "Día:" %} {{ reporte.dia|date:"d/m/Y" }}</h2>
-    <p><strong>{% trans "Total de Citas:" %}</strong> {{ reporte.total_citas }}</p>
-    <p><strong>{% trans "Ingresos Totales:" %}</strong> {{ reporte.ingresos_totales }}</p>
-    <hr>
-{% endfor %}
-<a href="{% url 'admin:descargar_reporte_diario' %}" class="btn btn-primary">{% trans "Descargar Reporte Diario" %}</a>
+<div class="content">
+    <h1>📅 Generar Reporte Diario por Fecha</h1>
+
+    <form method="post" style="margin-top: 20px;">
+        {% csrf_token %}
+        <label for="id_fecha"><strong>Selecciona una fecha:</strong></label>
+        {{ form.fecha }}
+        {% extends "admin/base_site.html" %}
+        {% load i18n %}
+        
+        {% block content %}
+        <div class="content">
+            <h1>📅 Generar Reporte Diario por Fecha</h1>
+        
+            <form method="post" style="margin-top: 20px;">
+                {% csrf_token %}
+                <label for="id_fecha"><strong>Selecciona una fecha:</strong></label>
+                {{ form.fecha }}
+        
+                <button type="submit" class="btn btn-success" style="margin-top: 10px;">Generar Reporte</button>
+            </form>
+        
+            <br>
+            <a href="{% url 'admin:reports_reportediario_changelist' %}" class="btn btn-secondary">Volver</a>
+        </div>
+        {% endblock %}
+        
+        <button type="submit" class="btn btn-success" style="margin-top: 10px;">Generar Reporte</button>
+    </form>
+
+    <br>
+    <a href="{% url 'admin:reports_reportediario_changelist' %}" class="btn btn-secondary">Volver</a>
+</div>
 {% endblock %}

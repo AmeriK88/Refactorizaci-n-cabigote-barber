@@ -44,58 +44,28 @@ def calcular_reporte(mes_actual, meses_ahead=5):
 
     return reports
 
-def calcular_reporte_diario():
-    # Obtener la fecha más temprana y más tardía con citas
-    try:
-        primera_fecha = make_aware(datetime.combine(Cita.objects.earliest('fecha').fecha, datetime.min.time()))
-        ultima_fecha = make_aware(datetime.combine(Cita.objects.latest('fecha').fecha, datetime.min.time()))
-    except Cita.DoesNotExist:
-        print("No hay citas disponibles para calcular los reportes diarios.")
-        return
-
-    # Iterar desde la primera fecha hasta la última
-    current_date = primera_fecha
-    while current_date <= ultima_fecha:
-        siguiente_dia = current_date + timedelta(days=1)
-
-        citas = Cita.objects.filter(fecha__gte=current_date, fecha__lt=siguiente_dia)
-
-        total_citas = citas.count()
-        total_ingresos = citas.annotate(
-            precio_total=F('servicio__precio') + Coalesce(F('producto__precio'), Value(0), output_field=DecimalField())
-        ).aggregate(Sum('precio_total'))['precio_total__sum'] or 0
-
-        ReporteDiario.objects.update_or_create(
-            dia=current_date.date(),
-            defaults={
-                'total_citas': total_citas,
-                'ingresos_totales': total_ingresos,
-            }
-        )
-
-        current_date = siguiente_dia
-
-
-def limpiar_reportes_diarios(num_dias=30):
+def calcular_reporte_diario(fecha):
     """
-    Elimina los reportes diarios sin citas en los últimos 'num_dias'.
-    Por ejemplo, si num_dias=7, revisará 7 días hacia atrás.
+    Genera el reporte diario solo para la fecha especificada.
     """
-    from django.utils.timezone import now
+    fecha_inicio = make_aware(datetime.combine(fecha, datetime.min.time()))
+    fecha_fin = fecha_inicio + timedelta(days=1)
 
-    fecha_hoy = now().date()
-    for i in range(num_dias):
-        dia = fecha_hoy - timedelta(days=i)
+    citas = Cita.objects.filter(fecha__gte=fecha_inicio, fecha__lt=fecha_fin)
 
-        # Filtrar el rango del día "aware"
-        dia_inicio = make_aware(datetime.combine(dia, datetime.min.time()))
-        dia_fin = dia_inicio + timedelta(days=1)
+    total_citas = citas.count()
+    total_ingresos = citas.annotate(
+        precio_total=F('servicio__precio') + Coalesce(F('producto__precio'), Value(0), output_field=DecimalField())
+    ).aggregate(Sum('precio_total'))['precio_total__sum'] or 0
 
-        citas_en_el_dia = Cita.objects.filter(fecha__gte=dia_inicio, fecha__lt=dia_fin)
-
-        if not citas_en_el_dia.exists():
-            ReporteDiario.objects.filter(dia=dia).delete()
-            print(f"Reporte diario para {dia.strftime('%d/%m/%Y')} eliminado.")
+    ReporteDiario.objects.update_or_create(
+        dia=fecha,
+        defaults={
+            'total_citas': total_citas,
+            'ingresos_totales': total_ingresos,
+        }
+    )
+    print(f"✅ Reporte diario generado para {fecha.strftime('%d/%m/%Y')}")
 
 
 def limpiar_reportes(mes_actual=None, meses_ahead=5):
@@ -133,7 +103,7 @@ def limpiar_reportes(mes_actual=None, meses_ahead=5):
             mes=mes,
             total_citas=total_citas,
             ingresos_totales=total_ingresos,
-            ingresos_proyectados=total_ingresos,  # Igualamos proyectados a los totales
+            ingresos_proyectados=total_ingresos, 
         )
         print(f"Reporte para {mes.strftime('%B %Y')} creado: {total_citas} citas, {total_ingresos:.2f} ingresos totales.")
 
