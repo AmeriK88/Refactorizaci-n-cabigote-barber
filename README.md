@@ -10,10 +10,13 @@ Cabigote Barber Shop es una aplicación web integral diseñada para gestionar re
 |--------------------|-----------------------------------------------|
 | 🐍 **Django**      | Framework backend para una gestión robusta.  |
 | 🎨 **Bootstrap**   | Diseño moderno, responsivo y estilizado.     |
-| 🗄️ **MySQL**        | Base de datos escalable para múltiples usuarios. |
+| 🗄️ **MySQL**       | Base de datos escalable para múltiples usuarios. |
 | 🖼️ **Pillow**      | Gestión de imágenes y galería de productos.  |
 | 🖋️ **QRCode**      | Generación de códigos QR para enlaces.       |
 | 🔐 **reCAPTCHA**   | Seguridad adicional contra bots.             |
+| 📊 **Matplotlib**  | Generación de gráficos para reportes.        |
+| 📦 **Django Suit** | Personalización avanzada del panel de administración. |
+| 🔔 **Notificaciones por Email** | Confirmaciones, modificaciones y recordatorios automáticos. |
 
 ---
 
@@ -68,6 +71,17 @@ El proyecto está compuesto por varias aplicaciones que manejan diferentes funci
   - `ver_imagenes`: Vista que muestra todas las imágenes de productos.
   - `detalle_producto`: Muestra detalles de un producto específico.
 
+### 6. Reports
+
+- **Modelos:** 
+  - `ReporteMensual`: Reportes mensuales de ingresos y citas.
+  - `ReporteDiario`: Reportes diarios generados bajo demanda.
+- **Funcionalidades:**
+  - Generación de reportes diarios/mensuales con gráficos.
+  - Reportes descargables en formato `.txt`.
+  - Opción de generar reportes diarios desde el panel de administración seleccionando la fecha.
+  - Limpieza automática de reportes innecesarios.
+
 ## Instalación
 
 ### Requisitos Previos
@@ -77,23 +91,32 @@ El proyecto está compuesto por varias aplicaciones que manejan diferentes funci
 
 ## 🚀 **Características Principales**
 
-✅ **Gestión de Usuarios:**
+✅ **Gestión de Usuarios:**  
 - Registro, inicio de sesión y personalización de perfil.
 
-✅ **Reservas de Citas:**
-- Crear, editar, cancelar y gestionar el historial de citas.
+✅ **Reservas de Citas:**  
+- Crear, editar, cancelar y gestionar historial de citas.  
+- Fechas bloqueadas y horarios ocupados deshabilitados dinámicamente.  
 
-✅ **Reseñas de Servicios:**
+✅ **Reseñas de Servicios:**  
 - Los usuarios pueden agregar y consultar reseñas con puntuaciones.
 
-✅ **Galería de Servicios y Productos:**
+✅ **Galería de Servicios y Productos:**  
 - Información detallada con imágenes y descripciones.
 
-✅ **Notificaciones Automáticas:**
-- Recordatorios y confirmaciones vía correo electrónico.
+✅ **Notificaciones Automáticas:**  
+- Confirmaciones, recordatorios y cancelaciones vía correo.
 
-✅ **Panel de Administración Personalizado:**
-- Integración con Django Grappelli para una interfaz moderna.
+✅ **Panel de Administración Personalizado:**  
+- Integración con Django Suit para una interfaz moderna.  
+- Visualización de gráficos de citas e ingresos.
+
+✅ **Reportes Dinámicos:**  
+- Generación de reportes diarios/mensuales por fecha seleccionada.  
+- Descarga de reportes en texto.
+
+✅ **Seguridad Mejorada:**  
+- Implementación de reCAPTCHA para prevenir bots.
 
 ---
 
