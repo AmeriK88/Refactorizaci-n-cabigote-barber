@@ -22,7 +22,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG') 
+DEBUG = env.bool('DEBUG', default=False)
 
 ALLOWED_HOSTS = [
     'if9hv3ou.up.railway.app',
@@ -52,8 +52,6 @@ INSTALLED_APPS = [
     'users',
     'colorfield',
 ]
-
-
 
 
 MIDDLEWARE = [
@@ -107,8 +105,6 @@ DATABASES['default']['OPTIONS'] = {
 
 
 # Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -126,7 +122,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization & config zona horaria
-
 LANGUAGE_CODE = 'es'
 
 LANGUAGES = [
@@ -161,7 +156,6 @@ LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/users/perfil/'  
 LOGOUT_REDIRECT_URL = '/' 
 
-
 # Archivos subidos por el usuario (Media)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -180,11 +174,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 WHITENOISE_ALLOW_ALL_ORIGINS = True
 WHITENOISE_MEDIA_PREFIX = "/media/"
 
-
 # Define la ruta absoluta para el archivo de logs
 LOG_FILE_DIR = os.path.join(BASE_DIR, 'logs')
 LOG_FILE_PATH = os.path.join(LOG_FILE_DIR, 'log.error')
-
 
 # Verifica si el directorio de logs existe; si no, créalo
 if not os.path.exists(LOG_FILE_DIR):
@@ -216,8 +208,6 @@ LOGGING = {
 }
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Config CSRF token 
@@ -231,7 +221,6 @@ CSRF_TRUSTED_ORIGINS = [
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
 
 # Banned usernames
 BLACKLISTED_USERNAMES = ['admin', 'root', 'superuser', 'test', 'cabigote']
