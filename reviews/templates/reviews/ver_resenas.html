@@ -11,7 +11,7 @@
     </div>
     
     <!-- Mostrar reseñas existentes -->
-    <div class="mb-4">
+    <div class="mb-4 animate-on-load">
         {% if resenas %}
             {% for resena in resenas %}
                 <div class="card mb-4 shadow-sm border-0">
@@ -53,7 +53,7 @@
 
     <!-- Mostrar formulario solo si el usuario está autenticado -->
     {% if user.is_authenticated %}
-    <div class="container mt-5">
+    <div class="container mt-5 animate-on-load">
         <div class="card mb-4">
             <h3 class="m-3 card-header text-center display-5 font-weight-bold">Añadir Reseña</h3>
             <div class="card-body">
