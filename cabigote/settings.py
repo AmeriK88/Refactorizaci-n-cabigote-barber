@@ -87,22 +87,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'cabigote.wsgi.application'
 
 # Configuración de la base de datos
-
-DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': env('DB_NAME_DEV'),
-            'USER': env('DB_USER_DEV'),
-            'PASSWORD': env('DB_PASSWORD_DEV'),
-            'HOST': env('DB_HOST_DEV'),
-            'PORT': env('DB_PORT_DEV'),
-            'OPTIONS': {
-                'charset': 'utf8mb4',
-                'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
-            },
-        }
-     }
-"""
 DATABASES = {
     'default': env.db(
         'DATABASE_URL',
@@ -110,16 +94,16 @@ DATABASES = {
     )
 }
 
-if not DATABASES['default']:
-    raise ValueError("DATABASE_URL no está configurada en las variables de entorno")
-
-# Forzar el charset utf8mb4
+# Añadir configuración para manejar emojis y caracteres especiales
 DATABASES['default']['OPTIONS'] = {
     'charset': 'utf8mb4',
     'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
 }
 
-"""
+
+
+if not DATABASES['default']:
+    raise ValueError("La configuración de la base de datos no está disponible.")
 
 
 # Password validation
@@ -153,12 +137,18 @@ USE_L10N = True
 USE_TZ = True
 
 # Configuración envío email
-EMAIL_BACKEND = env('EMAIL_BACKEND')
-EMAIL_HOST = env('EMAIL_HOST')
-EMAIL_PORT = env('EMAIL_PORT')
-EMAIL_USE_TLS = env('EMAIL_USE_TLS')
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+if DEBUG:
+    # Muestra correos en consola en vez de enviarlos.
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    # Configuración real para producción.
+    EMAIL_BACKEND = env('EMAIL_BACKEND') 
+    EMAIL_HOST = env('EMAIL_HOST')
+    EMAIL_PORT = env('EMAIL_PORT')
+    EMAIL_USE_TLS = env('EMAIL_USE_TLS')
+    EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+
 
 # Leer y procesar ADMINS desde el archivo .env
 admins_env = env('ADMINS', default='')
@@ -175,7 +165,7 @@ LOGIN_REDIRECT_URL = '/users/perfil/'
 LOGOUT_REDIRECT_URL = '/' 
 
 # Archivos subidos por el usuario (Media)
-MEDIA_URL = '/media/'
+MEDIA_URL = '/media/'  
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Archivos estáticos (CSS, JavaScript, Imágenes)
