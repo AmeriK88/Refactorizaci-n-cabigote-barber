@@ -159,14 +159,17 @@ LOGIN_REDIRECT_URL = '/users/perfil/'
 LOGOUT_REDIRECT_URL = '/' 
 
 # Archivos subidos por el usuario (Media)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/static/media/'
+MEDIA_ROOT = BASE_DIR / 'static/media/'
 
 # Archivos estáticos (CSS, JavaScript, Imágenes)
 STATIC_URL = '/static/'
 
 # Directorio donde se almacenarán los archivos estáticos recolectados (con collectstatic)
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+    BASE_DIR / 'media',  # Agregar la carpeta de medios como estática
+]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Configuración adicional para WhiteNoise
