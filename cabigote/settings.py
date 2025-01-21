@@ -86,35 +86,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cabigote.wsgi.application'
 
-# Configuración de la base de datos según el entorno
-if DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': env('DB_NAME_DEV'),
-            'USER': env('DB_USER_DEV'),
-            'PASSWORD': env('DB_PASSWORD_DEV'),
-            'HOST': env('DB_HOST_DEV'),
-            'PORT': env('DB_PORT_DEV'),
-            'OPTIONS': {
-                'charset': 'utf8mb4',
-                'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
-            },
-        }
-    }
-else:
-    DATABASES = {
-        'default': env.db(
-            'DATABASE_URL',
-            default=None,
-        )
-    }
+# Configuración de la base de datos
+DATABASES = {
+    'default': env.db(
+        'DATABASE_URL',
+        default=None,
+    )
+}
 
-    # Añadir configuración para manejar emojis y caracteres especiales
-    DATABASES['default']['OPTIONS'] = {
-        'charset': 'utf8mb4',
-        'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
-    }
+if not DATABASES['default']:
+    raise ValueError("DATABASE_URL no está configurada en las variables de entorno")
+
+# Forzar el charset utf8mb4
+DATABASES['default']['OPTIONS'] = {
+    'charset': 'utf8mb4',
+    'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
+}
 
 
 # Password validation
