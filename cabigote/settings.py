@@ -86,6 +86,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cabigote.wsgi.application'
 
+"""
 # Configuración de la base de datos según el entorno
 if DEBUG:
     DATABASES = {
@@ -103,18 +104,20 @@ if DEBUG:
         }
     }
 else:
-    DATABASES = {
-        'default': env.db(
-            'DATABASE_URL',
-            default=None,
-        )
-    }
+    """
+    
+DATABASES = {
+    'default': env.db(
+        'DATABASE_URL',
+        default=None,
+    )
+}
 
-    # Añadir configuración para manejar emojis y caracteres especiales
-    DATABASES['default']['OPTIONS'] = {
-        'charset': 'utf8mb4',
-        'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
-    }
+# Añadir configuración para manejar emojis y caracteres especiales
+DATABASES['default']['OPTIONS'] = {
+    'charset': 'utf8mb4',
+    'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
+}
 
 if not DATABASES['default']:
     raise ValueError("La configuración de la base de datos no está disponible.")
