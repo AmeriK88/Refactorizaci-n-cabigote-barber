@@ -86,6 +86,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cabigote.wsgi.application'
 
+
 # Configuración de la base de datos
 DATABASES = {
     'default': env.db(
@@ -94,17 +95,14 @@ DATABASES = {
     )
 }
 
-# Añadir configuración para manejar emojis y caracteres especiales
+if not DATABASES['default']:
+    raise ValueError("DATABASE_URL no está configurada en las variables de entorno")
+
+# Forzar el charset utf8mb4
 DATABASES['default']['OPTIONS'] = {
     'charset': 'utf8mb4',
     'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
 }
-
-
-
-if not DATABASES['default']:
-    raise ValueError("La configuración de la base de datos no está disponible.")
-
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -162,7 +160,7 @@ LOGOUT_REDIRECT_URL = '/'
 
 # Archivos subidos por el usuario (Media)
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'static'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Archivos estáticos (CSS, JavaScript, Imágenes)
 STATIC_URL = '/static/'
@@ -176,7 +174,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Configuración de WhiteNoise para media
 WHITENOISE_ALLOW_ALL_ORIGINS = True
-WHITENOISE_MEDIA_PREFIX = MEDIA_URL
+WHITENOISE_MEDIA_PREFIX = 'media'
 
 # Define la ruta absoluta para el archivo de logs
 LOG_FILE_DIR = os.path.join(BASE_DIR, 'logs')
