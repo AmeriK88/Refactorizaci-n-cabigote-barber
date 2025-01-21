@@ -161,8 +161,8 @@ LOGIN_REDIRECT_URL = '/users/perfil/'
 LOGOUT_REDIRECT_URL = '/' 
 
 # Archivos subidos por el usuario (Media)
-MEDIA_URL = '/media/'  
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/static/media/'  
+MEDIA_ROOT = BASE_DIR / '/static/media/'
 
 # Archivos estáticos (CSS, JavaScript, Imágenes)
 STATIC_URL = '/static/'
