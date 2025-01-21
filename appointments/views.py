@@ -7,7 +7,7 @@ from django.db.models import Count
 from django.utils.html import format_html
 import matplotlib.pyplot as plt
 from django.http import JsonResponse
-from .models import Cita, FechaBloqueada, Servicio 
+from .models import Cita, FechaBloqueada  
 from .forms import CitaForm  
 from core.utils import enviar_confirmacion_cita  
 from core.utils import enviar_notificacion_modificacion_cita
@@ -16,7 +16,7 @@ from core.decorators import handle_exceptions
 
 @login_required
 @handle_exceptions
-def reservar_cita(request, servicio_id=None):
+def reservar_cita(request):
     # Obtener fechas completamente reservadas
     horas_por_dia = Cita.objects.values('fecha__date').annotate(total_citas=Count('hora')).filter(total_citas=len(CitaForm.HORA_CHOICES) - 1)
     fechas_ocupadas = [entry['fecha__date'].isoformat() for entry in horas_por_dia]
@@ -27,24 +27,16 @@ def reservar_cita(request, servicio_id=None):
 
     # Crear un diccionario de horas ocupadas por fecha
     citas = Cita.objects.all()
-    horas_ocupadas_por_fecha = {}
+    horas_ocupadas_por_fecha = {cita.fecha.date().isoformat(): [] for cita in citas}
     for cita in citas:
-        fecha = cita.fecha.date()  # Convertimos a `datetime.date`
-        if fecha not in horas_ocupadas_por_fecha:
-            horas_ocupadas_por_fecha[fecha.isoformat()] = []
-        horas_ocupadas_por_fecha[fecha.isoformat()].append(cita.fecha.strftime("%H:%M"))
-
-    servicio_seleccionado = None
-    if servicio_id:
-        servicio_seleccionado = Servicio.objects.filter(id=servicio_id).first()
+        horas_ocupadas_por_fecha[cita.fecha.date().isoformat()].append(cita.fecha.strftime("%H:%M"))
 
     if request.method == 'POST':
         form = CitaForm(request.POST)
         if form.is_valid():
             fecha = form.cleaned_data['fecha']
             hora = form.cleaned_data['hora']
-            fecha_hora = datetime.combine(fecha, hora)  # Mantén `datetime.datetime`
-            fecha_hora = timezone.make_aware(fecha_hora)
+            fecha_hora = timezone.make_aware(datetime.combine(fecha, hora))
 
             if fecha.isoformat() in fechas_bloqueadas:
                 form.add_error('fecha', 'Esta fecha está bloqueada. Por favor, selecciona otra fecha.')
@@ -57,8 +49,7 @@ def reservar_cita(request, servicio_id=None):
                 messages.success(request, '¡Viejito! Ya tienes tu cita confirmada ¡Esa es niñote!.')
                 return redirect('users:perfil_usuario')
     else:
-        initial_data = {'servicio': servicio_seleccionado} if servicio_seleccionado else {}
-        form = CitaForm(initial=initial_data)
+        form = CitaForm()
 
     return render(request, 'appointments/reservar_cita.html', {
         'form': form,
@@ -66,7 +57,6 @@ def reservar_cita(request, servicio_id=None):
         'fechas_bloqueadas': fechas_bloqueadas,
         'horas_ocupadas_por_fecha': horas_ocupadas_por_fecha
     })
-
 
 # Función ver citas & historial
 @login_required

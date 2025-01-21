@@ -10,7 +10,7 @@
         </h2>
     </div>    
 
-    <div class=" mt-5 row g-4 animate-on-load">
+    <div class=" mt-5 row g-4">
         {% if servicios|length == 1 %}
             <!-- Si solo hay un servicio, hacer que ocupe toda la fila -->
             <div class="col-12 d-flex justify-content-center">
@@ -37,7 +37,6 @@
                             <h5 class="card-title">{{ servicio.nombre }}</h5>
                             <p class="card-text">{{ servicio.descripcion }}</p>
                             <p class="card-text"><strong>Precio:</strong> {{ servicio.precio }} €</p>
-                            <a href="{% url 'appointments:reservar_cita' servicio.id %}" class="btn btn-primary">Reservar</a>
                         </div>
                     </div>
                 </div>
