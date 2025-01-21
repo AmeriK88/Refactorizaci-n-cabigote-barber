@@ -136,18 +136,14 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# Configuración envío email
-if DEBUG:
-    # Muestra correos en consola en vez de enviarlos.
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-else:
-    # Configuración real para producción.
-    EMAIL_BACKEND = env('EMAIL_BACKEND') 
-    EMAIL_HOST = env('EMAIL_HOST')
-    EMAIL_PORT = env('EMAIL_PORT')
-    EMAIL_USE_TLS = env('EMAIL_USE_TLS')
-    EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-    EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+
+# Configuración real para producción.
+EMAIL_BACKEND = env('EMAIL_BACKEND') 
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 
 # Leer y procesar ADMINS desde el archivo .env

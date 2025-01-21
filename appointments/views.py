@@ -14,6 +14,7 @@ from core.utils import enviar_notificacion_modificacion_cita
 from core.utils import enviar_notificacion_eliminacion_cita
 from core.decorators import handle_exceptions  
 
+
 @login_required
 @handle_exceptions
 def reservar_cita(request, servicio_id=None):
@@ -25,14 +26,12 @@ def reservar_cita(request, servicio_id=None):
     fechas_bloqueadas = FechaBloqueada.objects.values_list('fecha', flat=True)
     fechas_bloqueadas = [fecha.isoformat() for fecha in fechas_bloqueadas]
 
-    # Crear un diccionario de horas ocupadas por fecha
-    citas = Cita.objects.all()
-    horas_ocupadas_por_fecha = {}
-    for cita in citas:
-        fecha = cita.fecha.date()  # Convertimos a `datetime.date`
-        if fecha not in horas_ocupadas_por_fecha:
-            horas_ocupadas_por_fecha[fecha.isoformat()] = []
-        horas_ocupadas_por_fecha[fecha.isoformat()].append(cita.fecha.strftime("%H:%M"))
+    # Crear un diccionario de horas ocupadas por fecha (similar a editar_cita)
+    horas_ocupadas_por_fecha = {cita_existente.fecha.date().isoformat(): [] for cita_existente in Cita.objects.all()}
+    for cita_existente in Cita.objects.all():
+        horas_ocupadas_por_fecha[cita_existente.fecha.date().isoformat()].append(cita_existente.fecha.strftime("%H:%M"))
+
+    print("Horas ocupadas por fecha:", horas_ocupadas_por_fecha)
 
     servicio_seleccionado = None
     if servicio_id:
