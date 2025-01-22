@@ -229,6 +229,3 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Banned usernames
 BLACKLISTED_USERNAMES = ['admin', 'root', 'superuser', 'test', 'cabigote']
-
-# Whatsapp config
-WHATSAPP_PHONE = env('WHATSAPP_PHONE')
