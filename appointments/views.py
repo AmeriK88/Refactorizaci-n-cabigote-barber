@@ -4,14 +4,9 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.db.models import Count
-from django.utils.html import format_html
-import matplotlib.pyplot as plt
-from django.http import JsonResponse
 from .models import Cita, FechaBloqueada, Servicio 
 from .forms import CitaForm  
-from core.utils import enviar_confirmacion_cita  
-from core.utils import enviar_notificacion_modificacion_cita
-from core.utils import enviar_notificacion_eliminacion_cita
+from core.utils import enviar_confirmacion_cita, enviar_notificacion_modificacion_cita, enviar_notificacion_eliminacion_cita
 from core.decorators import handle_exceptions  
 
 
@@ -42,7 +37,7 @@ def reservar_cita(request, servicio_id=None):
         if form.is_valid():
             fecha = form.cleaned_data['fecha']
             hora = form.cleaned_data['hora']
-            fecha_hora = datetime.combine(fecha, hora)  # Mantén `datetime.datetime`
+            fecha_hora = datetime.combine(fecha, hora)  
             fecha_hora = timezone.make_aware(fecha_hora)
 
             if fecha.isoformat() in fechas_bloqueadas:
@@ -97,11 +92,15 @@ def editar_cita(request, cita_id):
         messages.error(request, '¡Ñooosss! ¡Se te fue el baifo! La fecha ya pasó.')
         return redirect('appointments:ver_citas')
 
-    horas_por_dia = Cita.objects.values('fecha__date').annotate(total_citas=Count('hora')).filter(total_citas=len(CitaForm.HORA_CHOICES))
+    # Obtener fechas completamente reservadas (mismo enfoque que reservar_cita)
+    horas_por_dia = Cita.objects.values('fecha__date').annotate(total_citas=Count('hora')).filter(total_citas=len(CitaForm.HORA_CHOICES) - 1)
     fechas_ocupadas = [entry['fecha__date'].isoformat() for entry in horas_por_dia]
+
+    # Obtener fechas bloqueadas
     fechas_bloqueadas = FechaBloqueada.objects.values_list('fecha', flat=True)
     fechas_bloqueadas = [fecha.isoformat() for fecha in fechas_bloqueadas]
 
+    # Crear un diccionario de horas ocupadas por fecha (mismo enfoque que reservar_cita)
     horas_ocupadas_por_fecha = {cita_existente.fecha.date().isoformat(): [] for cita_existente in Cita.objects.all()}
     for cita_existente in Cita.objects.all():
         horas_ocupadas_por_fecha[cita_existente.fecha.date().isoformat()].append(cita_existente.fecha.strftime("%H:%M"))

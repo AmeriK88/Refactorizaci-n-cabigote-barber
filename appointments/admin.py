@@ -15,17 +15,20 @@ from django.db.models.functions import TruncMonth
 
 @admin.register(Cita)
 class CitaAdmin(admin.ModelAdmin):
-    list_display = ('usuario', 'servicio', 'fecha', 'hora', 'comentario', 'vista', 'mostrar_grafico', 'ver_grafico_link')
+    list_display = ('usuario', 'servicio', 'fecha', 'hora', 'comentario', 'vista', 'ver_grafico_link')
     search_fields = ('usuario__username', 'servicio__nombre', 'fecha')
     list_filter = ('fecha', 'servicio')
     ordering = ('-fecha',)
-
     # Limitar a 25 registros por página
     list_per_page = 20
 
-    # Muestra un gráfico en la lista de objetos
-    def mostrar_grafico(self, obj):
-        return format_html('<img src="{}" style="max-height: 200px; max-width: 100%;" />', self.generar_grafico())
+    actions = ['marcar_como_vistas']  # Agrega la acción personalizada
+
+    # Acción para marcar como vistas
+    def marcar_como_vistas(self, request, queryset):
+        actualizado = queryset.update(vista=True)
+        self.message_user(request, f'{actualizado} cita(s) marcada(s) como vista(s).')
+    marcar_como_vistas.short_description = "Marcar como vistas"  
 
     # Muestra un link para acceder al gráfico
     def ver_grafico_link(self, obj):
