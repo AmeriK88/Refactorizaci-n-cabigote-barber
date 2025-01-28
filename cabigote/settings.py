@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'reports',
     'users',
     'colorfield',
+    'core',
 ]
 
 
@@ -78,6 +79,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.mensaje_especial_context',
             ],
         },
     },
@@ -94,6 +96,19 @@ DATABASES = {
     )
 }
 
+# 3) Now use these variables in your DATABASES config
+DATABASES = {
+    'default': {
+        'ENGINE': env('DB_ENGINE'),
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
+    }
+}
+
+"""
 if not DATABASES['default']:
     raise ValueError("DATABASE_URL no está configurada en las variables de entorno")
 
@@ -102,6 +117,8 @@ DATABASES['default']['OPTIONS'] = {
     'charset': 'utf8mb4',
     'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
 }
+
+"""
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

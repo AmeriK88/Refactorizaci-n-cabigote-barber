@@ -297,10 +297,10 @@ img:hover {
     opacity: 1;
 }
 
-/* Animación del Spinner */
-@keyframes spin-loader {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+/* Asegura que el contenido del modal tenga texto negro */
+#specialMessageModal .modal-content {
+    background-color: #ffffff; 
+    color: #000000;          
 }
 
 /* Icono del header */
@@ -314,16 +314,6 @@ img:hover {
     display: inline-block;
     transition: transform 0.3s ease;
     mix-blend-mode: multiply;
-}
-
-/* Animación para el icono */
-@keyframes spin-icon {
-    0% {
-        transform: rotateX(0deg);
-    }
-    100% {
-        transform: rotateY(360deg);
-    }
 }
 
 .dropdown-toggle {
@@ -516,5 +506,21 @@ footer a:hover {
         width: 100%;
         margin-top: 10px;
         display: block;
+    }
+}
+
+/* Animación del Spinner */
+@keyframes spin-loader {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Animación para el icono */
+@keyframes spin-icon {
+    0% {
+        transform: rotateX(0deg);
+    }
+    100% {
+        transform: rotateY(360deg);
     }
 }

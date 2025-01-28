@@ -110,7 +110,35 @@
                     <a href="https://twitter.com" class="text-white mx-2 social-icon" target="_blank">
                         <i class="fab fa-twitter"></i>
                     </a>
-                </div>    
+                </div>   
+
+                <!--  Mensaje especial -->
+                {% if special_message %}
+                <div class="modal fade" id="specialMessageModal" tabindex="-1" aria-labelledby="specialMessageModalLabel" aria-hidden="true" data-message-id="{{ special_message.id }}">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <!-- Encabezado del modal -->
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="specialMessageModalLabel">
+                                    {{ special_message.titulo|default:"¡Atención!" }}
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            </div>
+                            <!-- Cuerpo del modal -->
+                            <div class="modal-body">
+                                {{ special_message.contenido|safe }}
+                            </div>
+                            <!-- Pie del modal (opcional) -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
                 <!--  Título header -->
                 <div class="container mt-5 mb-5">
                     <h1 class="text-center">
@@ -245,5 +273,6 @@
         <script src="{% static 'js/Cookies_modal.js' %}"></script>
         <script src="{% static 'js/Animations.js' %}"></script>
         <script src="{% static 'js/historial-citas.js' %}"></script>
+        <script src="{% static 'js/special_message.js' %}"></script>
     </body>
 </html>
