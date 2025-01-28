@@ -13,20 +13,33 @@ from core.decorators import handle_exceptions
 @login_required
 @handle_exceptions
 def reservar_cita(request, servicio_id=None):
+    # Listado de horas válidas (excluimos la de 'Seleccione una hora')
+    valid_hours_str = [h[0] for h in CitaForm.HORA_CHOICES if h[0]]
+
     # Obtener fechas completamente reservadas
-    horas_por_dia = Cita.objects.values('fecha__date').annotate(total_citas=Count('hora')).filter(total_citas=len(CitaForm.HORA_CHOICES) - 1)
+    horas_por_dia = (
+        Cita.objects
+        # Filtramos solo las citas con horas válidas
+        .filter(hora__in=valid_hours_str)
+        .values('fecha__date')
+        .annotate(total_citas=Count('hora'))
+        # Marcamos “día completo” si tiene todas las horas válidas ocupadas
+        .filter(total_citas=len(valid_hours_str))
+    )
     fechas_ocupadas = [entry['fecha__date'].isoformat() for entry in horas_por_dia]
 
     # Obtener fechas bloqueadas
     fechas_bloqueadas = FechaBloqueada.objects.values_list('fecha', flat=True)
     fechas_bloqueadas = [fecha.isoformat() for fecha in fechas_bloqueadas]
 
-    # Crear un diccionario de horas ocupadas por fecha (similar a editar_cita)
-    horas_ocupadas_por_fecha = {cita_existente.fecha.date().isoformat(): [] for cita_existente in Cita.objects.all()}
-    for cita_existente in Cita.objects.all():
-        horas_ocupadas_por_fecha[cita_existente.fecha.date().isoformat()].append(cita_existente.fecha.strftime("%H:%M"))
-
-    print("Horas ocupadas por fecha:", horas_ocupadas_por_fecha)
+    # Crear un diccionario de horas ocupadas por fecha
+    horas_ocupadas_por_fecha = {}
+    for cita_existente in Cita.objects.filter(hora__in=valid_hours_str):
+        fecha_str = cita_existente.fecha.date().isoformat()
+        hora_str = cita_existente.fecha.strftime("%H:%M")
+        if fecha_str not in horas_ocupadas_por_fecha:
+            horas_ocupadas_por_fecha[fecha_str] = []
+        horas_ocupadas_por_fecha[fecha_str].append(hora_str)
 
     servicio_seleccionado = None
     if servicio_id:
@@ -37,7 +50,7 @@ def reservar_cita(request, servicio_id=None):
         if form.is_valid():
             fecha = form.cleaned_data['fecha']
             hora = form.cleaned_data['hora']
-            fecha_hora = datetime.combine(fecha, hora)  
+            fecha_hora = datetime.combine(fecha, hora)
             fecha_hora = timezone.make_aware(fecha_hora)
 
             if fecha.isoformat() in fechas_bloqueadas:
@@ -87,13 +100,22 @@ def ver_citas(request):
 @handle_exceptions
 def editar_cita(request, cita_id):
     cita = get_object_or_404(Cita, id=cita_id, usuario=request.user)
-    
+
     if cita.fecha < timezone.now():
         messages.error(request, '¡Ñooosss! ¡Se te fue el baifo! La fecha ya pasó.')
         return redirect('appointments:ver_citas')
 
+    # Listado de horas válidas (excluimos la de 'Seleccione una hora')
+    valid_hours_str = [h[0] for h in CitaForm.HORA_CHOICES if h[0]]
+
     # Obtener fechas completamente reservadas (mismo enfoque que reservar_cita)
-    horas_por_dia = Cita.objects.values('fecha__date').annotate(total_citas=Count('hora')).filter(total_citas=len(CitaForm.HORA_CHOICES) - 1)
+    horas_por_dia = (
+        Cita.objects
+        .filter(hora__in=valid_hours_str)
+        .values('fecha__date')
+        .annotate(total_citas=Count('hora'))
+        .filter(total_citas=len(valid_hours_str))
+    )
     fechas_ocupadas = [entry['fecha__date'].isoformat() for entry in horas_por_dia]
 
     # Obtener fechas bloqueadas
@@ -101,9 +123,13 @@ def editar_cita(request, cita_id):
     fechas_bloqueadas = [fecha.isoformat() for fecha in fechas_bloqueadas]
 
     # Crear un diccionario de horas ocupadas por fecha (mismo enfoque que reservar_cita)
-    horas_ocupadas_por_fecha = {cita_existente.fecha.date().isoformat(): [] for cita_existente in Cita.objects.all()}
-    for cita_existente in Cita.objects.all():
-        horas_ocupadas_por_fecha[cita_existente.fecha.date().isoformat()].append(cita_existente.fecha.strftime("%H:%M"))
+    horas_ocupadas_por_fecha = {}
+    for cita_existente in Cita.objects.filter(hora__in=valid_hours_str):
+        fecha_str = cita_existente.fecha.date().isoformat()
+        hora_str = cita_existente.fecha.strftime("%H:%M")
+        if fecha_str not in horas_ocupadas_por_fecha:
+            horas_ocupadas_por_fecha[fecha_str] = []
+        horas_ocupadas_por_fecha[fecha_str].append(hora_str)
 
     if request.method == 'POST':
         form = CitaForm(request.POST, instance=cita)
@@ -124,7 +150,7 @@ def editar_cita(request, cita_id):
                 return redirect('appointments:ver_citas')
     else:
         form = CitaForm(instance=cita)
-    
+
     return render(request, 'appointments/editar_cita.html', {
         'form': form,
         'fechas_ocupadas': fechas_ocupadas,
