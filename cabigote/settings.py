@@ -96,6 +96,17 @@ DATABASES = {
     )
 }
 
+if not DATABASES['default']:
+    raise ValueError("DATABASE_URL no está configurada en las variables de entorno")
+
+# Forzar el charset utf8mb4
+DATABASES['default']['OPTIONS'] = {
+    'charset': 'utf8mb4',
+    'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
+}
+
+# DB development
+"""
 # 3) Now use these variables in your DATABASES config
 DATABASES = {
     'default': {
@@ -107,17 +118,6 @@ DATABASES = {
         'PORT': env('DB_PORT'),
     }
 }
-
-"""
-if not DATABASES['default']:
-    raise ValueError("DATABASE_URL no está configurada en las variables de entorno")
-
-# Forzar el charset utf8mb4
-DATABASES['default']['OPTIONS'] = {
-    'charset': 'utf8mb4',
-    'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
-}
-
 """
 
 # Password validation
