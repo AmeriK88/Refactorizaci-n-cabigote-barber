@@ -209,7 +209,7 @@
                 <!-- Contenido templates -->
                 {% endblock %}
             </main>
-            <footer class="primary-color text-white-50 py-4">
+            <<footer class="primary-color text-white-50 py-4">
                 <div class="container">
                     <div class="row">
                         <!-- Sección Sobre Nosotros -->
@@ -227,30 +227,27 @@
                                 <li><a href="{% url 'appointments:reservar_cita' %}" class="text-white-50">Reservar Cita</a></li>
                                 <li><a href="{% url 'products:ver_imagenes' %}" class="text-white-50">Productos</a></li>
                             </ul>
+                            <!-- Modal links -->
+                            <span class="mt-5 text-muted">
+                                <a href="#" id="cookiesPolicyLink">Política Cookies</a>
+                            </span>   
                         </div>
             
-                        <!-- Social icons -->
+                        <!-- Mapa / Ubicación -->
                         <div class="col-md-4 text-center">
-                            <h5 class="text-white">Síguenos</h5>
-                            <div class="d-flex justify-content-center">
-                                <a href="https://www.facebook.com/p/Barberia-CaBigote-100030635576349/?locale=es_LA" class="text-white-50 mx-2 social-icon" target="_blank">
-                                    <i class="fab fa-facebook-f"></i>
-                                </a>
-                                <a href="https://www.instagram.com/barberiacabigote/?hl=es" class="text-white-50 mx-2 social-icon" target="_blank">
-                                    <i class="fab fa-instagram"></i>
-                                </a>
-                                <a href="https://twitter.com" class="text-white-50 mx-2 social-icon" target="_blank">
-                                    <i class="fab fa-twitter"></i>
-                                </a>
+                            <h5 class="text-white">Ubicación</h5>
+                            <div class="map-container mb-2">
+                                <iframe 
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3490.4957479491627!2d-13.558574623952396!3d28.972677268552072!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xc46276f9ab656d9%3A0x41c1eb89e4d41c84!2sC.%20el%20Rafael%2C%2043%2C%2035500%20Arrecife%2C%20Las%20Palmas!5e0!3m2!1ses!2ses!4v1741366191645!5m2!1ses!2ses"
+                                    allowfullscreen
+                                    loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade">
+                                </iframe>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Modal links -->
-                    <span class="mt-5 text-muted">
-                        <a href="#" id="cookiesPolicyLink">Política Cookies</a>
-                    </span>                    
-                        
+            
+                    <hr class="border-light">
                     <!-- Copyright -->
                     <div class="row mt-3">
                         <div class="col text-center">
@@ -259,7 +256,7 @@
                         </div>
                     </div>
                 </div>
-            </footer>
+            </footer>            
             
             <!-- Botón flotante de WhatsApp -->
             <a href="https://wa.me/+34659809165" target="_blank" class="whatsapp-float">

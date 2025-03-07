@@ -352,6 +352,29 @@ footer a:hover {
     color: var(--link-hover-background);
 }
 
+/* Estilo para la ubicación */
+.map-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;       
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    width: 100%;                       
+    padding-bottom: 56.25%;         
+    background-color: #f5f5f5;       
+    margin-top: 1rem;                 
+}
+
+.map-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    border: none;
+    border-radius: 8px;
+}
+
+
 /* Estilo para el botón flotante */
 .whatsapp-float {
     position: fixed;
