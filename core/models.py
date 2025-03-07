@@ -15,3 +15,10 @@ class MensajeEspecial(models.Model):
 
     def __str__(self):
         return self.titulo if self.titulo else f"Mensaje {self.id}"
+    
+class ContadorVisitas(models.Model):
+    total = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"Visitas totales: {self.total}"
+

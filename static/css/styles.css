@@ -122,7 +122,7 @@ form textarea {
     margin-bottom: 15px;
     border: 1px solid var(--border-color);
     border-radius: 5px;
-    transition: border-color 0.3s ease;
+    transition: var(--border-color) 0.3s ease;
 }
 
 form input:focus,
@@ -133,7 +133,7 @@ form textarea:focus {
 form button {
     width: 100%;
     padding: 10px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: var(--background-color) 0.3s ease, transform 0.2s ease;
 }
 
 form button:hover {
@@ -518,6 +518,59 @@ footer a:hover {
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
 
+/* Visitors styles */
+.visits-counter-card {
+    background: linear-gradient(135deg, var(--form-background) 0%, var(--primary-color) 100%);
+    border-radius: 10px;
+    box-shadow: var(--card-shadow); /* Usa tu variable para la sombra */
+    color: var(--secondary-color);  /* Texto claro, por ejemplo */
+    width: 100%;
+    padding: 1.5rem;
+    text-align: center;
+    margin: 1rem auto; 
+    position: relative;
+  }
+  
+  /* Ícono animado */
+  .counter-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+  }
+  
+  /* Efecto “bounce” con transform */
+  .animate-icon:hover {
+    animation: bounce 0.8s infinite alternate;
+  }
+  
+  
+  /* Odometer – número principal */
+  .odometer {
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 1;
+  }
+  
+  /* Label debajo del número */
+  .counter-label {
+    font-size: 1rem;
+    margin-top: 0.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  /* Animación simple al cargar la tarjeta (si usas animate-on-load) */
+  .animate-on-load {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  }
+  .animate-on-load.loaded {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+
 /* Responsive Styles for Small Screens */
 @media (max-width: 576px) {
     .form-check-inline {
@@ -547,3 +600,13 @@ footer a:hover {
         transform: rotateY(360deg);
     }
 }
+
+  /* Animación bounce */
+  @keyframes bounce {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-10px);
+    }
+  }
