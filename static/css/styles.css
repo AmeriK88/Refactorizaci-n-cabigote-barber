@@ -352,6 +352,11 @@ footer a:hover {
     color: var(--link-hover-background);
 }
 
+#cookiesPolicyLink { 
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
 /* Estilo para la ubicación */
 .map-container {
     position: relative;
