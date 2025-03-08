@@ -3,15 +3,15 @@ from .models import MensajeEspecial, ContadorVisitas
 
 def mensaje_especial_context(request):
     hoy = timezone.now().date()
-    
-    # Lógica de MensajeEspecial
+
+    # Obtener el mensaje especial activo
     mensaje = MensajeEspecial.objects.filter(
         activo=True,
         fecha_inicio__lte=hoy,
         fecha_fin__gte=hoy
     ).order_by('-fecha_inicio', '-id').first()
 
-    # Lógica para leer el contador (NO lo incrementamos aquí).
+    # Obtener el contador desde la BD
     try:
         contador_obj = ContadorVisitas.objects.get(pk=1)
         contador_global = contador_obj.total
@@ -20,5 +20,5 @@ def mensaje_especial_context(request):
 
     return {
        'special_message': mensaje,
-       'contador_global': contador_global
+       'contador_global': contador_global 
     }

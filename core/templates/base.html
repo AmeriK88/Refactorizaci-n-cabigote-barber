@@ -255,7 +255,7 @@
                         <div class="counter-icon animate-icon">
                           <i class="fas fa-user-friends"></i>
                         </div>
-                        <div id="odometer" class="odometer animate-on-load">{{ contador_global }}</div>
+                        <div id="odometer" class="odometer animate-on-load">{{ contador_actualizado|default:contador_global }}</div>
                         <div class="counter-label">Visitas Totales</div>
                     </div>                      
                     

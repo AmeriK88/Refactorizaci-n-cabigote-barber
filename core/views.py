@@ -7,8 +7,10 @@ def home(request):
     contador.total += 1
     contador.save()
 
+    contador.refresh_from_db()
+
     # Renderizar la plantilla
-    response = render(request, 'home.html')
+    response = render(request, 'home.html', {'contador_actualizado': contador.total})
 
     # Forzar cabeceras para que el navegador y proxies no guarden en caché
     response["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
