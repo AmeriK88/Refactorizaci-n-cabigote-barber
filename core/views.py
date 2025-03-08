@@ -1,11 +1,18 @@
 from django.shortcuts import render
-from core.models import ContadorVisitas 
+from core.models import ContadorVisitas
 
 def home(request):
+    # Incrementar el contador
     contador, _ = ContadorVisitas.objects.get_or_create(pk=1)
     contador.total += 1
     contador.save()
 
-    # No pasas nada de 'contador' al template
-    return render(request, 'home.html')
+    # Renderizar la plantilla
+    response = render(request, 'home.html')
 
+    # Forzar cabeceras para que el navegador y proxies no guarden en caché
+    response["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response["Pragma"] = "no-cache"
+    response["Expires"] = "0"
+
+    return response
