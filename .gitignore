@@ -27,6 +27,6 @@ registro_qr.png
 .coverage
 
 # Archivos generados por Django
-staticfiles/
+
 media/
 
