@@ -36,7 +36,7 @@ def reservar_cita(request, servicio_id=None):
     horas_ocupadas_por_fecha = {}
     for cita_existente in Cita.objects.filter(hora__in=valid_hours_str):
         fecha_str = cita_existente.fecha.date().isoformat()
-        hora_str = cita_existente.fecha.strftime("%H:%M")
+        hora_str = cita_existente.hora.strftime("%H:%M")
         if fecha_str not in horas_ocupadas_por_fecha:
             horas_ocupadas_por_fecha[fecha_str] = []
         horas_ocupadas_por_fecha[fecha_str].append(hora_str)
@@ -53,13 +53,18 @@ def reservar_cita(request, servicio_id=None):
             fecha_hora = datetime.combine(fecha, hora)
             fecha_hora = timezone.make_aware(fecha_hora)
 
+            # Revisamos si la fecha está bloqueada
             if fecha.isoformat() in fechas_bloqueadas:
                 form.add_error('fecha', 'Esta fecha está bloqueada. Por favor, selecciona otra fecha.')
             else:
+                # Guardamos la cita
                 cita = form.save(commit=False)
                 cita.usuario = request.user
                 cita.fecha = fecha_hora
+                cita.hora = hora  # Ojo, asignación para que quede registrada la hora
                 cita.save()
+
+                # Notificamos y mostramos mensaje de éxito
                 enviar_confirmacion_cita(request.user.email, cita)
                 messages.success(request, '¡Viejito! Ya tienes tu cita confirmada ¡Esa es niñote!.')
                 return redirect('users:perfil_usuario')
@@ -73,6 +78,7 @@ def reservar_cita(request, servicio_id=None):
         'fechas_bloqueadas': fechas_bloqueadas,
         'horas_ocupadas_por_fecha': horas_ocupadas_por_fecha
     })
+
 
 
 # Función ver citas & historial
@@ -95,7 +101,6 @@ def ver_citas(request):
     })
 
 
-# Editar citas según disponibilidad & manejo excepciones
 @login_required
 @handle_exceptions
 def editar_cita(request, cita_id):
@@ -122,11 +127,11 @@ def editar_cita(request, cita_id):
     fechas_bloqueadas = FechaBloqueada.objects.values_list('fecha', flat=True)
     fechas_bloqueadas = [fecha.isoformat() for fecha in fechas_bloqueadas]
 
-    # Crear un diccionario de horas ocupadas por fecha (mismo enfoque que reservar_cita)
+    # Crear un diccionario de horas ocupadas por fecha
     horas_ocupadas_por_fecha = {}
     for cita_existente in Cita.objects.filter(hora__in=valid_hours_str):
         fecha_str = cita_existente.fecha.date().isoformat()
-        hora_str = cita_existente.fecha.strftime("%H:%M")
+        hora_str = cita_existente.hora.strftime("%H:%M")
         if fecha_str not in horas_ocupadas_por_fecha:
             horas_ocupadas_por_fecha[fecha_str] = []
         horas_ocupadas_por_fecha[fecha_str].append(hora_str)
@@ -143,8 +148,12 @@ def editar_cita(request, cita_id):
             elif Cita.objects.filter(fecha=fecha_hora).exclude(id=cita_id).exists():
                 form.add_error(None, "Ya existe una cita reservada en esa fecha y hora.")
             else:
+                # Actualizar el objeto Cita con la nueva fecha/hora y guardarlo
+                cita = form.save(commit=False)
                 cita.fecha = fecha_hora
-                form.save()
+                cita.hora = hora  # Aseguramos la hora en el TimeField
+                cita.save()
+
                 enviar_notificacion_modificacion_cita(request.user.email, cita)
                 messages.success(request, '¡Eres un puntal! Actualizaste tu cita.')
                 return redirect('appointments:ver_citas')

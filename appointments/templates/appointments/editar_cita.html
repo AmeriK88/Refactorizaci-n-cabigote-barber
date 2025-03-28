@@ -1,7 +1,8 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static tz %}
 
 {% block content %}
+{% localtime on %}
 <div class="card shadow bg-light text-center mb-3">
   <h2>Editar Cita</h2>
 </div>
@@ -31,7 +32,7 @@
         {% for field in form %}
             <div class="form-group {% if field.errors %}is-invalid{% endif %}">
                 <strong>{{ field.label_tag }}</strong>
-                        {{ field }}
+                {{ field }}
             </div>
         {% endfor %}
 
@@ -39,7 +40,7 @@
         <button type="submit" class="btn btn-primary">Reservar</button>
     </form>
 </div>
-
+{% endlocaltime %}
 <!-- Script para deshabilitar fechas ocupadas -->
 <script>
     const fechasOcupadas = {{ fechas_ocupadas|safe }};

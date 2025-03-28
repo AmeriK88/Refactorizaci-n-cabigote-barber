@@ -105,6 +105,7 @@ DATABASES['default']['OPTIONS'] = {
     'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
 }
 
+
 # DB development
 """
 # 3) Now use these variables in your DATABASES config
@@ -118,8 +119,8 @@ DATABASES = {
         'PORT': env('DB_PORT'),
     }
 }
-
 """
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
