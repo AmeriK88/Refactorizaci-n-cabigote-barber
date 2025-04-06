@@ -22,6 +22,7 @@ urlpatterns += i18n_patterns(
     path('users/', include('users.urls')),
     path('reports/', include('reports.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('', include('core.urls')),
 )
 
 # Rutas para archivos media fuera de i18n_patterns

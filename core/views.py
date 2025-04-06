@@ -1,5 +1,10 @@
 from django.shortcuts import render
 from core.models import ContadorVisitas
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import subprocess
+import os
+
 
 def home(request):
     # Incrementar el contador
@@ -18,3 +23,18 @@ def home(request):
     response["Expires"] = "0"
 
     return response
+
+@csrf_exempt
+def lanzar_recordatorios(request):
+    # Proteger con clave secreta (usada en la URL)
+    if request.GET.get('secret') != os.environ.get('CRON_SECRET_KEY'):
+        return JsonResponse({'error': 'No autorizado'}, status=401)
+
+    # Ejecutar el comando personalizado
+    resultado = subprocess.run(['python', 'manage.py', 'enviar_recordatorios'], capture_output=True, text=True)
+
+    return JsonResponse({
+        'status': 'ok',
+        'salida': resultado.stdout,
+        'errores': resultado.stderr
+    })

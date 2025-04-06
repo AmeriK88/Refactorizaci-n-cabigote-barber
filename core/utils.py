@@ -1,6 +1,7 @@
 from django.core.mail import send_mail
 from django.conf import settings
 
+
 def enviar_correo_admin(asunto, mensaje):
     """
     Envía un correo electrónico a los administradores configurados en settings.ADMINS.
@@ -114,6 +115,31 @@ def enviar_notificacion_modificacion_cita(usuario_email, cita):
     Nueva hora: {cita.hora}
     """
     enviar_correo_admin('Cita modificada en Ca´Bigote', mensaje_admin)
+
+
+def enviar_recordatorio_cita(usuario_email, cita):
+    asunto = 'Recordatorio de tu cita en Ca´Bigote Barber Shop'
+    mensaje = f"""
+    Estimado usuario,
+
+    Te recordamos que tienes una cita programada para mañana:
+
+    Servicio: {cita.servicio.nombre}
+    Fecha: {cita.fecha}
+    Hora: {cita.hora}
+    Comentario: {cita.comentario if cita.comentario else 'Sin comentarios'}
+
+    Por favor, asegúrate de llegar a tiempo. Si no puedes asistir, recuerda que puedes modificar tu cita desde nuestra app web.
+
+    ¡Te esperamos!
+
+    Atentamente,
+    Ca´Bigote Barber Shop
+
+    Dirección: calle el rafael 43, Arrecife
+    Teléfono: +34 699 85 99 61
+    """
+    send_mail(asunto, mensaje, settings.EMAIL_HOST_USER, [usuario_email], fail_silently=False)
 
 # Autor: José Félix Gordo Castaño
 # Copyright (C) 2024 José Félix Gordo Castaño
