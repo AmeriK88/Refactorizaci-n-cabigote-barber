@@ -8,7 +8,7 @@ from django.db.models import F, Sum, Value, DecimalField
 from django.db.models.functions import Coalesce
 
 
-def calcular_reporte(mes_actual, meses_ahead=5):
+def calcular_reporte(mes_actual, meses_ahead=1):
     reports = []
 
     for i in range(meses_ahead):
@@ -37,7 +37,7 @@ def calcular_reporte(mes_actual, meses_ahead=5):
             defaults={
                 'total_citas': total_citas,
                 'ingresos_totales': total_ingresos,
-                'ingresos_proyectados': total_ingresos,  # Igualamos proyectados a los totales
+                'ingresos_proyectados': total_ingresos,  
             }
         )
         reports.append(report)
@@ -68,7 +68,7 @@ def calcular_reporte_diario(fecha):
     print(f"✅ Reporte diario generado para {fecha.strftime('%d/%m/%Y')}")
 
 
-def limpiar_reportes(mes_actual=None, meses_ahead=5):
+def limpiar_reportes(mes_actual=None, meses_ahead=1):
     # Si no se pasa `mes_actual`, usar el primer día del mes actual
     if mes_actual is None:
         mes_actual = now().date().replace(day=1)

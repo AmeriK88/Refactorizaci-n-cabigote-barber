@@ -1,10 +1,28 @@
+{% extends "admin/base_site.html" %}
 {% load i18n %}
-<h1>{% trans "Reporte Mensual" %}</h1>
-<a href="{% url 'admin:descargar_reporte' %}" class="btn btn-primary">{% trans "Descargar Reporte Completo" %}</a>
-{% for reporte in reportes %}
-    <h2>{% trans "Reporte para" %} {{ reporte.mes|date:"F Y" }}</h2>
-    <p><strong>{% trans "Total de Citas:" %}</strong> {{ reporte.total_citas }}</p>
-    <p><strong>{% trans "Ingresos Totales:" %}</strong> {{ reporte.ingresos_totales }}</p>
-    <p><strong>{% trans "Ingresos Proyectados:" %}</strong> {{ reporte.ingresos_proyectados }}</p>
-    <hr>
-{% endfor %}
+
+{% block content %}
+<div class="content">
+    <h1>{% trans "Reporte Mensual" %}</h1>
+
+    <!-- Ajusta la URL de descarga según tu caso 
+         si usas la fórmula con app/model y name='descargar_reporte', 
+         puede quedar: 'admin:reports_reportemensual_descargar_reporte' -->
+    <a href="{% url 'admin:reports_reportemensual_descargar_reporte' %}" class="btn btn-primary">
+        {% trans "Descargar Reporte Completo" %}
+    </a>
+
+    {% for reporte in reportes %}
+        <h2>{% trans "Reporte para" %} {{ reporte.mes|date:"F Y" }}</h2>
+        <p><strong>{% trans "Total de Citas:" %}</strong> {{ reporte.total_citas }}</p>
+        <p><strong>{% trans "Ingresos Totales:" %}</strong> {{ reporte.ingresos_totales }}</p>
+        <p><strong>{% trans "Ingresos Proyectados:" %}</strong> {{ reporte.ingresos_proyectados }}</p>
+        <hr>
+    {% endfor %}
+
+    <br>
+    <a href="{% url 'admin:reports_reportemensual_changelist' %}" class="btn btn-secondary">
+        {% trans "Volver" %}
+    </a>
+</div>
+{% endblock %}

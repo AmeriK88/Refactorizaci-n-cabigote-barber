@@ -87,6 +87,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cabigote.wsgi.application'
 
+"""
 
 # Configuración de la base de datos
 DATABASES = {
@@ -119,7 +120,6 @@ DATABASES = {
         'PORT': env('DB_PORT'),
     }
 }
-"""
 
 
 # Password validation
