@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Cita, FechaBloqueada
+from .models import Cita, FechaBloqueada, BloqueoHora
 import matplotlib
 matplotlib.use('Agg') 
 import matplotlib.pyplot as plt
@@ -84,3 +84,9 @@ class FechaBloqueadaAdmin(admin.ModelAdmin):
     list_display = ('fecha', 'razon')
     search_fields = ('fecha', 'razon')
     list_filter = ('fecha',)
+
+@admin.register(BloqueoHora)
+class BloqueoHoraAdmin(admin.ModelAdmin):
+    list_display = ('fecha', 'hora_inicio', 'hora_fin', 'razon')
+    list_filter = ('fecha',)
+    search_fields = ('fecha', 'razon')

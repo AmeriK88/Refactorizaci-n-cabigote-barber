@@ -11,10 +11,9 @@
     <form method="post">
         {% csrf_token %}
 
-        <!-- Mostrar errores del formulario -->
+        <!-- Display form errors -->
         {% if form.non_field_errors or form.errors %}
             <div class="alert alert-error">
-                <!-- Mostrar errores generales del formulario -->
                 {% if form.non_field_errors %}
                     {{ form.non_field_errors }}
                 {% endif %}
@@ -36,16 +35,15 @@
             </div>
         {% endfor %}
 
-        <!-- Botón de envío -->
         <button type="submit" class="btn btn-primary">Reservar</button>
     </form>
 </div>
 {% endlocaltime %}
-<!-- Script para deshabilitar fechas ocupadas -->
 <script>
     const fechasOcupadas = {{ fechas_ocupadas|safe }};
-    const fechasBloqueadas = {{ fechas_bloqueadas|safe }};  
+    const fechasBloqueadas = {{ fechas_bloqueadas|safe }};
     const horasOcupadasPorFecha = {{ horas_ocupadas_por_fecha|safe }};
+    const bloqueos_por_fecha = {{ bloqueos_por_fecha|safe }};
 </script>
 <script src="{% static 'js/disableDates.js' %}"></script>
 {% endblock %}

@@ -33,7 +33,7 @@
             </div>
         {% endif %}
 
-        <!-- Mostrar campos del formulario sin errores debajo -->
+        <!-- Display form fields -->
         {% for field in form %}
             <div class="form-group rounded {% if field.errors %}is-invalid{% endif %}">
                 <strong>{{ field.label_tag }}</strong>
@@ -47,8 +47,9 @@
 {% endlocaltime %}
 <script>
     const fechasOcupadas = {{ fechas_ocupadas|safe }};
-    const fechasBloqueadas = {{ fechas_bloqueadas|safe }};  
+    const fechasBloqueadas = {{ fechas_bloqueadas|safe }};
     const horasOcupadasPorFecha = {{ horas_ocupadas_por_fecha|safe }};
+    const bloqueos_por_fecha = {{ bloqueos_por_fecha|safe }};
 </script>
 <script src="{% static 'js/disableDates.js' %}"></script>
 {% endblock %}

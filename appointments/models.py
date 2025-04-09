@@ -33,4 +33,13 @@ class FechaBloqueada(models.Model):
 
     def __str__(self):
         return f"{self.fecha} - {self.razon if self.razon else _('Sin razón especificada')}"
+    
+class BloqueoHora(models.Model):
+    fecha = models.DateField(verbose_name=_("Fecha Bloqueada (Hora)"))
+    hora_inicio = models.TimeField(verbose_name=_("Hora de inicio"))
+    hora_fin = models.TimeField(verbose_name=_("Hora de fin"))
+    razon = models.CharField(max_length=255, blank=True, null=True, verbose_name=_("Razón"))
+
+    def __str__(self):
+        return f"{self.fecha} from {self.hora_inicio.strftime('%H:%M')} to {self.hora_fin.strftime('%H:%M')}"
 
