@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.utils import timezone
-
+from django.db.models import Count, Sum
 from .models import UserProfile
 from .forms import CustomUserCreationForm, UserProfileForm, UserForm, CustomAuthenticationForm  
 from core.decorators import handle_exceptions
@@ -64,12 +64,35 @@ def logout_view(request):
 @login_required
 @handle_exceptions
 def perfil_usuario(request):
-    # Obtener citas activas ordenadas por fecha (incluso las horas)
+    # Citas activas para mostrar en el perfil
     citas_activas = Cita.objects.filter(
         usuario=request.user, 
         fecha__gte=timezone.now()
     ).order_by('fecha', 'hora')
-    return render(request, 'users/perfil_usuario.html', {'citas': citas_activas})
+
+    # Estadísticas usando todas las citas del usuario
+    all_citas = Cita.objects.filter(usuario=request.user)
+    total_citas = all_citas.count()
+    
+    # Suponiendo que cada cita tenga asociado un servicio con un campo 'precio'
+    total_gastado = all_citas.aggregate(total=Sum('servicio__precio'))['total'] or 0
+
+    # Calcula el servicio favorito (el que aparece más veces en las citas)
+    fav_service_data = (
+        all_citas.values('servicio__nombre')
+        .annotate(service_count=Count('servicio'))
+        .order_by('-service_count')
+        .first()
+    )
+    favorite_service = fav_service_data['servicio__nombre'] if fav_service_data else "N/A"
+
+    context = {
+        'citas': citas_activas,
+        'total_citas': total_citas,
+        'total_gastado': total_gastado,
+        'favorite_service': favorite_service,
+    }
+    return render(request, 'users/perfil_usuario.html', context)
 
 
 # Edición de perfil
