@@ -49,8 +49,13 @@ class CitaForm(forms.ModelForm):
         # Personaliza cómo se muestran los servicios (nombre + precio)
         self.fields['servicio'].label_from_instance = lambda obj: f"{obj.nombre} - {obj.precio} €"
 
-        # Personaliza cómo se muestran los productos (nombre + precio)
-        self.fields['producto'].label_from_instance = lambda obj: f"{obj.titulo} - €{obj.precio:.2f}"
+        # Mejora: evita el error 500 si obj.precio es None, mostrando "N/A" en ese caso
+        self.fields['producto'].label_from_instance = (
+            lambda obj: f"{obj.titulo} - €{obj.precio:.2f}"
+            if obj.precio is not None else
+            f"{obj.titulo} - €N/A"
+        )
+
 
     # Campos para el formulario
     class Meta:
