@@ -5,6 +5,7 @@
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["fullscreen","standalone"],
   "background_color": "#ffffff",
   "theme_color": "#0077cc",
   "icons": [
