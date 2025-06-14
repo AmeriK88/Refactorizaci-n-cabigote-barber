@@ -4,55 +4,57 @@
 
 <!DOCTYPE html>
 <html lang="es">
-<head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO & Social -->
     <meta name="description" content="Barbería Ca'Bigote: Servicios de alta calidad para tu cuidado personal. Reserva tu cita hoy.">
     <meta name="keywords" content="barbería, cuidado personal, corte de pelo, afeitado, estilo, Ca'Bigote">
     <meta name="author" content="Jose Felix Gordo Castaño">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="theme-color" content="#000000">
-    <meta property="og:title" content="Barbería Ca'Bigote">
-    <meta property="og:description" content="Barbería Ca'Bigote: Servicios de alta calidad para tu cuidado personal.">  
-    <meta property="og:image" content="{% static 'imagenes/logo-cabigote.png' %}">
     <meta name="robots" content="index, follow">
     <meta name="copyright" content="Ca'Bigote © 2024">
+    <meta property="og:title" content="Barbería Ca'Bigote">
+    <meta property="og:description" content="Barbería Ca'Bigote: Servicios de alta calidad para tu cuidado personal.">
+    <meta property="og:image" content="{% static 'imagenes/logo-cabigote.png' %}">
+    <meta name="twitter:card" content="summary_large_image">
 
-    <!-- Etiquetas adicionales para compatibilidad con iOS -->
+    <!-- PWA & Theme -->
+    <meta name="theme-color" content="#0077cc">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Ca'Bigote">
+    <meta name="msapplication-TileColor" content="#0077cc">
+    <meta name="msapplication-TileImage" content="{% static 'imagenes/logo-updated.png' %}">
+    <link rel="manifest" href="{% static 'manifest.json' %}">
 
     <title>{% block title %}Ca´Bigote{% endblock %}</title>
+
+    <!-- Favicons & App Icons -->
+    <link rel="icon" type="image/x-icon" href="{% static 'imagenes/favicon.ico' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'imagenes/logo-updated.png' %}">
 
     <!-- Bootstrap CSS -->
     <link rel="dns-prefetch" href="//stackpath.bootstrapcdn.com">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Personalizado CSS -->
+
+    <!-- Custom Styles -->
     <link rel="preload" href="{% static 'css/styles.css' %}" as="style">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{% static 'imagenes/favicon.ico' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- Iconos para dispositivos Apple -->
-    <link rel="apple-touch-icon" sizes="16x16" href="{% static 'imagenes/favicon.ico' %}">
-    
-    <!-- Font Awesome -->
+    <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://stackpath.bootstrapcdn.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Holtwood+One+SC&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-
-    <!-- Social icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Holtwood+One+SC&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
 
-    <!-- Visitors -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/themes/odometer-theme-default.min.css" />
-</head> 
+    <!-- Visitors Counter -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/themes/odometer-theme-default.min.css">
+</head>
+
     <body >
          <!-- Superposición oscura -->
         <div id="overlay" class="overlay"></div>
@@ -212,7 +214,7 @@
                 <!-- Contenido templates -->
                 {% endblock %}
             </main>
-            <<footer class="primary-color text-white-50 py-4">
+            <footer class="primary-color text-white-50 py-4">
                 <div class="container">
                     <div class="row">
                         <!-- Sección Sobre Nosotros -->
