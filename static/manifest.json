@@ -10,12 +10,12 @@
   "theme_color": "#1C8EDF",
   "icons": [
     {
-      "src": "/static/icons/logo-cb.png",
+      "src": "/static/icons/logo-cb.jpg",
       "sizes": "72x72",
       "type": "image/png"
     },
     {
-      "src": "/static/icons/logo-cb.png",
+      "src": "/static/icons/logo-cb.jpg",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
