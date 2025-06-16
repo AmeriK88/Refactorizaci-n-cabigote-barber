@@ -12,12 +12,12 @@
     {
       "src": "/static/icons/logo-cb.jpg",
       "sizes": "72x72",
-      "type": "image/png"
+      "type": "image/jpg"
     },
     {
       "src": "/static/icons/logo-cb.jpg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/jpg",
       "purpose": "maskable"
     }
   ]
