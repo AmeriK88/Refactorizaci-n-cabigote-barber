@@ -4,7 +4,7 @@
 
 <!DOCTYPE html>
 <html lang="es">
-    <meta charset="UTF-8">
+     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -23,7 +23,7 @@
     <meta name="theme-color" content="#0077cc">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Ca'Bigote">
     <meta name="msapplication-TileColor" content="#0077cc">
     <meta name="msapplication-TileImage" content="{% static 'imagenes/logo-updated.png' %}">
@@ -197,7 +197,7 @@
             <main class="flex-fill">
                 <!-- Mensaje -->
                 {% if messages %}
-                <div class="container mt-3">
+                <div class="container mt-3 animate-on-load">
                     <div class="row justify-content-center">
                         <div class="col-md-8 col-lg-12">
                             {% for message in messages %}

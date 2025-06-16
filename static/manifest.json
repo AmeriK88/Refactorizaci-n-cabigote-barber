@@ -10,22 +10,22 @@
   "theme_color": "#0077cc",
   "icons": [
     {
-      "src": "/static/icons/logo-72x72.png",
+      "src": "/static/icons/logo-cb.png",
       "sizes": "72x72",
       "type": "image/png"
     },
     {
-      "src": "/static/icons/logo-192x192.png",
+      "src": "/static/icons/logo-cb.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/static/icons/logo-512x512.png",
+      "src": "/static/icons/logo-cb.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "/static/icons/logo-maskable.png",
+      "src": "/static/icons/logo-updated.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
