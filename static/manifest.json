@@ -1,24 +1,38 @@
 {
   "name": "Cabigote",
   "short_name": "Cabigote",
-  "description": "Tu espacio para gestionar cabigote de forma fácil",
+  "description": "Tu espacio para gestionar Cabigote de forma fácil",
+  "lang": "es-ES",                     
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
   "display_override": ["fullscreen","standalone"],
+  "orientation": "portrait",         
   "background_color": "#1C8EDF",
   "theme_color": "#1C8EDF",
+  "categories": ["business","productivity"],
+  "shortcuts": [                      
+    {
+      "name": "Reservar cita",
+      "short_name": "Citas",
+      "url": "/appointments/reservar/?source=shortcut",
+      "icons": [{ "src": "/static/icons/logo-cb.png", "sizes": "96x96", "type": "image/png" }]
+    },
+    {
+      "name": "Nuestros servicios",
+      "short_name": "Servicios",
+      "url": "/services/?source=shortcut",
+      "icons": [{ "src": "/static/icons/logo-cb.png", "sizes": "96x96", "type": "image/png" }]
+    }
+  ],
   "icons": [
     {
       "src": "/static/icons/logo-cb.png",
-      "sizes": "72x72",
-      "type": "image/png"
-    },
-    {
-      "src": "/static/icons/logo-cb.png",
-      "sizes": "512x512",
+      "sizes": "72x72 192x192 512x512",  
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
-  ]
+  ],
+  
+  "prefer_related_applications": false
 }
