@@ -6,8 +6,8 @@
   "scope": "/",
   "display": "standalone",
   "display_override": ["fullscreen","standalone"],
-  "background_color": "#ffffff",
-  "theme_color": "#0077cc",
+  "background_color": "#1C8EDF",
+  "theme_color": "#1C8EDF",
   "icons": [
     {
       "src": "/static/icons/logo-cb.png",
@@ -16,16 +16,6 @@
     },
     {
       "src": "/static/icons/logo-cb.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/static/icons/logo-cb.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "/static/icons/logo-updated.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
