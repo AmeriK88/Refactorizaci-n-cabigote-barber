@@ -146,6 +146,8 @@ form button:hover {
     margin-right: 10px;
 }
 
+
+
 /* Image Styles */
 img {
     max-width: 100%;
@@ -169,13 +171,28 @@ img:hover {
     flex-direction: column;
     justify-content: space-between;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    text-align: center;
+    text-align: start;
     margin: auto;
+    font-weight: 600;
 }
 
 .card:hover, .card-user-profile:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.card-header {
+  position: relative;
+  padding-left: 1.5rem;
+}
+.card-header::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0;
+  width: 4px; height: 100%;
+  background: linear-gradient(180deg, #833ab4, #fd1d1d);
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
 }
 
 .card img, .card-user-profile img {
