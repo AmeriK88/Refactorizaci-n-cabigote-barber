@@ -2,6 +2,7 @@ from django import forms
 from datetime import datetime, time
 from django.utils import timezone
 from .models import Cita, Servicio, Imagen
+from django.contrib import admin
 
 
 # Formulario cita

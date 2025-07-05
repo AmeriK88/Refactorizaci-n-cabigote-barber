@@ -7,6 +7,11 @@ class ResenaAdmin(admin.ModelAdmin):
     search_fields = ('usuario__username', 'servicio__nombre')
     ordering = ('-fecha',)
     list_filter = ('puntuacion', 'servicio')
+
+    class Media:
+        css = {
+            'all': ('admin/css/adminCSS.css',)
+        }
     
 
 admin.site.register(Resena, ResenaAdmin)
