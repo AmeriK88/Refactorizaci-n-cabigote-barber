@@ -1,0 +1,19 @@
+/* admin/css/servicio_thumb.css */
+
+.admin-thumb {
+  max-width: 80px;
+  max-height: 80px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.admin-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* Agranda un poco la tabla de change-list */
+.change-list table {
+  font-size: 0.95rem;
+}
+

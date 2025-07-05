@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'users',
     'colorfield',
     'core',
+    'widget_tweaks', 
 ]
 
 
@@ -86,6 +87,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'cabigote.wsgi.application'
+
 
 
 # Configuración de la base de datos
