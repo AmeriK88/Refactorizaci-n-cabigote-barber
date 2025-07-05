@@ -22,7 +22,7 @@
         <div class="card mb-4 shadow-sm border-0">
           <div class="card-body">
             <p class="card-text fs-5">{{ resena.texto }}</p>
-            <div class="d-flex justify-content-between text-muted small">
+            <div class="metadata d-flex justify-content-between text-muted small">
               <span><i class="fas fa-user me-1"></i>{{ resena.usuario }}</span>
               <span><i class="fas fa-star text-warning me-1"></i>{{ resena.puntuacion }} / 5</span>
               <span><i class="fas fa-cut me-1"></i>{{ resena.servicio.nombre }}</span>
@@ -46,9 +46,10 @@
   <div class="row justify-content-center">
     <div class="col-md-12 col-lg-12 col-xl-12">
       <div class="card shadow-sm">
-        <div class="card-header text-center gradiente-header">
-          <h4 class="mb-0">Añadir Reseña</h4>
-        </div>
+        <h4 class="card-header text-center gradiente-header">
+          <i class="bi bi-star-fill text-primary me-2"></i>
+          Añadir Reseña
+        </h4>
           <form method="post" class="needs-validation animate-on-load" novalidate>
             {% csrf_token %}
 

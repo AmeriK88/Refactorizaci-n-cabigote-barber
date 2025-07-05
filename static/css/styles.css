@@ -544,8 +544,8 @@ footer a:hover {
 .visits-counter-card {
     background: linear-gradient(135deg, var(--form-background) 0%, var(--primary-color) 100%);
     border-radius: 10px;
-    box-shadow: var(--card-shadow); /* Usa tu variable para la sombra */
-    color: var(--secondary-color);  /* Texto claro, por ejemplo */
+    box-shadow: var(--card-shadow);
+    color: var(--secondary-color);  
     width: 100%;
     padding: 1.5rem;
     text-align: center;
@@ -594,7 +594,7 @@ footer a:hover {
   
 
 /* Responsive Styles for Small Screens */
-@media (max-width: 400px) {
+@media (max-width: 425px) {
     .form-check-inline {
         display: block;
         margin-bottom: 0.5rem;
@@ -608,9 +608,21 @@ footer a:hover {
 
       /* 1️⃣  El formulario ocupa todo el ancho disponible */
     form {
-        max-width: 100%;   /* sobrescribe el 650px */
-        padding: 0.75rem;  /* un poco menos de padding para no ‘comerse’ espacio */
+        max-width: 100%;   
+        padding: 0.75rem;  
     }
+
+    .metadata {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+    .metadata span {
+    flex: 1 1 50%;      
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
 }
 
