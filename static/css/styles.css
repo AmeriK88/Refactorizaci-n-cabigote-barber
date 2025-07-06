@@ -103,7 +103,7 @@ main {
 form {
     margin: 0 auto;
     margin-bottom: 2rem;
-    max-width: 650px;
+    max-width: 100dvw;
     padding: 1rem;
     background-color: var(--form-background);
     border-radius: 12px;
@@ -172,6 +172,7 @@ img:hover {
     justify-content: space-between;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     margin: auto;
+
 }
 
 

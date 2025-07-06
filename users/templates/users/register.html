@@ -1,77 +1,125 @@
+{# ===============================  PRO: EXTENSIÓN Y CARGAS  =============================== #}
 {% extends "base.html" %}
+{% load static tz widget_tweaks %}  {# PRO: sigue cargado por si lo usas en otra vista #}
 
+{# ===============================  PRO: TÍTULO  ========================================== #}
+{% block title %}Registro · Ca’Bigote{% endblock %}
+
+{# ===============================  PRO: CONTENIDO  ======================================= #}
 {% block content %}
-    <div class="mb-5 card shadow-sm bg-white text-center p-4 border-0">
-        <h2 class="h4 fw-bold text-secondary mb-0">
-            <i class="fas fa-user-plus me-2 text-success"></i> Crear Cuenta
-        </h2>
-    </div>
+{% localtime on %}
 
-    <form method="post" class="animate-on-load">
-        {% csrf_token %}
-        
-        {% if form.errors %}
-            <div class="alert alert-error">
-                <ul>
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                {% endfor %}
-                {% for error in form.non_field_errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-                </ul>
+{# --- PRO: contenedor fluido para que el formulario pueda crecer en pantallas grandes ---- #}
+<div class="container-fluid py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-12 col-lg-12 col-xl-12">  {# PRO: afinamos columnas #}
+
+      {# ===========================  PRO: CARD PRINCIPAL  ============================ #}
+      <div class="card shadow-sm">
+        <div class="card-header gradiente-header text-center">
+          <h4 class="mb-0">
+            <i class="fas fa-user-plus text-primary me-2"></i> Crear Cuenta
+          </h4>
+        </div>
+
+        {# ===========================  PRO: FORMULARIO  =============================== #}
+        <form method="post"
+              class="needs-validation animate-on-load"
+              novalidate>
+
+          {% csrf_token %}
+
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+              {{ form.non_field_errors }}
             </div>
-        {% endif %}
-        
-        <!-- Campo para el nombre -->
-        <div class="form-group">
-            <strong>{{ form.nombre.label_tag }}</strong>
+          {% endif %}
+
+          {# -----------------------  PRO: NOMBRE  ------------------------------------ #}
+          <div class="mb-3">
+            {{ form.nombre.label_tag }}
             {{ form.nombre }}
-        </div>
+            {{ form.nombre.errors }}
+          </div>
 
-        <!-- Campo para el apellido -->
-        <div class="form-group">
-            <strong>{{ form.apellido.label_tag }}</strong>
+          {# -----------------------  PRO: APELLIDO  ---------------------------------- #}
+          <div class="mb-3">
+            {{ form.apellido.label_tag }}
             {{ form.apellido }}
-        </div>
+            {{ form.apellido.errors }}
+          </div>
 
-        <!-- Campo para el nombre de usuario -->
-        <div class="form-group">
-            <strong>{{ form.username.label_tag }}</strong>
+          {# -----------------------  PRO: USERNAME  ----------------------------------- #}
+          <div class="mb-3">
+            {{ form.username.label_tag }}
             {{ form.username }}
-        </div>
+            {{ form.username.errors }}
+          </div>
 
-        <!-- Campo para el correo electrónico -->
-        <div class="form-group">
-            <strong>{{ form.email.label_tag }}</strong>
+          {# -----------------------  PRO: EMAIL  -------------------------------------- #}
+          <div class="mb-3">
+            {{ form.email.label_tag }}
             {{ form.email }}
-        </div>
+            {{ form.email.errors }}
+          </div>
 
-        <!-- Campo para el teléfono -->
-        <div class="form-group">
-            <strong>{{ form.phone.label_tag }}</strong>
+          {# -----------------------  PRO: TELÉFONO  ----------------------------------- #}
+          <div class="mb-3">
+            {{ form.phone.label_tag }}
             {{ form.phone }}
-        </div>
+            {{ form.phone.errors }}
+          </div>
 
-        <!-- Contraseña -->
-        <div class="form-group">
-            <strong>{{ form.password1.label_tag }}</strong>
+          {# -----------------------  PRO: PASSWORD 1  --------------------------------- #}
+          <div class="mb-3">
+            {{ form.password1.label_tag }}
             {{ form.password1 }}
-        </div>
-        <div class="form-group">
-            <strong>{{ form.password2.label_tag }}</strong>
+            {{ form.password1.errors }}
+          </div>
+
+          {# -----------------------  PRO: PASSWORD 2  --------------------------------- #}
+          <div class="mb-3">
+            {{ form.password2.label_tag }}
             {{ form.password2 }}
-        </div>
+            {{ form.password2.errors }}
+          </div>
 
-        <!-- CAPTCHA -->
-        <div class="form-group">
-            <strong>{{ form.captcha.label_tag }}</strong>
-            {{ form.captcha }}
-        </div>
+          {# -----------------------  PRO: CAPTCHA  ------------------------------------ #}
+          <div class="mb-3">
+            {{ form.captcha.label_tag }}
+            <div class="input-group">
+              <span class="input-group-text p-0 border-0 bg-transparent">
+                {{ form.captcha.image }}
+              </span>
+              {{ form.captcha }}
+            </div>
+            {{ form.captcha.errors }}
+          </div>
 
-        <!-- Botón para enviar -->
-        <button type="submit" class="btn btn-primary">Registrarse</button>
-    </form>
+          {# -----------------------  PRO: BOTÓN SUBMIT  ------------------------------- #}
+          <button type="submit" class="btn btn-primary btn-lg w-100">
+            Registrarse
+          </button>
+        </form>
+      </div>
+
+      {# ======================  PRO: ENLACES SECUNDARIOS  ============================ #}
+      <div class="card bg-light border-0 text-center mt-4 p-4 shadow-sm">
+        <div class="text-center mt-4">
+          <a href="{% url 'users:login' %}"
+             class="btn btn-primary btn-login btn-sm me-2 m-3 w-sm-auto">
+            <i class="fas fa-sign-in-alt"></i> Ya tengo cuenta
+          </a>
+          <a href="{% url 'password_reset' %}"
+             class="btn btn-outline-secondary btn-sm m-3 w-sm-auto">
+            <i class="fas fa-key"></i> Olvidé contraseña
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endlocaltime %}
 {% endblock %}

@@ -4,18 +4,34 @@ from django.contrib.auth.models import User
 from .models import UserProfile
 from django_recaptcha.fields import ReCaptchaField
 from django.conf import settings
+from django.db import transaction
 
 # Formulario de creación de usuario personalizado
 class CustomUserCreationForm(UserCreationForm):
-    email = forms.EmailField(required=True, label='Correo electrónico')
-    phone = forms.CharField(max_length=15, required=True, label='Teléfono')
-    nombre = forms.CharField(max_length=30, required=True, label='Nombre')
-    apellido = forms.CharField(max_length=30, required=True, label='Apellido')
-    captcha = ReCaptchaField()
+    email    = forms.EmailField(label="Correo",    widget=forms.EmailInput(
+                 attrs={"class": "form-control form-control-lg", "autocomplete": "email"}))
+    phone    = forms.CharField(label="Teléfono",   widget=forms.TextInput(
+                 attrs={"class": "form-control form-control-lg", "autocomplete": "tel"}))
+    nombre   = forms.CharField(label="Nombre",     widget=forms.TextInput(
+                 attrs={"class": "form-control form-control-lg", "autocomplete": "given-name"}))
+    apellido = forms.CharField(label="Apellido",   widget=forms.TextInput(
+                 attrs={"class": "form-control form-control-lg", "autocomplete": "family-name"}))
+    captcha  = ReCaptchaField()
 
-    class Meta:
-        model = User
+    class Meta(UserCreationForm.Meta):
+        model  = User
         fields = ("username", "email", "phone", "nombre", "apellido", "password1", "password2")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Añadimos clase y autocomplete a los campos heredados:
+        self.fields["username"].widget.attrs.update(
+            {"class": "form-control form-control-lg", "autocomplete": "username"})
+        self.fields["password1"].widget.attrs.update(
+            {"class": "form-control form-control-lg", "autocomplete": "new-password"})
+        self.fields["password2"].widget.attrs.update(
+            {"class": "form-control form-control-lg", "autocomplete": "new-password"})
+
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -31,23 +47,22 @@ class CustomUserCreationForm(UserCreationForm):
         return password2
 
     def save(self, commit=True):
-        user = super().save(commit=False)
-        user.email = self.cleaned_data["email"]
-        user.first_name = self.cleaned_data["nombre"] 
-        user.last_name = self.cleaned_data["apellido"]  
-        if commit:
-            user.save()
-        # Guardar datos adicionales en el perfil
-        phone = self.cleaned_data["phone"]
-        nombre = self.cleaned_data["nombre"]
-        apellido = self.cleaned_data["apellido"]
-        UserProfile.objects.create(
-            user=user,
-            telefono=phone,
-            email=user.email,
-            nombre=nombre,
-            apellido=apellido
-        )
+        """Crea User y su UserProfile en una transacción."""
+        with transaction.atomic():
+            user = super().save(commit=False)
+            user.email      = self.cleaned_data["email"]
+            user.first_name = self.cleaned_data["nombre"]
+            user.last_name  = self.cleaned_data["apellido"]
+
+            if commit:
+                user.save()
+                UserProfile.objects.create(
+                    user=user,
+                    telefono=self.cleaned_data["phone"],
+                    email=user.email,
+                    nombre=self.cleaned_data["nombre"],
+                    apellido=self.cleaned_data["apellido"],
+                )
         return user
 
     def clean_username(self):
