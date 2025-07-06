@@ -71,7 +71,7 @@
         <div id="loader" class="visible"></div>
 
         <!-- Cookie modal -->
-        <div class="modal fade" id="cookiesModal" tabindex="-1" role="dialog" aria-labelledby="cookiesModalLabel" aria-hidden="true">
+        <div class="modal fade" id="cookiesModal" tabindex="-1" role="dialog" aria-labelledby="cookiesModalLabel" inert aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -81,8 +81,8 @@
                         <p>Este sitio utiliza cookies para mejorar su experiencia. Al continuar navegando, aceptas el uso de cookies. Puedes encontrar más información en nuestra <a href="#" id="privacyPolicyLink">política de privacidad</a>.</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Rechazar</button>
-                        <button type="button" class="btn btn-primary">Aceptar</button>
+                        <button id="rejectCookiesBtn" class="btn btn-outline-secondary" data-bs-dismiss="modal">Rechazar</button>
+                        <button id="acceptCookiesBtn" class="btn btn-primary">Aceptar</button>
                     </div>
                 </div>
             </div>
