@@ -212,10 +212,18 @@ img:hover {
     text-align: center;
 }
 
-.card-title, .card-text {
+.card-text {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    font-weight: 600}
+
+.card-title  {
     font-size: 1.1rem;
     margin-bottom: 1rem;
-    font-weight: 800}
+    font-weight: 800
+}
+
+
 
 .card-text {
     background-color: #f8f9fa;

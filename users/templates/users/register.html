@@ -11,7 +11,7 @@
 {# -- contenedor fluido para que el formulario pueda crecer en pantallas grandes ---- #}
 <div class="container-fluid py-5">
   <div class="row justify-content-center">
-    <div class="col-md-12 col-lg-12 col-xl-12">  { afinamos columnas #}
+    <div class="col-md-12 col-lg-12 col-xl-12">
 
       {# =========================== MAIN CARD  ============================ #}
       <div class="card shadow-sm">
@@ -112,8 +112,9 @@
       </div>
 
       {# ======================  LINKS  ============================ #}
-      <div class="card bg-light border-0 text-center mt-4 p-4 shadow-sm">
+      <div class="card bg-light border-0 text-center mt-3 p-2 shadow-sm">
         <div class="text-center mt-4">
+          <p class="mb-2">¿Ya tienes cuenta?</p>
           <a href="{% url 'users:login' %}"
              class="btn btn-primary btn-login btn-sm me-2 m-3 w-sm-auto">
             <i class="fas fa-sign-in-alt"></i> Ya tengo cuenta
