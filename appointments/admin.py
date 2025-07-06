@@ -38,11 +38,7 @@ class CitaAdmin(admin.ModelAdmin):
     comentario_corto.short_description = 'Comentario'
 
     def vista_icon(self, obj):
-        icon = '✔️' if obj.vista else '❌'
-        color = 'green' if obj.vista else 'red'
-        return format_html('<span style="color:{}">{}</span>', color, icon)
-    vista_icon.short_description = 'Visto'
-    vista_icon.admin_order_field = 'vista'
+        return '✔️' if obj.vista else '❌'
 
     def ver_grafico_link(self, obj):
         url = reverse('admin:cita_graph')

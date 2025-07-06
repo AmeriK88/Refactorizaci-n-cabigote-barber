@@ -1,20 +1,19 @@
-{# ===============================  PRO: EXTENSIÓN Y CARGAS  =============================== #}
+{# =============================== EXT & LOADS  =============================== #}
 {% extends "base.html" %}
-{% load static tz widget_tweaks %}  {# PRO: sigue cargado por si lo usas en otra vista #}
+{% load static tz widget_tweaks %}  { sigue cargado por si lo usas en otra vista #}
 
-{# ===============================  PRO: TÍTULO  ========================================== #}
 {% block title %}Registro · Ca’Bigote{% endblock %}
 
-{# ===============================  PRO: CONTENIDO  ======================================= #}
+{# =============================== CONTENT  ======================================= #}
 {% block content %}
 {% localtime on %}
 
-{# --- PRO: contenedor fluido para que el formulario pueda crecer en pantallas grandes ---- #}
+{# -- contenedor fluido para que el formulario pueda crecer en pantallas grandes ---- #}
 <div class="container-fluid py-5">
   <div class="row justify-content-center">
-    <div class="col-md-12 col-lg-12 col-xl-12">  {# PRO: afinamos columnas #}
+    <div class="col-md-12 col-lg-12 col-xl-12">  { afinamos columnas #}
 
-      {# ===========================  PRO: CARD PRINCIPAL  ============================ #}
+      {# =========================== MAIN CARD  ============================ #}
       <div class="card shadow-sm">
         <div class="card-header gradiente-header text-center">
           <h4 class="mb-0">
@@ -22,69 +21,78 @@
           </h4>
         </div>
 
-        {# ===========================  PRO: FORMULARIO  =============================== #}
+        {# =========================== FORM  =============================== #}
         <form method="post"
               class="needs-validation animate-on-load"
               novalidate>
 
           {% csrf_token %}
 
-          {% if form.non_field_errors %}
-            <div class="alert alert-danger">
-              {{ form.non_field_errors }}
+          {% if form.errors %}
+            <div class="alert alert-error">
+                <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
             </div>
           {% endif %}
 
-          {# -----------------------  PRO: NOMBRE  ------------------------------------ #}
+          {# ----------------------- NAME  ------------------------------------ #}
           <div class="mb-3">
             {{ form.nombre.label_tag }}
             {{ form.nombre }}
             {{ form.nombre.errors }}
           </div>
 
-          {# -----------------------  PRO: APELLIDO  ---------------------------------- #}
+          {# ----------------------- LAST NAME  ---------------------------------- #}
           <div class="mb-3">
             {{ form.apellido.label_tag }}
             {{ form.apellido }}
             {{ form.apellido.errors }}
           </div>
 
-          {# -----------------------  PRO: USERNAME  ----------------------------------- #}
+          {# ----------------------- USERNAME  ----------------------------------- #}
           <div class="mb-3">
             {{ form.username.label_tag }}
             {{ form.username }}
             {{ form.username.errors }}
           </div>
 
-          {# -----------------------  PRO: EMAIL  -------------------------------------- #}
+          {# ----------------------- EMAIL  -------------------------------------- #}
           <div class="mb-3">
             {{ form.email.label_tag }}
             {{ form.email }}
             {{ form.email.errors }}
           </div>
 
-          {# -----------------------  PRO: TELÉFONO  ----------------------------------- #}
+          {# ----------------------- telf  ----------------------------------- #}
           <div class="mb-3">
             {{ form.phone.label_tag }}
             {{ form.phone }}
             {{ form.phone.errors }}
           </div>
 
-          {# -----------------------  PRO: PASSWORD 1  --------------------------------- #}
+          {# ----------------------- PASSWORD 1  --------------------------------- #}
           <div class="mb-3">
             {{ form.password1.label_tag }}
             {{ form.password1 }}
             {{ form.password1.errors }}
           </div>
 
-          {# -----------------------  PRO: PASSWORD 2  --------------------------------- #}
+          {# ----------------------- PASSWORD 2  --------------------------------- #}
           <div class="mb-3">
             {{ form.password2.label_tag }}
             {{ form.password2 }}
             {{ form.password2.errors }}
           </div>
 
-          {# -----------------------  PRO: CAPTCHA  ------------------------------------ #}
+          {# -----------------------  CAPTCHA  ------------------------------------ #}
           <div class="mb-3">
             {{ form.captcha.label_tag }}
             <div class="input-group">
@@ -92,31 +100,26 @@
                 {{ form.captcha.image }}
               </span>
               {{ form.captcha }}
-            </div>
-            {{ form.captcha.errors }}
+            </div> 
+            <div class="invalid-feedback d-block">{{ form.captcha.errors }}</div>
           </div>
 
-          {# -----------------------  PRO: BOTÓN SUBMIT  ------------------------------- #}
+          {# ----------------------- BTN SUBMIT  ------------------------------- #}
           <button type="submit" class="btn btn-primary btn-lg w-100">
             Registrarse
           </button>
         </form>
       </div>
 
-      {# ======================  PRO: ENLACES SECUNDARIOS  ============================ #}
+      {# ======================  LINKS  ============================ #}
       <div class="card bg-light border-0 text-center mt-4 p-4 shadow-sm">
         <div class="text-center mt-4">
           <a href="{% url 'users:login' %}"
              class="btn btn-primary btn-login btn-sm me-2 m-3 w-sm-auto">
             <i class="fas fa-sign-in-alt"></i> Ya tengo cuenta
           </a>
-          <a href="{% url 'password_reset' %}"
-             class="btn btn-outline-secondary btn-sm m-3 w-sm-auto">
-            <i class="fas fa-key"></i> Olvidé contraseña
-          </a>
         </div>
       </div>
-
     </div>
   </div>
 </div>

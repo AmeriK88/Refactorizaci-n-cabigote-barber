@@ -1,19 +1,55 @@
-/* admin/css/servicio_thumb.css */
+/* ────────────────────────────────────────────────────────── */
+/* admin/css/adminCSS.css                                    */
+/* Estilos comunes para el Django-admin de Ca’Bigote          */
+/* ────────────────────────────────────────────────────────── */
 
+/* 1) Miniaturas (servicios, productos, etc.) */
 .admin-thumb {
   max-width: 80px;
   max-height: 80px;
   border-radius: 6px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform .2s ease, box-shadow .2s ease;
 }
 .admin-thumb:hover {
   transform: scale(1.2);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
-/* Agranda un poco la tabla de change-list */
+/* 2) Tabla del change-list un poco más compacta */
 .change-list table {
-  font-size: 0.95rem;
+  font-size: .95rem;
 }
 
+/* 3) Badge gris para teléfono (UserAdmin) */
+.badge.bg-secondary {
+  font-size: .85rem;
+  padding: .35em .55em;
+}
+
+/* 4) Columnas con iconos booleanos – ancho fijo */
+.column-staff_icon,
+.column-active_icon,
+.column-super_icon,
+.column-activo_icon {
+  width: 60px;
+  text-align: center;
+}
+
+/* 5) Centrado vertical general en celdas */
+.change-list td,
+.change-list th {
+  vertical-align: middle;
+}
+
+/* 6) Hover suave sobre las estrellas de puntuación */
+.change-list .field-puntuacion_icon span:hover {
+  filter: brightness(1.1);
+  transition: filter .2s ease;
+}
+
+/* 7) Aseguramos tamaño de estrellas */
+.change-list .field-puntuacion_icon span {
+  font-size: 18px;
+  line-height: 1;
+}
