@@ -53,3 +53,21 @@
   font-size: 18px;
   line-height: 1;
 }
+
+
+/* 8) Botones de acción en páginas personalizadas del admin */
+.btn-admin-action {
+  display: inline-block;
+  padding: 6px 14px;
+  font-size: .875rem;
+  font-weight: 600;
+  color: #fff;
+  background: #198754;        /* verde Bootstrap “success” */
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background .2s ease, transform .15s ease;
+}
+.btn-admin-action:hover {
+  background: #157347;        /* tono más oscuro al hover */
+  transform: translateY(-2px);
+}
