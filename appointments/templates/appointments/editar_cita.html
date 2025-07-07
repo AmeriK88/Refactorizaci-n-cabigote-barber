@@ -1,49 +1,102 @@
 {% extends "base.html" %}
-{% load static tz %}
+{% load static tz widget_tweaks %}
+
+{% block title %}Editar Cita · Ca’Bigote{% endblock %}
 
 {% block content %}
 {% localtime on %}
-<div class="card shadow bg-light text-center mb-3">
-  <h2>Editar Cita</h2>
-</div>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-12 col-lg-12 col-xl-12">
 
-<div class="container mt-5">
-    <form method="post">
-        {% csrf_token %}
+      {# ────────── CABECERA #}
 
-        <!-- Display form errors -->
-        {% if form.non_field_errors or form.errors %}
-            <div class="alert alert-error">
-                {% if form.non_field_errors %}
-                    {{ form.non_field_errors }}
-                {% endif %}
-
-                {% for field in form %}
-                    {% if field.errors %}
-                        {% for error in field.errors %}
-                            <div>{{ error }}</div>
-                        {% endfor %}
-                    {% endif %}
-                {% endfor %}
+        <!-- ✏️ Tarjeta -->
+        <div class="card shadow-sm">
+          <div class="card-header gradiente-header text-center">
+            <h4 class="mb-0">
+              <i class="fas fa-edit me-2 text-primary"></i> Editar Cita
+            </h4>
+          </div>
+        
+          {# 🔔 errores globales #}
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+              {{ form.non_field_errors }}
             </div>
-        {% endif %}
+          {% endif %}
 
-        {% for field in form %}
-            <div class="form-group {% if field.errors %}is-invalid{% endif %}">
-                <strong>{{ field.label_tag }}</strong>
-                {{ field }}
+          <form method="post" class="needs-validation animate-on-load" novalidate>
+            {% csrf_token %}
+
+            {# ------- SERVICIO ------- #}
+            <div class="mb-3">
+              <label class="form-label" for="id_servicio">💈 Servicio</label>
+              {{ form.servicio|add_class:"form-select form-select-lg" }}
+              {% for error in form.servicio.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
             </div>
-        {% endfor %}
 
-        <button type="submit" class="btn btn-primary">Reservar</button>
-    </form>
+            {# ------- PRODUCTO (opcional) ------- #}
+            <div class="mb-3">
+              <label class="form-label" for="id_producto">🛍️ Producto (opcional)</label>
+              {{ form.producto|add_class:"form-select form-select-lg" }}
+              {% for error in form.producto.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            {# ------- FECHA ------- #}
+            <div class="mb-3">
+              <label class="form-label" for="id_fecha">📆 Fecha</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+                {{ form.fecha|add_class:"form-control form-control-lg" }}
+              </div>
+              {% for error in form.fecha.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            {# ------- HORA ------- #}
+            <div class="mb-3">
+              <label class="form-label" for="id_hora">⏰ Hora</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-clock"></i></span>
+                {{ form.hora|add_class:"form-select form-select-lg" }}
+              </div>
+              {% for error in form.hora.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            {# ------- COMENTARIO ------- #}
+            <div class="mb-3">
+              <label class="form-label" for="id_comentario">📝 Comentario</label>
+              {{ form.comentario|add_class:"form-control form-control-lg" }}
+              {% for error in form.comentario.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            {# ------- BOTÓN ------- #}
+            <button type="submit" class="btn btn-primary btn-lg w-100">
+              💾 Guardar Cambios
+            </button>
+          </form>
+      </div>
+    </div>
+  </div>
 </div>
 {% endlocaltime %}
+
+{# ────────── DATA para tu JS de bloqueo de fechas #}
 <script>
-    const fechasOcupadas = {{ fechas_ocupadas|safe }};
-    const fechasBloqueadas = {{ fechas_bloqueadas|safe }};
-    const horasOcupadasPorFecha = {{ horas_ocupadas_por_fecha|safe }};
-    const bloqueos_por_fecha = {{ bloqueos_por_fecha|safe }};
+  const fechasOcupadas        = {{ fechas_ocupadas|safe }};
+  const fechasBloqueadas      = {{ fechas_bloqueadas|safe }};
+  const horasOcupadasPorFecha = {{ horas_ocupadas_por_fecha|safe }};
+  const bloqueos_por_fecha    = {{ bloqueos_por_fecha|safe }};
 </script>
 <script src="{% static 'js/disableDates.js' %}"></script>
 {% endblock %}

@@ -1,28 +1,32 @@
+{# templates/admin/custom_report.html #}
 {% extends "admin/base_site.html" %}
-{% load i18n %}
+{% load static i18n %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'admin/css/adminCSS.css' %}">
+{% endblock %}
 
 {% block content %}
 <div class="content">
-    <h1>{% trans "Reporte Mensual" %}</h1>
+    <h1>{% trans "Monthly Report" %}</h1>
 
-    <!-- Ajusta la URL de descarga según tu caso 
-         si usas la fórmula con app/model y name='descargar_reporte', 
-         puede quedar: 'admin:reports_reportemensual_descargar_reporte' -->
-    <a href="{% url 'admin:reports_reportemensual_descargar_reporte' %}" class="btn btn-primary">
-        {% trans "Descargar Reporte Completo" %}
+    <a href="{% url 'admin:descargar_reporte' %}" class="btn-admin-action">
+        📥 {% trans "Download report" %}
     </a>
 
     {% for reporte in reportes %}
-        <h2>{% trans "Reporte para" %} {{ reporte.mes|date:"F Y" }}</h2>
-        <p><strong>{% trans "Total de Citas:" %}</strong> {{ reporte.total_citas }}</p>
-        <p><strong>{% trans "Ingresos Totales:" %}</strong> {{ reporte.ingresos_totales }}</p>
-        <p><strong>{% trans "Ingresos Proyectados:" %}</strong> {{ reporte.ingresos_proyectados }}</p>
+        <h2>{% trans "Report for" %} {{ reporte.mes|date:"F Y" }}</h2>
+        <p><strong>{% trans "Total appointments:" %}</strong> {{ reporte.total_citas }}</p>
+        <p><strong>{% trans "Total revenue:" %}</strong> {{ reporte.ingresos_totales }}</p>
+        <p><strong>{% trans "Projected revenue:" %}</strong> {{ reporte.ingresos_proyectados }}</p>
         <hr>
     {% endfor %}
 
     <br>
-    <a href="{% url 'admin:reports_reportemensual_changelist' %}" class="btn btn-secondary">
-        {% trans "Volver" %}
+    <a href="{% url 'admin:reports_reportemensual_changelist' %}"
+       class="btn btn-secondary">
+        {% trans "Back" %}
     </a>
 </div>
 {% endblock %}

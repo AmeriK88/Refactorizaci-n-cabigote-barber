@@ -1,11 +1,29 @@
 from django.contrib import admin
+from django.utils.html import format_html
 from .models import MensajeEspecial, ContadorVisitas
+
 
 @admin.register(MensajeEspecial)
 class MensajeEspecialAdmin(admin.ModelAdmin):
-    list_display = ('titulo', 'activo', 'fecha_inicio', 'fecha_fin')
-    list_filter = ('activo',)
+    """
+    Listado simple con icono de estado.
+    """
+    list_display = ('titulo', 'activo_icon', 'fecha_inicio', 'fecha_fin')
+    list_filter  = ('activo',)
+    search_fields = ('titulo',)
+
+    # columna personalizada para mostrar ✔ / ✖
+    @admin.display(description='Activo', ordering='activo')
+    def activo_icon(self, obj):
+        return '✔️' if obj.activo else '❌'
+
+    class Media:
+        css = {'all': ('admin/css/custom_admin.css',)}
+
 
 @admin.register(ContadorVisitas)
 class ContadorVisitasAdmin(admin.ModelAdmin):
     pass
+
+    class Media:
+        css = {'all': ('admin/css/adminCSS.css',)}

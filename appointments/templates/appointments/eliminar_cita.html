@@ -2,8 +2,11 @@
 
 {% block content %}
   <div class="card shadow-sm bg-light text-center p-4 mb-4">
-    <h2 class="mb-0 text-danger">Cancelar Cita</h2>
+    <h2 class="mb-0 text-danger">
+      <i class="bi bi-x-circle-fill me-2"></i> Cancelar Cita
+    </h2>
   </div>
+
   {% if error_message %}
     <div class="alert alert-error text-center" role="alert">
       {{ error_message }}

@@ -103,12 +103,14 @@ main {
 form {
     margin: 0 auto;
     margin-bottom: 2rem;
-    max-width: 650px;
+    max-width: 100dvw;
     padding: 1rem;
     background-color: var(--form-background);
     border-radius: 12px;
     box-shadow: var(--card-shadow);
     transition: transform 0.3s ease;
+    text-align: start;
+    font-weight: 600;
 }
 
 form:hover {
@@ -169,13 +171,28 @@ img:hover {
     flex-direction: column;
     justify-content: space-between;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    text-align: center;
     margin: auto;
+
 }
+
 
 .card:hover, .card-user-profile:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.card-header {
+  position: relative;
+  padding-left: 1.5rem;
+}
+.card-header::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0;
+  width: 4px; height: 100%;
+  background: linear-gradient(180deg, #833ab4, #fd1d1d);
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
 }
 
 .card img, .card-user-profile img {
@@ -192,12 +209,21 @@ img:hover {
 .card-body, .card-user-profile .card-body {
     padding: 1.5rem;
     flex: 1;
+    text-align: center;
 }
 
-.card-title, .card-text {
+.card-text {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    font-weight: 500}
+
+.card-title  {
     font-size: 1.1rem;
     margin-bottom: 1rem;
+    font-weight: 700
 }
+
+
 
 .card-text {
     background-color: #f8f9fa;
@@ -205,7 +231,7 @@ img:hover {
     border-radius: 8px;
     margin-bottom: 10px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    text-align: justify;
 }
 
 /* User Profile Specific */
@@ -527,8 +553,8 @@ footer a:hover {
 .visits-counter-card {
     background: linear-gradient(135deg, var(--form-background) 0%, var(--primary-color) 100%);
     border-radius: 10px;
-    box-shadow: var(--card-shadow); /* Usa tu variable para la sombra */
-    color: var(--secondary-color);  /* Texto claro, por ejemplo */
+    box-shadow: var(--card-shadow);
+    color: var(--secondary-color);  
     width: 100%;
     padding: 1.5rem;
     text-align: center;
@@ -577,7 +603,7 @@ footer a:hover {
   
 
 /* Responsive Styles for Small Screens */
-@media (max-width: 576px) {
+@media (max-width: 425px) {
     .form-check-inline {
         display: block;
         margin-bottom: 0.5rem;
@@ -588,6 +614,25 @@ footer a:hover {
         margin-top: 10px;
         display: block;
     }
+
+      /* 1️⃣  El formulario ocupa todo el ancho disponible */
+    form {
+        max-width: 100%;   
+        padding: 0.75rem;  
+    }
+
+    .metadata {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+    .metadata span {
+    flex: 1 1 50%;      
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
 }
 
 /* Animación del Spinner */

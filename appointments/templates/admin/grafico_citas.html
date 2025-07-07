@@ -1,10 +1,21 @@
 {% extends "admin/base_site.html" %}
 
 {% block content %}
-<div class="container">
-    <h2 class="text-center mt-4">Gráfico de Citas</h2>
-    <div class="grafico-container" style="max-width: 100%; overflow-x: auto; text-align: center; margin: 20px auto;">
-        <img src="{{ grafico }}" alt="Gráfico de Citas" style="max-width: 100%; height: auto; border: 2px solid #ddd; border-radius: 5px;">
+  <div style="text-align:center; padding:20px;">
+    <h1 style="margin-bottom:20px;">📊 Citas último año</h1>
+    <div style="
+      display:inline-block;
+      max-width:90%;
+      border:1px solid #ccc;
+      border-radius:8px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.15);
+      overflow:hidden;
+    ">
+      <img 
+        src="{{ grafico }}"
+        alt="Gráfico de Citas"
+        style="width:100%; height:auto; display:block;"
+      >
     </div>
-</div>
+  </div>
 {% endblock %}

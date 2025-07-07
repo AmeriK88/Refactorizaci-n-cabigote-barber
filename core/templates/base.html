@@ -8,6 +8,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- APP_VERSION -->
+    <meta name="application-version" content="{{ APP_VERSION }}">
+
+
     <!-- SEO & Social -->
     <meta name="description" content="Barbería Ca'Bigote: Servicios de alta calidad para tu cuidado personal. Reserva tu cita hoy.">
     <meta name="keywords" content="barbería, cuidado personal, corte de pelo, afeitado, estilo, Ca'Bigote">
@@ -67,7 +71,7 @@
         <div id="loader" class="visible"></div>
 
         <!-- Cookie modal -->
-        <div class="modal fade" id="cookiesModal" tabindex="-1" role="dialog" aria-labelledby="cookiesModalLabel" aria-hidden="true">
+        <div class="modal fade" id="cookiesModal" tabindex="-1" role="dialog" aria-labelledby="cookiesModalLabel" inert aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -77,8 +81,8 @@
                         <p>Este sitio utiliza cookies para mejorar su experiencia. Al continuar navegando, aceptas el uso de cookies. Puedes encontrar más información en nuestra <a href="#" id="privacyPolicyLink">política de privacidad</a>.</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Rechazar</button>
-                        <button type="button" class="btn btn-primary">Aceptar</button>
+                        <button id="rejectCookiesBtn" class="btn btn-outline-secondary" data-bs-dismiss="modal">Rechazar</button>
+                        <button id="acceptCookiesBtn" class="btn btn-primary">Aceptar</button>
                     </div>
                 </div>
             </div>
@@ -265,7 +269,6 @@
                         <div class="counter-label">Visitas Totales</div>
                     </div>                      
                     
-            
                     <hr class="border-light">
                     <!-- Copyright -->
                     <div class="row mt-3">
@@ -277,6 +280,11 @@
                               </p>                              
                         </div>
                     </div>
+                    <hr class="border-light">
+                    <!-- Versión -->
+                <div class="text-center mt-2">
+                    <small>v{{ APP_VERSION }}</small>
+                </div>
                 </div>
             </footer>            
             
@@ -291,10 +299,10 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js"></script>
 
         <!-- Scripts personalizados-->
-        <script src="{% static 'js/Loader.js' %}"></script>
-        <script src="{% static 'js/Cookies_modal.js' %}"></script>
-        <script src="{% static 'js/Animations.js' %}"></script>
-        <script src="{% static 'js/historial-citas.js' %}"></script>
-        <script src="{% static 'js/special_message.js' %}"></script>
+        <script src="{% static 'js/Loader.js' %}" defer></script>
+        <script src="{% static 'js/Cookies_modal.js' %}" defer></script>
+        <script src="{% static 'js/Animations.js' %}" defer></script>
+        <script src="{% static 'js/historial-citas.js' %}" defer></script>
+        <script src="{% static 'js/special_message.js' %}" defer></script>
     </body>
 </html>

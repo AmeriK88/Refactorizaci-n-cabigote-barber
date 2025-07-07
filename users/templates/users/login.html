@@ -1,66 +1,85 @@
 {% extends 'base.html' %}
+{% load static tz widget_tweaks %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Login · Ca’Bigote{% endblock %}
 
 {% block content %}
-    <div class="mb-5 card shadow-sm bg-white text-center p-4 border-0">
-        <h2 class="h4 fw-bold text-secondary mb-0">
-            <i class="fas fa-sign-in-alt me-2 text-primary"></i> Iniciar Sesión
-        </h2>
-    </div>
+{% localtime on %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-12 col-lg-12 col-xl-12">
+      <div class="card shadow-sm">
+        <div class="card-header gradiente-header text-center">
+          <h4 class="mb-0">
+            <i class="fas fa-sign-in-alt text-primary me-2"></i> Iniciar Sesión
+          </h4>
+        </div>
+          <form method="post" class="needs-validation animate-on-load" novalidate>
+            {% csrf_token %}
 
-    <form method="post" class="animate-on-load">
-        {% csrf_token %}
-        
-        {% if form.non_field_errors %}
-        <div class="alert alert-danger">
-            {{ form.non_field_errors }}
-        </div>
-        {% endif %}
-        
-        <div class="form-group {% if form.username.errors %}is-invalid{% endif %}">
-            <strong>{{ form.username.label_tag }}</strong>
-            {{ form.username }}
-            {% for error in form.username.errors %}
-            <div class="invalid-feedback">
-                {{ error }}
-            </div>
-            {% endfor %}
-        </div>
-        
-        <div class="form-group {% if form.password.errors %}is-invalid{% endif %}">
-            <strong>{{ form.password.label_tag }}</strong>
-            {{ form.password }}
-            {% for error in form.password.errors %}
-            <div class="invalid-feedback">
-                {{ error }}
-            </div>
-            {% endfor %}
-        </div>
-        
-        <div class="form-group">
-            <strong>{{ form.captcha.label }}</strong>
-            {{ form.captcha }}
-            {% if form.captcha.errors %}
-                <div class="alert alert-danger">{{ form.captcha.errors }}</div>
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+              </div>
             {% endif %}
-        </div>
-        <button type="submit" class="btn btn-primary">Login</button>
-    </form>
 
-    <div class="card bg-light border-0 text-center mt-4 p-4 shadow-sm">
-        <div class="mb-3">
-            <p class="mb-2">¿No tienes cuenta?</p>
-            <a href="{% url 'users:register' %}" class="btn btn-primary btn-login" aria-label="Ir a registrarse">
-                <i class="fas fa-user-plus"></i> Registrarse
-            </a>
-        </div>
-        <div>
-            <p class="mb-0">¿Olvidaste tu contraseña?</p>
-            <a href="{% url 'password_reset' %}" class="btn btn-outline-secondary btn-login" aria-label="Recuperar contraseña">
-                <i class="fas fa-key"></i> Recuperar Contraseña
-            </a>
+            <div class="mb-3">
+              <label for="{{ form.username.id_for_label }}" class="form-label fw-bold">
+                {{ form.username.label }}
+              </label>
+              {{ form.username|add_class:"form-control form-control-lg" }}
+              {% for err in form.username.errors %}
+                <div class="invalid-feedback d-block">{{ err }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.password.id_for_label }}" class="form-label fw-bold">
+                {{ form.password.label }}
+              </label>
+              {{ form.password|add_class:"form-control form-control-lg" }}
+              {% for err in form.password.errors %}
+                <div class="invalid-feedback d-block">{{ err }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.captcha.id_for_label }}" class="form-label fw-bold">
+                    {{ form.captcha.label }}
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text p-0 border-0 bg-transparent">
+                    {{ form.captcha.image }}
+                    </span>
+                    {{ form.captcha }}
+                </div>
+                {% for err in form.captcha.errors %}
+                    <div class="invalid-feedback d-block">{{ err }}</div>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg w-100 mt-4">
+              Entrar
+            </button>
+          </form>
+      </div>
+
+        <div class="card bg-light border-0 text-center mt-4 p-4 shadow-sm">
+            <div class="mb-3">
+                <p class="mb-2">¿No tienes cuenta?</p>
+                <a href="{% url 'users:register' %}" class="btn btn-primary btn-login" aria-label="Ir a registrarse">
+                    <i class="fas fa-user-plus"></i> Registrarse
+                </a>
+            </div>
+            <div>
+                <p class="mb-0">¿Olvidaste tu contraseña?</p>
+                <a href="{% url 'password_reset' %}" class="btn btn-outline-secondary btn-login" aria-label="Recuperar contraseña">
+                    <i class="fas fa-key"></i> Recuperar Contraseña
+                </a>
+            </div>
         </div>
     </div>
-
+  </div>
+</div>
+{% endlocaltime %}
 {% endblock %}

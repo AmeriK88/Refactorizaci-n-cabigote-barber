@@ -2,19 +2,31 @@ from django.contrib import admin
 from django.utils.html import format_html
 from .models import Servicio
 
+@admin.register(Servicio)
 class ServicioAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'descripcion', 'precio', 'mostrar_imagen') 
-    search_fields = ('nombre',)
-    ordering = ('nombre',)
+    list_display = ('nombre', 'descripcion', 'precio', 'imagen_preview')
+    search_fields  = ('nombre',)
+    ordering       = ('nombre',)
 
-    def mostrar_imagen(self, obj):
+    def imagen_preview(self, obj):
         if obj.imagen:
-            return format_html('<img src="{}" style="max-height: 100px; max-width: 100px;" />', obj.imagen.url)
-        return "No hay imagen"
+            # la miniatura es un <img> con clases CSS para redondear, sombra y hover,
+            # y envuelto en un <a> que abre la imagen completa en una pestaña nueva
+            return format_html(
+                '<a href="{0}" target="_blank">'
+                '  <img src="{0}" class="admin-thumb" alt="{1}" />'
+                '</a>',
+                obj.imagen.url,
+                obj.nombre
+            )
+        return format_html('<span class="text-muted">(sin imagen)</span>')
+    imagen_preview.short_description = 'Imagen'
 
-    mostrar_imagen.short_description = 'Imagen'  
+    class Media:
+        css = {
+            'all': ('admin/css/adminCSS.css',)
+        }
 
-admin.site.register(Servicio, ServicioAdmin)
 
 # Autor: José Félix Gordo Castaño
 # Copyright (C) 2024 José Félix Gordo Castaño

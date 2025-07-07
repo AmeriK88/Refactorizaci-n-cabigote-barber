@@ -20,7 +20,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', default=False)
+DEBUG = env.bool('DEBUG', default=False) # type: ignore
 
 
 ALLOWED_HOSTS = [
@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'users',
     'colorfield',
     'core',
+    'widget_tweaks', 
 ]
 
 
@@ -88,11 +89,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'cabigote.wsgi.application'
 
 
+"""
 # Configuración de la base de datos
 DATABASES = {
     'default': env.db(
         'DATABASE_URL',
-        default=None,
+        default=None, # type: ignore
     )
 }
 
@@ -119,7 +121,7 @@ DATABASES = {
         'PORT': env('DB_PORT'),
     }
 }
-"""
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -162,9 +164,9 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 
 # Leer y procesar ADMINS desde el archivo .env
-admins_env = env('ADMINS', default='')
+admins_env = env('ADMINS', default='') # type: ignore
 
-ADMINS = [tuple(admin.split(',')) for admin in admins_env.split(';')] if admins_env else []
+ADMINS = [tuple(admin.split(',')) for admin in admins_env.split(';')] if admins_env else [] # type: ignore
 
 # Configuraciones capchat
 RECAPTCHA_PUBLIC_KEY = env('RECAPTCHA_PUBLIC_KEY')
@@ -246,3 +248,5 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Banned usernames
 BLACKLISTED_USERNAMES = ['admin', 'root', 'superuser', 'test', 'cabigote']
+
+APP_VERSION = "2.3.1"  

@@ -153,6 +153,11 @@ class ReporteMensualAdmin(admin.ModelAdmin):
             f"✅ Reporte mensual generado/actualizado para {mes_inicial.strftime('%B %Y')}"
         )
 
+    class Media:
+        css = {
+            'all': ('admin/css/adminCSS.css',)
+        }
+
 # ------------------------------------------------------------------------------
 # Formularios para uso en vistas custom (opcional)
 # ------------------------------------------------------------------------------
@@ -197,7 +202,14 @@ class ReporteDiarioAdmin(admin.ModelAdmin):
         """
         from .utils import calcular_reporte_diario
         calcular_reporte_diario(obj.dia)  # Generar el reporte con la fecha seleccionada
-        self.message_user(request, f"✅ Reporte generado para el día {obj.dia.strftime('%d/%m/%Y')}")
+        if not change:
+            self.message_user(request, f"✅ Reporte generado para el día {obj.dia.strftime('%d/%m/%Y')}")
+
+    class Media:
+        css = {
+            'all': ('admin/css/adminCSS.css',)
+        }
+
 
 # ------------------------------------------------------------------------------
 # Metadata del archivo

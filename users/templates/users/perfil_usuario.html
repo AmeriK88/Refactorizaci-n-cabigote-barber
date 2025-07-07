@@ -10,47 +10,56 @@
 </div>
 
 <div class="container mt-5">
-    <div class="mb-5 card shadow-sm bg-light text-center p-3 border-0">
-        <h2 class="h4 fw-bold text-secondary mb-0">
+    <div class="mb-5 card-header gradiente-header shadow-sm bg-light text-center p-3 border-0">
+        <h2 class="h4 fw-bold mb-0">
             <i class="fas fa-user-circle me-2 text-primary"></i> Perfil de Usuario
         </h2>
     </div>        
 
     <!-- Sección de estadísticas renovada -->
-    <div class="container mb-5 animate-on-load">
-        <div class="row">
-            <!-- Total de citas -->
-            <div class="col-md-4 mb-3">
-                <div class="card shadow-sm border-primary">
-                    <div class="card-body text-center">
-                        <i class="fas fa-calendar-alt fa-3x text-primary"></i>
-                        <h5 class="card-title mt-2">Total de Citas</h5>
-                        <p class="card-text display-6">{{ total_citas }}</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Total gastado -->
-            <div class="col-md-4 mb-3">
-                <div class="card shadow-sm border-success">
-                    <div class="card-body text-center">
-                        <i class="fas fa-euro-sign fa-3x text-success"></i>
-                        <h5 class="card-title mt-2">Total Gastado</h5>
-                        <p class="card-text display-6">{{ total_gastado }} €</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Servicio favorito -->
-            <div class="col-md-4 mb-3">
-                <div class="card shadow-sm border-warning">
-                    <div class="card-body text-center">
-                        <i class="fas fa-star fa-3x text-warning"></i>
-                        <h5 class="card-title mt-2">Servicio Favorito</h5>
-                        <p class="card-text display-6">{{ favorite_service }}</p>
-                    </div>
-                </div>
-            </div>
+<div class="container mb-5 animate-on-load">
+  <div class="row align-items-stretch"><!-- ① add align-items-stretch -->
+    <!-- Total de citas -->
+    <div class="col-md-4 mb-3">
+      <div class="card h-100 shadow-sm border-primary"><!-- ② h-100 on card -->
+        <div class="card-body text-center"><!-- no h-100 aquí -->
+          <i class="fas fa-calendar-alt fa-3x text-primary"></i>
+          <h5 class="card-title mt-2">Nº Total Citas</h5>
+          <p class="card-text display-6  text-center mt-auto"><!-- push down -->
+            {{ total_citas }}
+          </p>
         </div>
+      </div>
     </div>
+
+    <!-- Total gastado -->
+    <div class="col-md-4 mb-3">
+      <div class="card h-100 shadow-sm border-success">
+        <div class="card-body text-center">
+          <i class="fas fa-euro-sign fa-3x text-success"></i>
+          <h5 class="card-title mt-2">Total Gastado</h5>
+          <p class="card-text display-6 text-center mt-auto">
+            {{ total_gastado }} €
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Servicio favorito -->
+    <div class="col-md-4 mb-3">
+      <div class="card h-100 shadow-sm border-warning">
+        <div class="card-body text-center">
+          <i class="fas fa-star fa-3x text-warning"></i>
+          <h5 class="card-title mt-2">Servicio Favorito</h5>
+          <p class="card-text display-6  text-center mt-auto">
+            {{ favorite_service }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
     {% if citas %}
