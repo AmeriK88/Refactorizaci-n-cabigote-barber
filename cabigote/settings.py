@@ -163,7 +163,7 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 
 # Leer y procesar ADMINS desde el archivo .env
-admins_env = env('ADMINS', default='') 
+admins_env = env('ADMINS', default='')   # type: ignore[name-defined]
 
 ADMINS = [tuple(admin.split(',')) for admin in admins_env.split(';')] if admins_env else [] 
 
