@@ -20,7 +20,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', default=False) # type: ignore
+DEBUG = env.bool('DEBUG', default=False) 
 
 
 ALLOWED_HOSTS = [
@@ -164,7 +164,7 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 
 # Leer y procesar ADMINS desde el archivo .env
-admins_env = env('ADMINS', default='') # type: ignore
+admins_env = env('ADMINS', default='') 
 
 ADMINS = [tuple(admin.split(',')) for admin in admins_env.split(';')] if admins_env else [] # type: ignore
 
