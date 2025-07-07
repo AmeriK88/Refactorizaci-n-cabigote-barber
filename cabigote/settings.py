@@ -89,7 +89,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'cabigote.wsgi.application'
 
 
-"""
 # Configuración de la base de datos
 DATABASES = {
     'default': env.db(
@@ -121,7 +120,7 @@ DATABASES = {
         'PORT': env('DB_PORT'),
     }
 }
-
+"""
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -166,7 +165,7 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 # Leer y procesar ADMINS desde el archivo .env
 admins_env = env('ADMINS', default='') 
 
-ADMINS = [tuple(admin.split(',')) for admin in admins_env.split(';')] if admins_env else [] # type: ignore
+ADMINS = [tuple(admin.split(',')) for admin in admins_env.split(';')] if admins_env else [] 
 
 # Configuraciones capchat
 RECAPTCHA_PUBLIC_KEY = env('RECAPTCHA_PUBLIC_KEY')
