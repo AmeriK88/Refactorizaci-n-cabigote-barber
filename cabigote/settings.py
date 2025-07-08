@@ -20,7 +20,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', default=False) 
+DEBUG = env.bool('DEBUG', default=False) # type: ignore[arg-type]
 
 
 ALLOWED_HOSTS = [
@@ -167,7 +167,7 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 # Leer y procesar ADMINS desde el archivo .env
 admins_env = env('ADMINS', default='')   # type: ignore[name-defined]
 
-ADMINS = [tuple(admin.split(',')) for admin in admins_env.split(';')] if admins_env else [] 
+ADMINS = [tuple(admin.split(',')) for admin in admins_env.split(';')] if admins_env else []  # type: ignore[arg-type]
 
 # Configuraciones capchat
 RECAPTCHA_PUBLIC_KEY = env('RECAPTCHA_PUBLIC_KEY')

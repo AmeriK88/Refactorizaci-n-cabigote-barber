@@ -1,6 +1,6 @@
 {# =============================== EXT & LOADS  =============================== #}
 {% extends "base.html" %}
-{% load static tz widget_tweaks %}  { sigue cargado por si lo usas en otra vista #}
+{% load static tz widget_tweaks %}  {# sigue cargado por si lo usas en otra vista #}
 
 {% block title %}Registro · Ca’Bigote{% endblock %}
 
@@ -11,7 +11,7 @@
 {# -- contenedor fluido para que el formulario pueda crecer en pantallas grandes ---- #}
 <div class="container-fluid py-5">
   <div class="row justify-content-center">
-    <div class="col-md-12 col-lg-12 col-xl-12">
+    <div class="col-sm-12 col-lg-12 col-xl-12">
 
       {# =========================== MAIN CARD  ============================ #}
       <div class="card shadow-sm">
@@ -45,63 +45,58 @@
 
           {# ----------------------- NAME  ------------------------------------ #}
           <div class="mb-3">
-            {{ form.nombre.label_tag }}
-            {{ form.nombre }}
-            {{ form.nombre.errors }}
+            <label for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label>
+            {{ form.nombre|add_class:"form-control form-control-lg" }}
+            {% for err in form.nombre.errors %}<div class="invalid-feedback d-block">{{ err }}</div>{% endfor %}
           </div>
 
           {# ----------------------- LAST NAME  ---------------------------------- #}
           <div class="mb-3">
-            {{ form.apellido.label_tag }}
-            {{ form.apellido }}
-            {{ form.apellido.errors }}
+            <label for="{{ form.apellido.id_for_label }}">{{ form.apellido.label }}</label>
+            {{ form.apellido|add_class:"form-control form-control-lg" }}
+            {% for err in form.apellido.errors %}<div class="invalid-feedback d-block">{{ err }}</div>{% endfor %}
           </div>
 
           {# ----------------------- USERNAME  ----------------------------------- #}
           <div class="mb-3">
-            {{ form.username.label_tag }}
-            {{ form.username }}
-            {{ form.username.errors }}
+            <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+            {{ form.username|add_class:"form-control form-control-lg" }}
+            {% for err in form.username.errors %}<div class="invalid-feedback d-block">{{ err }}</div>{% endfor %}
           </div>
 
           {# ----------------------- EMAIL  -------------------------------------- #}
           <div class="mb-3">
-            {{ form.email.label_tag }}
-            {{ form.email }}
-            {{ form.email.errors }}
+            <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+            {{ form.email|add_class:"form-control form-control-lg" }}
+            {% for err in form.email.errors %}<div class="invalid-feedback d-block">{{ err }}</div>{% endfor %}
           </div>
 
           {# ----------------------- telf  ----------------------------------- #}
           <div class="mb-3">
-            {{ form.phone.label_tag }}
-            {{ form.phone }}
-            {{ form.phone.errors }}
+            <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+            {{ form.phone|add_class:"form-control form-control-lg" }}
+            {% for err in form.phone.errors %}<div class="invalid-feedback d-block">{{ err }}</div>{% endfor %}
           </div>
 
           {# ----------------------- PASSWORD 1  --------------------------------- #}
           <div class="mb-3">
-            {{ form.password1.label_tag }}
-            {{ form.password1 }}
-            {{ form.password1.errors }}
+            <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+            {{ form.password1|add_class:"form-control form-control-lg" }}
+            {% for err in form.password1.errors %}<div class="invalid-feedback d-block">{{ err }}</div>{% endfor %}
           </div>
 
           {# ----------------------- PASSWORD 2  --------------------------------- #}
           <div class="mb-3">
-            {{ form.password2.label_tag }}
-            {{ form.password2 }}
-            {{ form.password2.errors }}
+            <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+            {{ form.password2|add_class:"form-control form-control-lg" }}
+            {% for err in form.password2.errors %}<div class="invalid-feedback d-block">{{ err }}</div>{% endfor %}
           </div>
 
           {# -----------------------  CAPTCHA  ------------------------------------ #}
           <div class="mb-3">
-            {{ form.captcha.label_tag }}
-            <div class="input-group">
-              <span class="input-group-text p-0 border-0 bg-transparent">
-                {{ form.captcha.image }}
-              </span>
-              {{ form.captcha }}
-            </div> 
-            <div class="invalid-feedback d-block">{{ form.captcha.errors }}</div>
+            {# Deja que Django renderice etiqueta, imagen e input sincronizados #}
+            {{ form.captcha }}
+            {% for err in form.captcha.errors %}<div class="invalid-feedback d-block">{{ err }}</div>{% endfor %}
           </div>
 
           {# ----------------------- BTN SUBMIT  ------------------------------- #}
@@ -116,8 +111,8 @@
         <div class="text-center mt-4">
           <p class="mb-2">¿Ya tienes cuenta?</p>
           <a href="{% url 'users:login' %}"
-             class="btn btn-primary btn-login btn-sm me-2 m-3 w-sm-auto">
-            <i class="fas fa-sign-in-alt"></i> Ya tengo cuenta
+             class="btn btn-primary btn-login btn-sm w-100 w-sm-auto mx-auto mb-3">
+            <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
           </a>
         </div>
       </div>
