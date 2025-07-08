@@ -7,7 +7,7 @@ from django.utils.timezone import now
 @receiver(post_save, sender=Cita)
 @receiver(post_delete, sender=Cita)
 def actualizar_reporte(sender, instance, **kwargs):
-    # Limpiar y recalcular reportes mensuales automáticamente
+    # CLEAN & RE-CALCULATE REPORTS
     limpiar_reportes()
     calcular_reporte(now().date().replace(day=1))
 

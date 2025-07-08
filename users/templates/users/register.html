@@ -8,7 +8,6 @@
 {% block content %}
 {% localtime on %}
 
-{# -- contenedor fluido para que el formulario pueda crecer en pantallas grandes ---- #}
 <div class="container-fluid py-5">
   <div class="row justify-content-center">
     <div class="col-sm-12 col-lg-12 col-xl-12">
@@ -94,7 +93,6 @@
 
           {# -----------------------  CAPTCHA  ------------------------------------ #}
           <div class="mb-3">
-            {# Deja que Django renderice etiqueta, imagen e input sincronizados #}
             {{ form.captcha }}
             {% for err in form.captcha.errors %}<div class="invalid-feedback d-block">{{ err }}</div>{% endfor %}
           </div>

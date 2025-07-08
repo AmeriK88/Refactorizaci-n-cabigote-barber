@@ -90,7 +90,7 @@ WSGI_APPLICATION = 'cabigote.wsgi.application'
 
 
 
-# Configuración de la base de datos
+# DB CONFIG
 DATABASES = {
     'default': env.db(
         'DATABASE_URL',
@@ -101,7 +101,7 @@ DATABASES = {
 if not DATABASES['default']:
     raise ValueError("DATABASE_URL no está configurada en las variables de entorno")
 
-# Forzar el charset utf8mb4
+# FORCE CHARSET utf8mb4
 DATABASES['default']['OPTIONS'] = {
     'charset': 'utf8mb4',
     'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
@@ -141,7 +141,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization & config zona horaria
+# Internationalization & CONFIG TIME ZONE
 LANGUAGE_CODE = 'es'
 
 LANGUAGES = [
@@ -155,7 +155,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Configuración real para producción.
+# EMAIL CONFIG PRODUCTION
 EMAIL_BACKEND = env('EMAIL_BACKEND') 
 EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_PORT = env('EMAIL_PORT')
@@ -164,12 +164,12 @@ EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 
-# Leer y procesar ADMINS desde el archivo .env
+# READS & PROCESS ADMINS FROM .ENV
 admins_env = env('ADMINS', default='')   # type: ignore[name-defined]
 
 ADMINS = [tuple(admin.split(',')) for admin in admins_env.split(';')] if admins_env else []  # type: ignore[arg-type]
 
-# Configuraciones capchat
+# CAPCHA CONFIG
 RECAPTCHA_PUBLIC_KEY = env('RECAPTCHA_PUBLIC_KEY')
 RECAPTCHA_PRIVATE_KEY = env('RECAPTCHA_PRIVATE_KEY')
 
@@ -178,36 +178,31 @@ LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/users/perfil/'  
 LOGOUT_REDIRECT_URL = '/' 
 
-# Archivos subidos por el usuario (Media)
+# MEDIA FILES CONFIG (UPLOADED FILES WILL BE REMOVED ON EVERY DEPLOY!)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Archivos estáticos (CSS, JavaScript, Imágenes)
+# STATIC FILE
 STATIC_URL = '/static/'
 
-# Directorio donde se almacenarán los archivos estáticos recolectados (con collectstatic)
+# DIRECTORIES FOR STATIC FILES
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Configuración adicional para WhiteNoise
+# WHITENOISE CONFIG
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-
-# Configuración de WhiteNoise para media
 WHITENOISE_ALLOW_ALL_ORIGINS = True
 WHITENOISE_MEDIA_PREFIX = 'media'
 
-# Define la ruta absoluta para el archivo de logs
+# LOGGING CONFIGURATION
 LOG_FILE_DIR = os.path.join(BASE_DIR, 'logs')
 LOG_FILE_PATH = os.path.join(LOG_FILE_DIR, 'log.error')
 
-# Verifica si el directorio de logs existe; si no, créalo
 if not os.path.exists(LOG_FILE_DIR):
     os.makedirs(LOG_FILE_DIR)
 
-# Config logging de errores
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -232,10 +227,10 @@ LOGGING = {
     },
 }
 
-# Default primary key field type
+# DEFAULT AUTO FIELD
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Config CSRF token 
+# CSRF CONFIGURATION
 CSRF_TRUSTED_ORIGINS = [
     'https://if9hv3ou.up.railway.app',
     'https://refactorizaci-n-cabigote-barber-production.up.railway.app',
@@ -247,7 +242,7 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Banned usernames
+# BLACKLISTED USERNAMES
 BLACKLISTED_USERNAMES = ['admin', 'root', 'superuser', 'test', 'cabigote']
 
 APP_VERSION = "2.3.1"  

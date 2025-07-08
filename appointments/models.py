@@ -24,7 +24,6 @@ class Cita(models.Model):
 
     def some_method_using_report(self):
         from reports.utils import calcular_reporte
-        # Ahora puedes usar calcular_reporte aquí
 
 
 class FechaBloqueada(models.Model):

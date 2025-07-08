@@ -7,22 +7,22 @@ from services.models import Servicio
 from products.models import Imagen
 
 # ------------------------------------------------------------------
-# Campos personalizados para etiquetas amigables
+# PERSONALIZED CHOICE FIELDS
 # ------------------------------------------------------------------
 class ServicioChoiceField(forms.ModelChoiceField):
     """Despliega nombre y precio del servicio."""
     def label_from_instance(self, obj):
-        precio = "€N/A" if obj.precio is None else f"€{obj.precio:.2f}"
-        return f"{obj.nombre} - {precio}"
+        precio = "€N/A" if obj.precio is None else f"€{obj.precio:.2f}" # type: ignore[arg-type]
+        return f"{obj.nombre} - {precio}" # type: ignore[arg-type]
 
 class ImagenChoiceField(forms.ModelChoiceField):
     """Despliega título y precio del producto opcional."""
     def label_from_instance(self, obj):
-        precio = "€N/A" if obj.precio is None else f"€{obj.precio:.2f}"
-        return f"{obj.titulo} - {precio}"
+        precio = "€N/A" if obj.precio is None else f"€{obj.precio:.2f}" # type: ignore[arg-type]
+        return f"{obj.titulo} - {precio}" # type: ignore[arg-type]
 
 # ------------------------------------------------------------------
-# Formulario cita
+# APPOINTMENT FORM
 # ------------------------------------------------------------------
 class CitaForm(forms.ModelForm):
     HORA_CHOICES = [
@@ -44,10 +44,9 @@ class CitaForm(forms.ModelForm):
         ('19:30', '07:30 PM'),
     ]
 
-    # Hora en formato string HH:MM
+
     hora = forms.ChoiceField(choices=HORA_CHOICES, label='Hora')
 
-    # Desplegables con nuestras subclases
     servicio = ServicioChoiceField(
         queryset=Servicio.objects.all(),
         label='Servicio',
@@ -81,7 +80,7 @@ class CitaForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         # --------------------------
-        # 1. Estiliza widgets → Bootstrap
+        # 1. WIDGET STYLES & CLASSES
         # --------------------------
         for field in self.fields.values():
             widget = field.widget
@@ -91,7 +90,7 @@ class CitaForm(forms.ModelForm):
                 widget.attrs.setdefault('placeholder', field.label)
 
     # --------------------------
-    # 2. Validaciones personalizadas
+    # 2. PERSONALIZED VALIDATIONS
     # --------------------------
     def clean_fecha(self):
         fecha = self.cleaned_data['fecha']

@@ -16,23 +16,21 @@
         </h2>
     </div>        
 
-    <!-- Sección de estadísticas renovada -->
+    <!-- STATS SECTION -->
 <div class="container mb-5 animate-on-load">
-  <div class="row align-items-stretch"><!-- ① add align-items-stretch -->
-    <!-- Total de citas -->
+  <div class="row align-items-stretch">
     <div class="col-md-4 mb-3">
-      <div class="card h-100 shadow-sm border-primary"><!-- ② h-100 on card -->
-        <div class="card-body text-center"><!-- no h-100 aquí -->
+      <div class="card h-100 shadow-sm border-primary">
+        <div class="card-body text-center">
           <i class="fas fa-calendar-alt fa-3x text-primary"></i>
           <h5 class="card-title mt-2">Nº Total Citas</h5>
-          <p class="card-text display-6  text-center mt-auto"><!-- push down -->
+          <p class="card-text display-6  text-center mt-auto">
             {{ total_citas }}
           </p>
         </div>
       </div>
     </div>
 
-    <!-- Total gastado -->
     <div class="col-md-4 mb-3">
       <div class="card h-100 shadow-sm border-success">
         <div class="card-body text-center">
@@ -45,7 +43,6 @@
       </div>
     </div>
 
-    <!-- Servicio favorito -->
     <div class="col-md-4 mb-3">
       <div class="card h-100 shadow-sm border-warning">
         <div class="card-body text-center">
@@ -64,7 +61,7 @@
 
     {% if citas %}
         <div class="row g-4 animate-on-load">
-            <!-- Aquí sigue tu lógica para mostrar las citas activas -->
+            <!-- ACTIVE APPOINTMENTS LOGIC -->
             {% if citas|length == 1 %}
                 <div class="col-12">
                     <div class="card h-100 shadow-sm">

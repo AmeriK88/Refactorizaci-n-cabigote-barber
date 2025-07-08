@@ -8,7 +8,7 @@
   <div class="row justify-content-center">
     <div class="col-sm-12 col-lg-12 col-xl-12">
 
-      <!-- 🪪 Tarjeta principal con animación -->
+      <!-- MAIN CARD -->
       <div class="card shadow-sm animate-on-load">
         <div class="card-header gradiente-header  text-center">
           <h4 class="mb-0">
@@ -22,7 +22,7 @@
             Todos los campos son opcionales, pero te recomendamos mantener tu información al día.
           </p>
 
-          <!-- ℹ️ Info actual -->
+          <!-- ACTUAL INFO -->
           <div class="card mb-5 shadow-sm">
             <div class="card-header text-center main-title">Información del Usuario</div>
             <div class="card-body">
@@ -35,7 +35,7 @@
           <form method="post" class="needs-validation" novalidate>
             {% csrf_token %}
 
-            <!-- 📧 Email -->
+            <!-- EMAIL FIELD-->
             <h5 class="mb-3">Correo Electrónico</h5>
             {{ user_form.non_field_errors }}
             {% for field in user_form %}
@@ -48,7 +48,7 @@
               </div>
             {% endfor %}
 
-            <!-- 👤 Datos perfil -->
+            <!-- PROFILE DATA -->
             <h5 class="mt-4 mb-3">Actualizar información</h5>
             {{ profile_form.non_field_errors }}
             {% for field in profile_form %}
@@ -61,7 +61,7 @@
               </div>
             {% endfor %}
 
-            <!-- 🔒 Cambiar contraseña -->
+            <!-- PASSW CHANGE -->
             <h5 class="mt-4 mb-3">Cambiar Contraseña</h5>
             {{ password_form.non_field_errors }}
             {% for field in password_form %}

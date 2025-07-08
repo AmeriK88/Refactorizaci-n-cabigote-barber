@@ -62,13 +62,11 @@ def reservar_cita(request, servicio_id=None):
             fecha = form.cleaned_data["fecha"]
             hora = form.cleaned_data["hora"]
 
-            # ⬇️ HOT-FIX: si la hora aún es str, pásala a time
             if isinstance(hora, str):
                 hora = datetime.strptime(hora, "%H:%M").time()
 
             fecha_hora = timezone.make_aware(datetime.combine(fecha, hora))
 
-            # Bloqueos de fecha/hora
             if fecha.isoformat() in fechas_bloqueadas:
                 form.add_error(
                     "fecha", "Esta fecha está bloqueada. Por favor, selecciona otra."
@@ -88,7 +86,7 @@ def reservar_cita(request, servicio_id=None):
                 cita = form.save(commit=False)
                 cita.usuario = request.user
                 cita.fecha = fecha_hora
-                cita.hora = hora  # ya es datetime.time
+                cita.hora = hora  
                 cita.save()
 
                 enviar_confirmacion_cita(request.user.email, cita)
@@ -112,7 +110,7 @@ def reservar_cita(request, servicio_id=None):
         },
     )
 
-# Función ver citas & historial
+# APPOINTMENT HISTORY
 @login_required
 @handle_exceptions
 def ver_citas(request):
@@ -140,10 +138,10 @@ def editar_cita(request, cita_id):
         messages.error(request, '¡Ñooosss! ¡Se te fue el baifo! La fecha ya pasó.')
         return redirect('appointments:ver_citas')
 
-    # --- Horas válidas (strings) ---
+    # --- VALID HOURS ---
     valid_hours_str = [h[0] for h in CitaForm.HORA_CHOICES if h[0]]
 
-    # --- Fechas ocupadas ---
+    # --- DATES FULLY OCCUPIED ---
     horas_por_dia = (
         Cita.objects
         .filter(hora__in=valid_hours_str)
@@ -153,19 +151,19 @@ def editar_cita(request, cita_id):
     )
     fechas_ocupadas = [e['fecha__date'].isoformat() for e in horas_por_dia]
 
-    # --- Fechas bloqueadas ---
+    # --- BLOCKED DATES ---
     fechas_bloqueadas = [
         f.isoformat() for f in FechaBloqueada.objects.values_list('fecha', flat=True)
     ]
 
-    # --- Horas ocupadas por fecha ---
+    # --- HOURS OCCUPIED ---
     horas_ocupadas_por_fecha = {}
     for cita_existente in Cita.objects.filter(hora__in=valid_hours_str):
         fecha_str = cita_existente.fecha.date().isoformat()
         hora_str = cita_existente.hora.strftime('%H:%M')
         horas_ocupadas_por_fecha.setdefault(fecha_str, []).append(hora_str)
 
-    # --- Horas bloqueadas por fecha ---
+    # --- BLOCKED HOURS BY DATE ---
     bloqueos_por_fecha = {}
     for bloqueo in BloqueoHora.objects.all():
         fecha_str = bloqueo.fecha.isoformat()
@@ -183,21 +181,21 @@ def editar_cita(request, cita_id):
             fecha = form.cleaned_data['fecha']
             hora  = form.cleaned_data['hora']
 
-            # ⬇️ HOT-FIX: convierte str → time si aún no lo hizo el form
+            # HOT-FIX: CONVERT HORA TO TIME
             if isinstance(hora, str):
                 hora = datetime.strptime(hora, '%H:%M').time()
 
             fecha_hora = timezone.make_aware(datetime.combine(fecha, hora))
 
-            # Fecha bloqueada
+            # BLOCKED DATES
             if fecha.isoformat() in fechas_bloqueadas:
                 form.add_error('fecha', 'Esta fecha está bloqueada. Por favor, selecciona otra fecha.')
 
-            # Duplicidad de cita (excluyendo la actual)
+            # DUPLICIDATE APPOINTMENT & EXCLUDE ACTUAL
             elif Cita.objects.filter(fecha=fecha_hora).exclude(id=cita_id).exists():
                 form.add_error(None, 'Ya existe una cita reservada en esa fecha y hora.')
 
-            # Hora en rango bloqueado
+            # bLOCKED RANGE HOURS
             else:
                 for bloqueo in BloqueoHora.objects.filter(fecha=fecha):
                     if bloqueo.hora_inicio <= hora < bloqueo.hora_fin:
@@ -209,7 +207,6 @@ def editar_cita(request, cita_id):
                         )
                         break
 
-            # Guardar si no hay errores
             if form.is_valid():
                 cita = form.save(commit=False)
                 cita.fecha = fecha_hora
@@ -231,13 +228,14 @@ def editar_cita(request, cita_id):
     })
 
 
-# Función para eliminar cita & manejo excepciones
+# DELETE APPOINTMENT
+# ---------------------------------------------------
 @login_required
 @handle_exceptions
 def eliminar_cita(request, cita_id):
     cita = get_object_or_404(Cita, id=cita_id, usuario=request.user)
     
-    # Si la cita no se puede cancelar
+    # CANCELLATION RESTRICTIONS
     if not cita.puede_cancelar():
         return render(request, 'appointments/eliminar_cita.html', {
             'cita': cita,
@@ -253,7 +251,7 @@ def eliminar_cita(request, cita_id):
         }
         
         cita.delete()
-        # Enviar notificación de eliminación y mostrar mensaje de éxito
+        # SEND NOTIFICATION
         enviar_notificacion_eliminacion_cita(cita_detalle['email'], cita_detalle)
         messages.success(request, "¡Fuerte loco! Has cancelado tu cita.")
         return redirect('appointments:ver_citas')

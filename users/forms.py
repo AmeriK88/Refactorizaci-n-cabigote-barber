@@ -12,7 +12,7 @@ from .models import UserProfile
 class CustomUserCreationForm(UserCreationForm):
     """Registro de usuario con campos extra y ReCAPTCHA."""
 
-    # Campos extra con clases y autocomplete ya incluidos
+    # EXTRA FIELDS FOR AUTOCOMPLETE
     email    = forms.EmailField(label='Correo electrónico',
                 widget=forms.EmailInput(attrs={
                     'class': 'form-control form-control-lg',
@@ -41,7 +41,7 @@ class CustomUserCreationForm(UserCreationForm):
                   "apellido", "password1", "password2")
         
 
-    # Añadimos attrs a los campos heredados
+    # ---------- INNIT FIELDS -------------------
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({
@@ -54,7 +54,7 @@ class CustomUserCreationForm(UserCreationForm):
                 'autocomplete': 'new-password'
             })
 
-    # ---------- Validaciones ---------------------------------
+    # ---------- VALIDATIONS ---------------------------------
     def clean_email(self):
         email = self.cleaned_data['email']
         if User.objects.filter(email=email).exists():
@@ -76,7 +76,7 @@ class CustomUserCreationForm(UserCreationForm):
             raise forms.ValidationError(f"El nombre '{username}' está prohibido.")
         return username
 
-    # ---------- Guardado atómico -----------------------------
+    # ---------- ATOMIC SAVE -----------------------------
     def save(self, commit=True):
         with transaction.atomic():
             user = super().save(commit=False)
@@ -94,7 +94,7 @@ class CustomUserCreationForm(UserCreationForm):
                 )
         return user
 
-
+# ---------- AUTHENTICATION FORM -----------------------------
 class CustomAuthenticationForm(AuthenticationForm):
     captcha = ReCaptchaField()
 
