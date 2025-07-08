@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load socialaccount %}
+{% block title %}Iniciar sesión con Google{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header gradiente-header text-center">
+          <h4 class="mb-0">
+            <i class="fab fa-google me-2"></i> Inicio de sesión con Google
+          </h4>
+        </div>
+        <div class="card-body text-center">
+          <p>Vas a iniciar sesión usando tu cuenta de Google.</p>
+          <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-lg">
+              <i class="fab fa-google me-2"></i> Continuar
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

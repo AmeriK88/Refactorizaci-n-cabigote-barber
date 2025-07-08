@@ -2,6 +2,8 @@
 {% extends 'base.html' %}
 {% load static tz widget_tweaks %}
 
+{% load socialaccount %}
+
 {% block title %}Login · Ca’Bigote{% endblock %}
 
 {# =============================== CONTENT ====================================== #}
@@ -61,6 +63,13 @@
             Entrar
           </button>
         </form>
+
+        {# ======================= SOCIAL LOGIN ============================ #}
+        <a href="{% provider_login_url 'google' %}">
+          <button type="button" class="btn btn-lg btn-google w-100 mt-2">
+            <i class="fab fa-google me-2"></i> Continuar con Google
+          </button>
+        </a>
       </div>
 
       {# ======================= LINKS =================================== #}

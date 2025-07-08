@@ -42,6 +42,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Oauth & google login
+    'django.contrib.sites',     
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+
+    # Installed apps
     'django_recaptcha',
     'appointments',
     'products',
@@ -63,6 +72,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -89,7 +99,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'cabigote.wsgi.application'
 
 
-
+"""
 # DB CONFIG
 DATABASES = {
     'default': env.db(
@@ -110,7 +120,8 @@ DATABASES['default']['OPTIONS'] = {
 
 # DB development
 """
-# 3) Now use these variables in your DATABASES config
+
+# 3) DEVELOPMENT DATABASE CONFIGURATION
 DATABASES = {
     'default': {
         'ENGINE': env('DB_ENGINE'),
@@ -121,10 +132,9 @@ DATABASES = {
         'PORT': env('DB_PORT'),
     }
 }
-"""
 
 
-# Password validation
+# PASSWORD CONFIGURATION
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -139,6 +149,10 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# GOOGLE OAUTH CONFIGURATION
+GOOGLE_CLIENT_ID = env('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = env('GOOGLE_CLIENT_SECRET')
 
 
 # Internationalization & CONFIG TIME ZONE
@@ -245,4 +259,29 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # BLACKLISTED USERNAMES
 BLACKLISTED_USERNAMES = ['admin', 'root', 'superuser', 'test', 'cabigote']
 
+# SOCIAL ACCOUNT CONFIGURATION
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': GOOGLE_CLIENT_ID,
+            'secret': GOOGLE_CLIENT_SECRET,
+            'key': '',
+        },
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'},
+    }
+}
+
+# Debes reemplazar las claves deprecated por estas:
+ACCOUNT_LOGIN_METHODS       = {'email'}
+ACCOUNT_SIGNUP_FIELDS       = ['email*', 'password1*', 'password2*']
+ACCOUNT_EMAIL_VERIFICATION  = 'optional'   # o 'mandatory'
+
+
+
+# SITE ID for Allauth
+SITE_ID = 1
+
+
+# APP VERSION
 APP_VERSION = "2.3.1"  
