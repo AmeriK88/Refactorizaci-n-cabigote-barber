@@ -94,11 +94,15 @@ class CitaForm(forms.ModelForm):
     # --------------------------
     def clean_fecha(self):
         fecha = self.cleaned_data['fecha']
-        if fecha.weekday() >= 5:
+        # Asegura que comparamos fechas, no datetime
+        fecha_date = fecha.date() if hasattr(fecha, 'date') else fecha
+        # No reservar fines de semana
+        if fecha_date.weekday() >= 5:
             raise forms.ValidationError("¡Puntalillo! Te recuerdo que el finde no curro.")
-        if fecha < timezone.now().date():
+        # No reservar en pasado
+        if fecha_date < timezone.now().date():
             raise forms.ValidationError("¡Ñooosss! ¡Se te fue el baifo! La fecha ya pasó.")
-        return fecha
+        return fecha_date
 
     def clean_hora(self):
         hora_str = self.cleaned_data['hora']
