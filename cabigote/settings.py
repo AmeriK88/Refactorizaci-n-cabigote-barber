@@ -272,7 +272,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-# Debes reemplazar las claves deprecated por estas:
+# ALLAUTH CONFIGURATION
 ACCOUNT_LOGIN_METHODS       = {'email'}
 ACCOUNT_SIGNUP_FIELDS       = ['email*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION  = 'optional'   # o 'mandatory'
@@ -280,7 +280,7 @@ ACCOUNT_EMAIL_VERIFICATION  = 'optional'   # o 'mandatory'
 
 
 # SITE ID for Allauth
-SITE_ID = 1
+SITE_ID = env.int('SITE_ID')
 
 
 # APP VERSION
