@@ -101,7 +101,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'cabigote.wsgi.application'
 
 
-"""
+
 # DB CONFIG
 DATABASES = {
     'default': env.db(
@@ -134,7 +134,7 @@ DATABASES = {
         'PORT': env('DB_PORT'),
     }
 }
-
+"""
 
 # PASSWORD CONFIGURATION
 AUTH_PASSWORD_VALIDATORS = [
