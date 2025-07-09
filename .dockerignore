@@ -1,0 +1,50 @@
+# Ignore Git metadata
+.git
+.gitignore
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+media/
+staticfiles/
+
+# Environments
+.env
+*.env
+venv/
+env/
+.venv/
+
+# IDE/editor configs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs and reports
+logs/
+*.log
+coverage/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Docker files
+**/Dockerfile*
+**/docker-compose*.yml
+
+# Others
+*.swp
+*.DS_Store

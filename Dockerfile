@@ -1,35 +1,44 @@
-# Usa una imagen base con Python
+# Use a lightweight Python base image
 FROM python:3.10-slim
 
-# Actualiza el sistema e instala las dependencias necesarias
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    default-libmysqlclient-dev \
-    pkg-config \
-    libmariadb-dev-compat \
-    libmariadb-dev \
-    && apt-get clean
+# Install system dependencies in a single layer and clean up
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       build-essential \
+       default-libmysqlclient-dev \
+       pkg-config \
+       libmariadb-dev-compat \
+       libmariadb-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Establece el directorio de trabajo en el contenedor
-WORKDIR /app
+# Create a non-root user for security
+RUN useradd --create-home appuser
 
-# Copia el archivo de dependencias
-COPY requirements.txt .
+# Set working directory
+WORKDIR /home/appuser/app
 
-# 1) Actualizar pip antes de instalar dependencias
-RUN python -m pip install --upgrade pip
+# Switch to non-root user
+USER appuser
 
-# Instala las dependencias de Python
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy and install Python dependencies
+COPY --chown=appuser:appuser requirements.txt .
+RUN python -m pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
 
-# Copia todo el código del proyecto
-COPY . .
+# Copy the rest of the application code
+COPY --chown=appuser:appuser . .
 
-# Configura las variables de entorno necesarias para la ejecución
-ENV PYTHONUNBUFFERED=1
+# Environment variables
+ENV PYTHONUNBUFFERED=1 \
+    DJANGO_SETTINGS_MODULE=cabigote.settings
 
-# Expone el puerto para el servidor
+# Expose port for the application
 EXPOSE 8000
 
-# Ejecuta migraciones, collectstatic y Gunicorn
-CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn cabigote.wsgi:application --bind 0.0.0.0:8000"]
+# Optional healthcheck to ensure the app is running
+HEALTHCHECK --interval=30s --timeout=5s \
+    CMD curl -f http://localhost:8000/healthz/ || exit 1
+
+# Use Gunicorn as the entrypoint; migrations and static collection
+# are handled in the Railway "Release Command" configuration
+CMD ["gunicorn", "cabigote.wsgi:application", "--bind", "0.0.0.0:8000"]
