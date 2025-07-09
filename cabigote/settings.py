@@ -156,6 +156,8 @@ AUTH_PASSWORD_VALIDATORS = [
 GOOGLE_CLIENT_ID = env('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET = env('GOOGLE_CLIENT_SECRET')
 
+# SITE ID for Allauth
+SITE_ID = env.int('SITE_ID')
 
 # Internationalization & CONFIG TIME ZONE
 LANGUAGE_CODE = 'es'
@@ -173,7 +175,7 @@ USE_TZ = True
 
 # EMAIL CONFIG PRODUCTION
 # ——— EMAIL CONFIG ———
-EMAIL_HOST      = env('EMAIL_HOST')            # smtp.gmail.com
+EMAIL_HOST      = env('EMAIL_HOST')     
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
@@ -289,11 +291,6 @@ SOCIALACCOUNT_PROVIDERS = {
 ACCOUNT_LOGIN_METHODS       = {'email'}
 ACCOUNT_SIGNUP_FIELDS       = ['email*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION  = 'optional'   # o 'mandatory'
-
-
-
-# SITE ID for Allauth
-SITE_ID = 1
 
 
 # APP VERSION
