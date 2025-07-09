@@ -20,10 +20,10 @@ WORKDIR /home/appuser/app
 # Switch to non-root user
 USER appuser
 
-# Copy and install Python dependencies
+# Copy and install Python dependencies (including Gunicorn)
 COPY --chown=appuser:appuser requirements.txt .
 RUN python -m pip install --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+    && pip install --no-cache-dir -r requirements.txt gunicorn
 
 # Copy the rest of the application code
 COPY --chown=appuser:appuser . .
@@ -41,4 +41,4 @@ HEALTHCHECK --interval=30s --timeout=5s \
 
 # Use Gunicorn as the entrypoint; migrations and static collection
 # are handled in the Railway "Release Command" configuration
-CMD ["gunicorn", "cabigote.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "cabigote.wsgi:application", "--bind", "0.0.0.0:$(PORT)"]
