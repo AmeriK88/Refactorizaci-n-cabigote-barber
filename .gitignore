@@ -30,3 +30,5 @@ registro_qr.png
 staticfiles/
 media/
 
+env.txt
+client_cabigote_secret.json
