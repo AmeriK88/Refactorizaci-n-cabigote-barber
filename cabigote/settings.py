@@ -121,20 +121,21 @@ DATABASES['default']['OPTIONS'] = {
 
 
 # DB development
-"""
 
-# 3) DEVELOPMENT DATABASE CONFIGURATION
-DATABASES = {
-    'default': {
-        'ENGINE': env('DB_ENGINE'),
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': env('DB_HOST'),
-        'PORT': env('DB_PORT'),
-    }
-}
 """
+ # 3) DEVELOPMENT DATABASE CONFIGURATION
+ DATABASES = {
+     'default': {
+         'ENGINE': env('DB_ENGINE'),
+         'NAME': env('DB_NAME'),
+         'USER': env('DB_USER'),
+         'PASSWORD': env('DB_PASSWORD'),
+         'HOST': env('DB_HOST'),
+         'PORT': env('DB_PORT'),
+     }
+ }
+ """
+
 
 # PASSWORD CONFIGURATION
 AUTH_PASSWORD_VALIDATORS = [
