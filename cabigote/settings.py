@@ -102,7 +102,6 @@ WSGI_APPLICATION = 'cabigote.wsgi.application'
 
 
 
-
 # DB CONFIG
 DATABASES = {
     'default': env.db(
@@ -135,7 +134,7 @@ DATABASES = {
         'PORT': env('DB_PORT'),
     }
 }
-"""
+
 """
 
 # PASSWORD CONFIGURATION
@@ -157,6 +156,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # GOOGLE OAUTH CONFIGURATION
 GOOGLE_CLIENT_ID = env('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET = env('GOOGLE_CLIENT_SECRET')
+
+# SITE ID for Allauth
+SITE_ID = env.int('SITE_ID')
+
 
 # SITE ID for Allauth
 SITE_ID = env.int('SITE_ID')
@@ -293,11 +296,6 @@ SOCIALACCOUNT_PROVIDERS = {
 ACCOUNT_LOGIN_METHODS       = {'email'}
 ACCOUNT_SIGNUP_FIELDS       = ['email*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION  = 'optional'   # o 'mandatory'
-
-
-
-# SITE ID for Allauth
-SITE_ID = env.int('SITE_ID')
 
 
 # APP VERSION
