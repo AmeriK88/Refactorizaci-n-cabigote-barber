@@ -31,3 +31,4 @@ staticfiles/
 media/
 
 client_cabigote_secret.json
+env.txt

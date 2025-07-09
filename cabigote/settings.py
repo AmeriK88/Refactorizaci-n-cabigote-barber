@@ -4,9 +4,11 @@
 # No se permite la venta ni el uso comercial sin autorización expresa del autor.
 from pathlib import Path
 import environ
-import os
 import pymysql
 pymysql.install_as_MySQLdb()
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -170,12 +172,23 @@ USE_TZ = True
 
 
 # EMAIL CONFIG PRODUCTION
-EMAIL_BACKEND = env('EMAIL_BACKEND') 
-EMAIL_HOST = env('EMAIL_HOST')
-EMAIL_PORT = env('EMAIL_PORT')
-EMAIL_USE_TLS = env('EMAIL_USE_TLS')
+# ——— EMAIL CONFIG ———
+EMAIL_HOST      = env('EMAIL_HOST')            # smtp.gmail.com
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    EMAIL_PORT    = env.int('EMAIL_PORT', default=587) # type: ignore[arg-type]
+    EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True) # type: ignore[arg-type]
+    EMAIL_USE_SSL = False
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_PORT    = 465
+    EMAIL_USE_TLS = False
+    EMAIL_USE_SSL = True
+
+EMAIL_TIMEOUT = env.int('EMAIL_TIMEOUT', default=20) # type: ignore[arg-type]
 
 
 # READS & PROCESS ADMINS FROM .ENV
