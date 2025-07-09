@@ -41,9 +41,6 @@ dist/
 *.egg-info/
 .eggs/
 
-# Docker files
-**/Dockerfile*
-**/docker-compose*.yml
 
 # Others
 *.swp
