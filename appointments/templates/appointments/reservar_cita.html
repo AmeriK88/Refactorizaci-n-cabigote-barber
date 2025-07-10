@@ -16,13 +16,12 @@
             <i class="fas fa-calendar-check me-2 text-primary"></i> Reserva tu Cita
           </h4>
         </div>
-          {# 🔔 errores globales #}
-          {% if form.non_field_errors %}
-            <div class="alert alert-danger">
-              {{ form.non_field_errors }}
+          {# aparece si hay errores en cualquier campo o globales #}
+          {% if form.errors %}
+            <div class="alert alert-danger mt-2 mb-0 py-2">
+              ¡Chiquito fallo! Pibe, comprueba los errores del formulario.
             </div>
           {% endif %}
-
           <form method="post" class="needs-validation animate-on-load" novalidate>
             {% csrf_token %}
 

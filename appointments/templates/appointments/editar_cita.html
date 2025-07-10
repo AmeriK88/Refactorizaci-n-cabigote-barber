@@ -20,9 +20,9 @@
           </div>
         
           {# 🔔 errores globales #}
-          {% if form.non_field_errors %}
-            <div class="alert alert-danger">
-              {{ form.non_field_errors }}
+          {% if form.errors %}
+            <div class="alert alert-danger mt-2 mb-0 py-2">
+              ¡Chiquito fallo! Pibe, comprueba los errores del formulario.
             </div>
           {% endif %}
 
