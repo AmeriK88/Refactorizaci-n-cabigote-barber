@@ -101,38 +101,40 @@ TEMPLATES = [
 WSGI_APPLICATION = 'cabigote.wsgi.application'
 
 
+# Lee DATABASE_URL si existe (Railway lo inyecta en prod)
+database_url = env('DATABASE_URL', default=None)  # type: ignore[name-defined]
 
-# DB CONFIG
-DATABASES = {
-    'default': env.db(
-        'DATABASE_URL',
-        default=None, # type: ignore
-    )
-}
+if database_url:
+    # 1) Obtén la configuración completa desde la URL
+    db_config = env.db('DATABASE_URL')  
 
-if not DATABASES['default']:
-    raise ValueError("DATABASE_URL no está configurada en las variables de entorno")
+    # 2) Añade las OPTIONS para utf8mb4
+    db_config['OPTIONS'] = {
+        'charset': 'utf8mb4',
+        'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
+    }
 
-# FORCE CHARSET utf8mb4
-DATABASES['default']['OPTIONS'] = {
-    'charset': 'utf8mb4',
-    'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
-}
+    # 3) Asigna a DATABASES
+    DATABASES = {
+        'default': db_config
+    }
 
-
-# DB development
-# # 3) DEVELOPMENT DATABASE CONFIGURATION
-# DATABASES = {
-#     'default': {
-#         'ENGINE': env('DB_ENGINE'),
-#         'NAME': env('DB_NAME'),
-#         'USER': env('DB_USER'),
-#         'PASSWORD': env('DB_PASSWORD'),
-#         'HOST': env('DB_HOST'),
-#         'PORT': env('DB_PORT'),
-#     }
-# }
-
+else:
+    # En local, usa tus DB_* del .env
+    DATABASES = {
+        'default': {
+            'ENGINE':   env('DB_ENGINE'),
+            'NAME':     env('DB_NAME'),
+            'USER':     env('DB_USER'),
+            'PASSWORD': env('DB_PASSWORD'),
+            'HOST':     env('DB_HOST'),
+            'PORT':     env('DB_PORT'),
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+                'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
+            },
+        }
+    }
 
 
 # PASSWORD CONFIGURATION
@@ -154,10 +156,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # GOOGLE OAUTH CONFIGURATION
 GOOGLE_CLIENT_ID = env('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET = env('GOOGLE_CLIENT_SECRET')
-
-# SITE ID for Allauth
-SITE_ID = env.int('SITE_ID')
-
 
 # SITE ID for Allauth
 SITE_ID = env.int('SITE_ID')
