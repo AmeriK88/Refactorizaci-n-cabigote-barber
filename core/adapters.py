@@ -3,6 +3,7 @@ from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from allauth.socialaccount.models import SocialAccount
 from allauth.core.exceptions import ImmediateHttpResponse
 from django.shortcuts import render
+from django.contrib.auth import get_user_model
 
 class CustomSocialAdapter(DefaultSocialAccountAdapter):
     """
@@ -21,7 +22,6 @@ class CustomSocialAdapter(DefaultSocialAccountAdapter):
             return   # proveedor sin e-mail → dejamos que allauth resuelva
 
         # 2) ¿Hay usuario local con ese e-mail?
-        from django.contrib.auth import get_user_model
         User = get_user_model()
         try:
             user = User.objects.get(email=email)
