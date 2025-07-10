@@ -93,25 +93,19 @@ class CitaForm(forms.ModelForm):
     # 2. PERSONALIZED VALIDATIONS
     # --------------------------
     def clean_fecha(self):
-        fecha = self.cleaned_data['fecha']
-        # Asegura que comparamos fechas, no datetime
-        fecha_date = fecha.date() if hasattr(fecha, 'date') else fecha
-        # No reservar fines de semana
-        if fecha_date.weekday() >= 5:
-            raise forms.ValidationError("¡Puntalillo! Te recuerdo que el finde no curro.")
-        # No reservar en pasado
-        if fecha_date < timezone.now().date():
-            raise forms.ValidationError("¡Ñooosss! ¡Se te fue el baifo! La fecha ya pasó.")
-        # Combina fecha y hora 00:00 y convierte a aware datetime
-        dt_naive = datetime.combine(fecha_date, time(0, 0))
-        return timezone.make_aware(dt_naive, timezone.get_current_timezone())
+        fecha = self.cleaned_data['fecha']  # ya es date
+        if fecha.weekday() >= 5:
+            raise forms.ValidationError("¡El finde no curro!")
+        if fecha < timezone.now().date():
+            raise forms.ValidationError("La fecha ya pasó.")
+        return fecha            # ⬅️  devuelve **date**
 
     def clean_hora(self):
         hora_str = self.cleaned_data['hora']
-        hora_obj = datetime.strptime(hora_str, '%H:%M').time()
-        if hora_obj < time(9, 30) or hora_obj > time(19, 30):
-            raise forms.ValidationError("¡Se te fue el baifo! La hora está fuera del rango.")
-        return hora_str
+        hora = datetime.strptime(hora_str, '%H:%M').time()
+        if not time(9, 30) <= hora <= time(19, 30):
+            raise forms.ValidationError("Hora fuera de rango.")
+        return hora             # ⬅️  devuelve **time**
 
 # Autor: José Félix Gordo Castaño
 # Licencia: uso educativo, no comercial
