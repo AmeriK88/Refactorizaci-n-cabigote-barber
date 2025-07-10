@@ -9,14 +9,14 @@ from .forms import CitaForm
 from core.utils import enviar_confirmacion_cita, enviar_notificacion_modificacion_cita, enviar_notificacion_eliminacion_cita
 from core.decorators import handle_exceptions  
 
-
 @login_required
 @handle_exceptions
 def reservar_cita(request, servicio_id=None):
     """
-    Reserva una cita. Mantiene toda la lógica de fechas/hours bloqueadas;
-    convierte la hora a datetime.time si todavía viene como string.
+    Reserva una cita: controla fechas/hours bloqueadas y guarda
+    un DateTimeField **aware** en `Cita.fecha`.
     """
+    # --------------------- HORAS VÁLIDAS ---------------------
     valid_hours_str = [h[0] for h in CitaForm.HORA_CHOICES if h[0]]
 
     # --- Fechas completamente ocupadas ---
@@ -36,10 +36,11 @@ def reservar_cita(request, servicio_id=None):
 
     # --- Horas ocupadas por fecha ---
     horas_ocupadas_por_fecha = {}
-    for cita_existente in Cita.objects.filter(hora__in=valid_hours_str):
-        fecha_str = cita_existente.fecha.date().isoformat()
-        hora_str = cita_existente.hora.strftime("%H:%M")
-        horas_ocupadas_por_fecha.setdefault(fecha_str, []).append(hora_str)
+    for cita in Cita.objects.filter(hora__in=valid_hours_str):
+        fecha_str = cita.fecha.date().isoformat()
+        horas_ocupadas_por_fecha.setdefault(fecha_str, []).append(
+            cita.hora.strftime('%H:%M')
+        )
 
     # --- Horas bloqueadas por fecha ---
     bloqueos_por_fecha = {}
@@ -47,67 +48,73 @@ def reservar_cita(request, servicio_id=None):
         fecha_str = bloqueo.fecha.isoformat()
         bloqueos_por_fecha.setdefault(fecha_str, [])
         for hour_str in valid_hours_str:
-            opt_time = datetime.strptime(hour_str, "%H:%M").time()
+            opt_time = datetime.strptime(hour_str, '%H:%M').time()
             if bloqueo.hora_inicio <= opt_time < bloqueo.hora_fin:
-                if hour_str not in bloqueos_por_fecha[fecha_str]:
-                    bloqueos_por_fecha[fecha_str].append(hour_str)
+                bloqueos_por_fecha[fecha_str].append(hour_str)
 
+    # Servicio pre-seleccionado (URL opcional)
     servicio_seleccionado = (
         Servicio.objects.filter(id=servicio_id).first() if servicio_id else None
     )
 
-    if request.method == "POST":
+    # --------------------- POST ---------------------
+    if request.method == 'POST':
         form = CitaForm(request.POST)
         if form.is_valid():
-            fecha = form.cleaned_data["fecha"]
-            hora = form.cleaned_data["hora"]
+            fecha = form.cleaned_data['fecha']      
+            hora  = form.cleaned_data['hora']      
 
-            if isinstance(hora, str):
-                hora = datetime.strptime(hora, "%H:%M").time()
+            # Combina y convierte a aware
+            fecha_hora = timezone.make_aware(
+                datetime.combine(fecha, hora),
+                timezone.get_current_timezone()
+            )
 
-            fecha_hora = timezone.make_aware(datetime.combine(fecha, hora))
-
+            # ----- Reglas de negocio -----
             if fecha.isoformat() in fechas_bloqueadas:
-                form.add_error(
-                    "fecha", "Esta fecha está bloqueada. Por favor, selecciona otra."
-                )
+                form.add_error('fecha', 'Esta fecha está bloqueada. Selecciona otra.')
+
             else:
                 for bloqueo in BloqueoHora.objects.filter(fecha=fecha):
                     if bloqueo.hora_inicio <= hora < bloqueo.hora_fin:
                         form.add_error(
-                            "hora",
-                            f"La hora seleccionada está bloqueada "
-                            f"({bloqueo.hora_inicio.strftime('%H:%M')} - "
-                            f"{bloqueo.hora_fin.strftime('%H:%M')}).",
+                            'hora',
+                            f'La hora seleccionada está bloqueada '
+                            f'({bloqueo.hora_inicio.strftime("%H:%M")} - '
+                            f'{bloqueo.hora_fin.strftime("%H:%M")}).'
                         )
                         break
 
+            # ---------- Guardar ----------
             if not form.errors:
                 cita = form.save(commit=False)
                 cita.usuario = request.user
-                cita.fecha = fecha_hora
-                cita.hora = hora  
+                cita.fecha   = fecha_hora
+                cita.hora    = hora         
                 cita.save()
-                # SEND CONFIRMATION EMAIL
-                print("🔔 Enviando confirmación de cita a", request.user.email)
+
                 enviar_confirmacion_cita(request.user.email, cita)
                 messages.success(
-                    request, "¡Viejito! Ya tienes tu cita confirmada ¡Esa es niñote!."
+                    request,
+                    '¡Viejito! Ya tienes tu cita confirmada. ¡Esa es niñote!'
                 )
-                return redirect("users:perfil_usuario")
+                return redirect('users:perfil_usuario')
+
+    # --------------------- GET ---------------------
     else:
-        initial = {"servicio": servicio_seleccionado} if servicio_seleccionado else {}
+        initial = {'servicio': servicio_seleccionado} if servicio_seleccionado else {}
         form = CitaForm(initial=initial)
 
+    # --------------------- RENDER -------------------
     return render(
         request,
-        "appointments/reservar_cita.html",
+        'appointments/reservar_cita.html',
         {
-            "form": form,
-            "fechas_ocupadas": fechas_ocupadas,
-            "fechas_bloqueadas": fechas_bloqueadas,
-            "horas_ocupadas_por_fecha": horas_ocupadas_por_fecha,
-            "bloqueos_por_fecha": bloqueos_por_fecha,
+            'form': form,
+            'fechas_ocupadas': fechas_ocupadas,
+            'fechas_bloqueadas': fechas_bloqueadas,
+            'horas_ocupadas_por_fecha': horas_ocupadas_por_fecha,
+            'bloqueos_por_fecha': bloqueos_por_fecha,
         },
     )
 
@@ -139,10 +146,10 @@ def editar_cita(request, cita_id):
         messages.error(request, '¡Ñooosss! ¡Se te fue el baifo! La fecha ya pasó.')
         return redirect('appointments:ver_citas')
 
-    # --- VALID HOURS ---
+    # ---------- 1) CÁLCULO DE BLOQUEOS Y OCUPACIONES ---------- #
     valid_hours_str = [h[0] for h in CitaForm.HORA_CHOICES if h[0]]
 
-    # --- DATES FULLY OCCUPIED ---
+    # Fechas totalmente ocupadas
     horas_por_dia = (
         Cita.objects
         .filter(hora__in=valid_hours_str)
@@ -152,19 +159,18 @@ def editar_cita(request, cita_id):
     )
     fechas_ocupadas = [e['fecha__date'].isoformat() for e in horas_por_dia]
 
-    # --- BLOCKED DATES ---
+    # Fechas bloqueadas
     fechas_bloqueadas = [
         f.isoformat() for f in FechaBloqueada.objects.values_list('fecha', flat=True)
     ]
 
-    # --- HOURS OCCUPIED ---
+    # Horas ocupadas por fecha
     horas_ocupadas_por_fecha = {}
-    for cita_existente in Cita.objects.filter(hora__in=valid_hours_str):
-        fecha_str = cita_existente.fecha.date().isoformat()
-        hora_str = cita_existente.hora.strftime('%H:%M')
-        horas_ocupadas_por_fecha.setdefault(fecha_str, []).append(hora_str)
+    for c in Cita.objects.filter(hora__in=valid_hours_str):
+        fecha_str = c.fecha.date().isoformat()
+        horas_ocupadas_por_fecha.setdefault(fecha_str, []).append(c.hora.strftime('%H:%M'))
 
-    # --- BLOCKED HOURS BY DATE ---
+    # Horas bloqueadas por fecha
     bloqueos_por_fecha = {}
     for bloqueo in BloqueoHora.objects.all():
         fecha_str = bloqueo.fecha.isoformat()
@@ -172,43 +178,37 @@ def editar_cita(request, cita_id):
         for hour_str in valid_hours_str:
             opt_time = datetime.strptime(hour_str, '%H:%M').time()
             if bloqueo.hora_inicio <= opt_time < bloqueo.hora_fin:
-                if hour_str not in bloqueos_por_fecha[fecha_str]:
-                    bloqueos_por_fecha[fecha_str].append(hour_str)
+                bloqueos_por_fecha[fecha_str].append(hour_str)
 
-    # -------- POST / GET ----------
+    # ---------- 2) POST / GET ---------- #
     if request.method == 'POST':
         form = CitaForm(request.POST, instance=cita)
         if form.is_valid():
-            fecha = form.cleaned_data['fecha']
-            hora  = form.cleaned_data['hora']
+            fecha = form.cleaned_data['fecha']   # date
+            hora  = form.cleaned_data['hora']    # time
 
-            # HOT-FIX: CONVERT HORA TO TIME
-            if isinstance(hora, str):
-                hora = datetime.strptime(hora, '%H:%M').time()
+            fecha_hora = timezone.make_aware(
+                datetime.combine(fecha, hora),
+                timezone.get_current_timezone()
+            )
 
-            fecha_hora = timezone.make_aware(datetime.combine(fecha, hora))
-
-            # BLOCKED DATES
+            # Reglas de negocio
             if fecha.isoformat() in fechas_bloqueadas:
-                form.add_error('fecha', 'Esta fecha está bloqueada. Por favor, selecciona otra fecha.')
-
-            # DUPLICIDATE APPOINTMENT & EXCLUDE ACTUAL
+                form.add_error('fecha', 'Esta fecha está bloqueada. Selecciona otra.')
             elif Cita.objects.filter(fecha=fecha_hora).exclude(id=cita_id).exists():
-                form.add_error(None, 'Ya existe una cita reservada en esa fecha y hora.')
-
-            # bLOCKED RANGE HOURS
+                form.add_error(None, 'Ya hay otra cita en esa fecha y hora.')
             else:
                 for bloqueo in BloqueoHora.objects.filter(fecha=fecha):
                     if bloqueo.hora_inicio <= hora < bloqueo.hora_fin:
                         form.add_error(
                             'hora',
-                            f'La hora seleccionada está bloqueada '
-                            f'({bloqueo.hora_inicio.strftime("%H:%M")} - '
-                            f'{bloqueo.hora_fin.strftime("%H:%M")}).'
+                            f'La hora está bloqueada '
+                            f'({bloqueo.hora_inicio:%H:%M} - {bloqueo.hora_fin:%H:%M}).'
                         )
                         break
 
-            if form.is_valid():
+            # Guardar si todo OK
+            if not form.errors:
                 cita = form.save(commit=False)
                 cita.fecha = fecha_hora
                 cita.hora  = hora
@@ -220,13 +220,15 @@ def editar_cita(request, cita_id):
     else:
         form = CitaForm(instance=cita)
 
+    # ---------- 3) RENDER ---------- #
     return render(request, 'appointments/editar_cita.html', {
         'form': form,
         'fechas_ocupadas': fechas_ocupadas,
         'fechas_bloqueadas': fechas_bloqueadas,
         'horas_ocupadas_por_fecha': horas_ocupadas_por_fecha,
-        'bloqueos_por_fecha': bloqueos_por_fecha, 
+        'bloqueos_por_fecha': bloqueos_por_fecha,
     })
+
 
 
 # DELETE APPOINTMENT
