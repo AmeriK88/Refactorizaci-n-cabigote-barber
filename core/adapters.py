@@ -1,8 +1,8 @@
 # core/adapters.py
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
-from allauth.socialaccount.models   import SocialAccount
-from allauth.exceptions            import ImmediateHttpResponse
-from django.shortcuts              import render
+from allauth.socialaccount.models import SocialAccount
+from allauth.core.exceptions import ImmediateHttpResponse
+from django.shortcuts import render
 
 class CustomSocialAdapter(DefaultSocialAccountAdapter):
     """
