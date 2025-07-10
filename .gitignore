@@ -30,5 +30,10 @@ registro_qr.png
 staticfiles/
 media/
 
+<<<<<<< HEAD
 env.txt
 client_cabigote_secret.json
+=======
+client_cabigote_secret.json
+env.txt
+>>>>>>> development

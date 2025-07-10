@@ -4,9 +4,9 @@
 # No se permite la venta ni el uso comercial sin autorización expresa del autor.
 from pathlib import Path
 import environ
-import os
 import pymysql
 pymysql.install_as_MySQLdb()
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,6 +42,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Oauth & google login
+    'django.contrib.sites',     
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+
+    # Installed apps
     'django_recaptcha',
     # My apps
     'appointments',
@@ -64,6 +73,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -104,7 +114,23 @@ if database_url:
         'charset': 'utf8mb4',
         'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
     }
+# Lee DATABASE_URL si existe (Railway lo inyecta en prod)
+database_url = env('DATABASE_URL', default=None)  # type: ignore[name-defined]
 
+if database_url:
+    # 1) Obtén la configuración completa desde la URL
+    db_config = env.db('DATABASE_URL')  
+
+    # 2) Añade las OPTIONS para utf8mb4
+    db_config['OPTIONS'] = {
+        'charset': 'utf8mb4',
+        'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
+    }
+
+    # 3) Asigna a DATABASES
+    DATABASES = {
+        'default': db_config
+    }
     # 3) Asigna a DATABASES
     DATABASES = {
         'default': db_config
@@ -128,9 +154,7 @@ else:
     }
 
 
-
-
-# Password validation
+# PASSWORD CONFIGURATION
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -145,6 +169,36 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# GOOGLE ALLAUTH CONFIG
+GOOGLE_CLIENT_ID = env('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = env('GOOGLE_CLIENT_SECRET')
+
+# SITE ID for Allauth
+SITE_ID = env.int('SITE_ID')
+# ADAPTER FOR SOCIAL ACCOUNT
+SOCIALACCOUNT_ADAPTER = "core.adapters.CustomSocialAdapter"
+ACCOUNT_LOGIN_METHODS = {'email'}
+
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
+
+ACCOUNT_EMAIL_VERIFICATION = 'optional'     # o 'mandatory'
+ACCOUNT_UNIQUE_EMAIL       = True
+SOCIALACCOUNT_AUTO_SIGNUP  = False          # si quieres forzar la pantalla de alta
+SOCIALACCOUNT_ADAPTER      = 'core.adapters.CustomSocialAdapter'
+
+# SOCIAL ACCOUNT CONFIGURATION
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': GOOGLE_CLIENT_ID,
+            'secret': GOOGLE_CLIENT_SECRET,
+            'key': '',
+        },
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'},
+    }
+}
 
 
 # Internationalization & CONFIG TIME ZONE
@@ -251,4 +305,5 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # BLACKLISTED USERNAMES
 BLACKLISTED_USERNAMES = ['admin', 'root', 'superuser', 'test', 'cabigote']
 
+# APP VERSION
 APP_VERSION = "2.3.1"  

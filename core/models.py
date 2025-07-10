@@ -10,11 +10,11 @@ class MensajeEspecial(models.Model):
     def save(self, *args, **kwargs):
         if self.activo:
             # Desactivar otros mensajes activos
-            MensajeEspecial.objects.filter(activo=True).exclude(id=self.id).update(activo=False)
+            MensajeEspecial.objects.filter(activo=True).exclude(id=self.id).update(activo=False)  # type: ignore[arg-type]
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.titulo if self.titulo else f"Mensaje {self.id}"
+        return self.titulo if self.titulo else f"Mensaje {self.id}" # type: ignore[arg-type]
     
 class ContadorVisitas(models.Model):
     total = models.PositiveIntegerField(default=0)

@@ -1,144 +1,143 @@
 # ✂️ **Cabigote Barber Shop** 🌟
 
-## 📝 **Descripción**
+## 📝 **Description**
 
-Cabigote Barber Shop es una aplicación web integral diseñada para gestionar reservas de citas, reseñas y servicios en un Barber-Shop. Los usuarios pueden reservar servicios personalizados, visualizar citas activas y pasadas, y dejar comentarios detallados sobre su experiencia, mejorando así la interacción cliente-negocio. La aplicación incluye características como la separación de perfiles para clientes y administradores, notificaciones automáticas para confirmaciones y recordatorios, y una interfaz de usuario responsiva y amigable. Está construida utilizando Django como framework backend, Bootstrap para un diseño moderno y atractivo, y se complementa con una base de datos escalable para manejar eficientemente múltiples usuarios y transacciones.
+Cabigote Barber Shop is an all-in-one web application designed to manage appointment bookings, reviews, and services for a barber shop. Users can schedule personalized services, view upcoming and past appointments, and leave detailed feedback on their experience—enhancing customer-business interaction. The application features separate profiles for clients and administrators, automatic notifications for confirmations and reminders, and a responsive, user-friendly interface. It’s built using Django as the backend framework, Bootstrap for modern and attractive styling, and a scalable database to efficiently handle multiple users and transactions.
 
-## 🛠️ **Tecnologías Utilizadas**
+## 🛠️ **Used Techs**
 
-| **Tecnología**    | **Descripción**                                |
-|--------------------|-----------------------------------------------|
-| 🐍 **Django**      | Framework backend para una gestión robusta.  |
-| 🎨 **Bootstrap**   | Diseño moderno, responsivo y estilizado.     |
-| 🗄️ **MySQL**       | Base de datos escalable para múltiples usuarios. |
-| 🖼️ **Pillow**      | Gestión de imágenes y galería de productos.  |
-| 🖋️ **QRCode**      | Generación de códigos QR para enlaces.       |
-| 🔐 **reCAPTCHA**   | Seguridad adicional contra bots.             |
-| 📊 **Matplotlib**  | Generación de gráficos para reportes.        |
-| 📦 **Django Suit** | Personalización avanzada del panel de administración. |
-| 🔔 **Notificaciones por Email** | Confirmaciones, modificaciones y recordatorios automáticos. |
+| **Tech**    | **Description**                                |
+|--------------------|-------------------------------------------------|
+| 🐍 **Django**      | Robust backend framework.  |
+| 🎨 **Bootstrap**   | Modern, responsive, and stylish frontend design.|
+| 🗄️ **MySQL**       | Scalable database for multiple users.|
+| 🖼️ **Pillow**      | Image handling and product gallery management.     |
+| 🖋️ **QRCode**      | QR code generation for direct links.          |
+| 🔐 **reCAPTCHA**   | Additional security against bots.                |
+| 📊 **Matplotlib**  | Graph generation for reports.           |
+| 📦 **Django Suit** | Advanced customization of the admin pane. |
+| 🔔 **Email notifications** | Automatic confirmations, modifications, and reminders.. |
 
 ---
 
-## 📂 **Estructura del Proyecto**
+## 📂 **Project Structure**
 
-El proyecto está compuesto por varias aplicaciones que manejan diferentes funcionalidades:
+The project comprises multiple Django apps, each handling specific functionality:
 
 ### 1. Appointments
 
-- **Modelos**: 
-  - `Cita`: Modelo que representa una cita, incluyendo campos como usuario, servicio, fecha, hora y comentario.
-- **Formularios**: 
-  - `CitaForm`: Formulario para crear y editar citas, con validación de fecha y hora.
-- **Vistas**: 
-  - `reservar_cita`: Permite a los usuarios reservar citas.
-  - `ver_citas`: Muestra las citas activas y pasadas del usuario.
+- **Models**: 
+  - `Cita`:Represents an appointment, including user, service, date, time, and notes.Represents an appointment, including user, service, date, time, and notes.
+- **Forms**: 
+  - `CitaForm`: Form to create and edit appointments, with date and time validation.
+- **Views**: 
+  - `reservar_cita`: Allows users to book appointments.
+  - `ver_citas`: : Displays upcoming and past appointments.
 
 ### 2. Users
 
-- **Modelos**: 
-  - `UserProfile`: Modelo que almacena información adicional del usuario.
-- **Formularios**: 
-  - `CustomUserCreationForm`: Formulario de registro personalizado.
-- **Vistas**: 
-  - `login_view`: Vista para iniciar sesión.
-  - `register`: Vista para registrar nuevos usuarios.
-  - `perfil_usuario`: Vista que muestra el perfil del usuario.
+- **Models**: 
+  - `UserProfile`:  Stores additional user information.
+- **Forms**: 
+  - `CustomUserCreationForm`: Custom registration form Custom registration form.
+- **Views**: 
+  - `login_view`: Login view.
+  - `register`: Register view.
+  - `perfil_usuario`: User profile view.
 
 ### 3. Reviews
 
-- **Modelos**: 
-  - `Resena`: Modelo que permite a los usuarios dejar reseñas sobre los servicios.
-- **Formularios**: 
-  - `ResenaForm`: Formulario para agregar reseñas.
-- **Vistas**: 
-  - `ver_resenas`: Vista que muestra todas las reseñas y permite agregar nuevas.
+- **Models**: 
+  - `Resena`: Allows users to leave reviews about services.
+- **Forms**: 
+  - `ResenaForm`: Form to add reviews.
+- **Views**: 
+  - `ver_resenas`: Displays all reviews and allows new ones.
 
 ### 4. Services
 
-- **Modelos**: 
-  - `Servicio`: Modelo que representa los servicios ofrecidos en la barbería.
-- **Formularios**: 
-  - `ServicioForm`: Formulario para crear y editar servicios.
-- **Vistas**: 
-  - `ver_servicios`: Muestra todos los servicios disponibles.
+- **Models**: 
+  - `Servicio`: Represents services offered at the barbershop.
+- **Forms**: 
+  - `ServicioForm`: Form to create and edit services.
+- **Views**: 
+  - `ver_servicios`: Shows all available services.
 
 ### 5. Products
 
 - **Modelos**: 
-  - `Imagen`: Modelo que almacena imágenes de los productos.
-- **Vistas**: 
-  - `ver_imagenes`: Vista que muestra todas las imágenes de productos.
-  - `detalle_producto`: Muestra detalles de un producto específico.
+  - `Imagen`: Stores product images.
+- **Views**: 
+  - `ver_imagenes`: Displays all product image.
+  - `detalle_producto`: Shows details of a specific product.
 
 ### 6. Reports
 
-- **Modelos:** 
-  - `ReporteMensual`: Reportes mensuales de ingresos y citas.
-  - `ReporteDiario`: Reportes diarios generados bajo demanda.
-- **Funcionalidades:**
-  - Generación de reportes diarios/mensuales con gráficos.
-  - Reportes descargables en formato `.txt`.
-  - Opción de generar reportes diarios desde el panel de administración seleccionando la fecha.
-  - Limpieza automática de reportes innecesarios.
+- **Models:** 
+  - `ReporteMensual`: Monthly revenue and appointments reports.
+  - `ReporteDiario`: Daily reports generated on demand.
+- **Funcyionalities:**
+  - Daily and monthly report generation with graphs.
+  - Reports downloadable as .txt.
+  - Option to generate daily reports from the admin panel by selecting a date.
+  - Automatic cleanup of unnecessary reports.
 
-## Instalación
+## Installation
 
-### Requisitos Previos
+### Requisites
 
-- Python 3.8 o superior
-- Django 3.2 o superior
+- Python 3.8 +
+- Django 3.2 +
 
-## 🚀 **Características Principales**
+## 🚀 **Main Characteristics**
 
-✅ **Gestión de Usuarios:**  
-- Registro, inicio de sesión y personalización de perfil.
+✅ **User Management:**  
+- Registration, login, and profile customization.
 
-✅ **Reservas de Citas:**  
-- Crear, editar, cancelar y gestionar historial de citas.  
-- Fechas bloqueadas y horarios ocupados deshabilitados dinámicamente.  
+✅ **Appointment Booking:**  
+- Create, edit, cancel, and manage appointment history.
+- Dynamically disabled blocked dates and occupied time slots.
 
-✅ **Reseñas de Servicios:**  
-- Los usuarios pueden agregar y consultar reseñas con puntuaciones.
+✅ **Reviews:**  
+- Users can add and view star-rated reviews.
 
-✅ **Galería de Servicios y Productos:**  
-- Información detallada con imágenes y descripciones.
+✅ **Producto & Service Gallery:**  
+- Detailed information with images and descriptions.
 
-✅ **Notificaciones Automáticas:**  
-- Confirmaciones, recordatorios y cancelaciones vía correo.
+✅ **Automated Notifications:**  
+- Confirmations, reminders, and cancellations via email.
 
-✅ **Panel de Administración Personalizado:**  
-- Integración con Django Suit para una interfaz moderna.  
-- Visualización de gráficos de citas e ingresos.
+✅ **Custom Admin Panel:**  
+- Django Suit integration for a modern interface.
+- Visualization of appointment and revenue charts.
 
-✅ **Reportes Dinámicos:**  
-- Generación de reportes diarios/mensuales por fecha seleccionada.  
-- Descarga de reportes en texto.
+✅ **Dynamic Reports:**  
+- Generate daily/monthly reports by selected date.
+- Downloadable text reports.
 
-✅ **Seguridad Mejorada:**  
-- Implementación de reCAPTCHA para prevenir bots.
+✅ **Enhanced Security:**  
+- reCAPTCHA implementation to prevent bots.
 
 ---
 
-## Generador Código QR
+## QR Code Generator
 
-Ejecuta generate_qr.py - asegúrate de incluir la URL de tu sitio.
+Run <code>generate_qr.py</code> – ensure you include your site URL.
 
 
 ## Instala las depencias
 
-pip install -r requirements.txt
+To install run: <code>pip install -r requirements.txt</code>
 
-## ⚙️ **Instalación**
-
-### **1. Requisitos Previos**
-- Python 3.8 o superior.
-- Django 3.2 o superior.
+## ⚙️ **Installation**
 
 
-## 🔒 Licencia
 
-Este proyecto, Cabigote Barber Shop, desarrollado por José Félix Gordo Castaño, está licenciado para uso exclusivo con fines educativos y de aprendizaje. No se permite su venta, redistribución comercial o cualquier uso con fines de lucro sin autorización expresa del autor.
+## 🔒 License
+
+This project, Cabigote Barber Shop by José Félix Gordo Castaño, is licensed for educational and learning purposes only. Commercial use, resale, or any profit-driven distribution is prohibited without explicit author permission.
+
+
 
 
 

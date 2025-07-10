@@ -1,0 +1,70 @@
+{# templates/socialaccount/signup.html #}
+{% extends "base.html" %}
+{% load static tz widget_tweaks i18n socialaccount %}
+
+{% block title %}Registro con Google · Ca’Bigote{% endblock %}
+
+{% block content %}
+{% localtime on %}
+<div class="container-fluid py-5">
+  <div class="row justify-content-center">
+    <div class="col-sm-12 col-lg-12 col-xl-12">
+
+      <div class="card shadow-sm">
+        <div class="card-header gradiente-header text-center">
+          <h4 class="mb-0">
+            <i class="fab fa-google text-danger me-2"></i> Completa tu registro
+          </h4>
+        </div>
+
+        {# ---------- FORM DEL SOCIAL SIGNUP ---------- #}
+        {% url "socialaccount_signup" as action_url %}
+        <form method="post" action="{{ action_url }}" class="needs-validation animate-on-load" novalidate>
+          {% csrf_token %}
+
+          {% if form.errors %}
+            <div class="alert alert-error">
+              <ul>
+                {% for field in form %}
+                  {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
+          {# Allauth suele pedir solo username y e-mail (ya viene) #}
+          {% for field in form.visible_fields %}
+            <div class="mb-3">
+              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field|add_class:"form-control form-control-lg" }}
+              {% for err in field.errors %}
+                <div class="invalid-feedback d-block">{{ err }}</div>
+              {% endfor %}
+            </div>
+          {% endfor %}
+
+          {{ redirect_field }}  {# mantiene next=/ si existe #}
+
+          <button type="submit" class="btn btn-danger btn-lg w-100">
+            <i class="fas fa-check me-2"></i> Registrarme
+          </button>
+        </form>
+      </div>
+
+      <div class="card bg-light border-0 text-center mt-3 p-2 shadow-sm">
+        <p class="mb-2">¿Ya tienes cuenta?</p>
+        <a href="{% url 'users:login' %}" class="btn btn-primary btn-sm w-100 w-sm-auto mx-auto mb-3">
+          <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endlocaltime %}
+{% endblock %}

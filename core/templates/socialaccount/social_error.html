@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Error de autenticación{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="alert alert-danger text-center shadow-sm">
+        <h4 class="alert-heading">{% trans "¡Ups!" %}</h4>
+        <p>{{ error_message }}</p>
+        <hr>
+        <a href="{% url 'users:login' %}" class="btn btn-primary">
+            {% trans "Volver a iniciar sesión" %}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

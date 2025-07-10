@@ -102,7 +102,9 @@ class CitaForm(forms.ModelForm):
         # No reservar en pasado
         if fecha_date < timezone.now().date():
             raise forms.ValidationError("¡Ñooosss! ¡Se te fue el baifo! La fecha ya pasó.")
-        return fecha_date
+        # Combina fecha y hora 00:00 y convierte a aware datetime
+        dt_naive = datetime.combine(fecha_date, time(0, 0))
+        return timezone.make_aware(dt_naive, timezone.get_current_timezone())
 
     def clean_hora(self):
         hora_str = self.cleaned_data['hora']

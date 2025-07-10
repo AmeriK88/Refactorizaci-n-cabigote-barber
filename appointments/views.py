@@ -14,7 +14,7 @@ from core.decorators import handle_exceptions
 @handle_exceptions
 def reservar_cita(request, servicio_id=None):
     """
-    Reserva una cita. Mantiene toda tu lógica de fechas/hours bloqueadas;
+    Reserva una cita. Mantiene toda la lógica de fechas/hours bloqueadas;
     convierte la hora a datetime.time si todavía viene como string.
     """
     valid_hours_str = [h[0] for h in CitaForm.HORA_CHOICES if h[0]]
@@ -88,7 +88,8 @@ def reservar_cita(request, servicio_id=None):
                 cita.fecha = fecha_hora
                 cita.hora = hora  
                 cita.save()
-
+                # SEND CONFIRMATION EMAIL
+                print("🔔 Enviando confirmación de cita a", request.user.email)
                 enviar_confirmacion_cita(request.user.email, cita)
                 messages.success(
                     request, "¡Viejito! Ya tienes tu cita confirmada ¡Esa es niñote!."
