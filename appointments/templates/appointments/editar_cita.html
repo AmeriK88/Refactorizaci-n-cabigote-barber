@@ -10,16 +10,20 @@
     <div class="col-md-12 col-lg-12 col-xl-12">
 
       {# ────────── CABECERA #}
-
-        <!-- ✏️ Tarjeta -->
         <div class="card shadow-sm">
           <div class="card-header gradiente-header text-center">
             <h4 class="mb-0">
               <i class="fas fa-edit me-2 text-primary"></i> Editar Cita
             </h4>
           </div>
+          {# 🔔 errores globales simplificados #}
+          {% if form.errors %}
+            <p class="alert alert-error">
+              ¡Aguita papá! Ha ocurrido un error. Por favor revisa los datos e inténtalo de nuevo.
+            </p>
+          {% endif %}
         
-          {# 🔔 errores globales #}
+          {# errores globales #}
           {% if form.non_field_errors %}
             <div class="alert alert-danger">
               {{ form.non_field_errors }}

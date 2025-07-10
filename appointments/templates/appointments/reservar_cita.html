@@ -8,6 +8,12 @@
 <div class="container py-5">
   <div class="row justify-content-center">
     <div class="col-12 col-md-12 col-lg-12">
+      {# 🔔 errores globales simplificados #}
+        {% if form.errors %}
+          <p class="alert alert-error">
+            ¡Aguita papá! Ha ocurrido un error. Por favor revisa los datos e inténtalo de nuevo.
+          </p>
+        {% endif %}
 
       <!-- 📋 Tarjeta principal -->
       <div class="card shadow-sm">
