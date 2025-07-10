@@ -22,13 +22,6 @@
               ¡Aguita papá! Ha ocurrido un error. Por favor revisa los datos e inténtalo de nuevo.
             </p>
           {% endif %}
-        
-          {# 🔔 errores globales #}
-          {% if form.errors %}
-            <div class="alert alert-danger mt-2 mb-0 py-2">
-              ¡Chiquito fallo! Pibe, comprueba los errores del formulario.
-            </div>
-          {% endif %}
 
           <form method="post" class="needs-validation animate-on-load" novalidate>
             {% csrf_token %}
