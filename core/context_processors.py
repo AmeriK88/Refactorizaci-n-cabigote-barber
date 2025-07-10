@@ -1,5 +1,5 @@
 from django.utils import timezone
-from django.conf import settings      
+from django.conf import settings     
 from .models import MensajeEspecial, ContadorVisitas
 
 def mensaje_especial_context(request):
