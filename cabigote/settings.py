@@ -165,8 +165,7 @@ ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 
 ACCOUNT_EMAIL_VERIFICATION = 'optional'     # o 'mandatory'
 ACCOUNT_UNIQUE_EMAIL       = True
-SOCIALACCOUNT_AUTO_SIGNUP  = False          # si quieres forzar la pantalla de alta
-SOCIALACCOUNT_ADAPTER      = 'core.adapters.CustomSocialAdapter'
+SOCIALACCOUNT_AUTO_SIGNUP  = False       
 
 # SOCIAL ACCOUNT CONFIGURATION
 SOCIALACCOUNT_PROVIDERS = {
@@ -287,4 +286,4 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 BLACKLISTED_USERNAMES = ['admin', 'root', 'superuser', 'test', 'cabigote']
 
 # APP VERSION
-APP_VERSION = "2.3.1"  
+APP_VERSION = "2.4.0"
