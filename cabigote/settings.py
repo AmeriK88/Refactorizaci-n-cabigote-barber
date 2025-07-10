@@ -6,8 +6,6 @@ from pathlib import Path
 import environ
 import pymysql
 pymysql.install_as_MySQLdb()
-import ssl
-ssl._create_default_https_context = ssl._create_unverified_context
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -153,12 +151,36 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# GOOGLE OAUTH CONFIGURATION
+# GOOGLE ALLAUTH CONFIG
 GOOGLE_CLIENT_ID = env('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET = env('GOOGLE_CLIENT_SECRET')
 
 # SITE ID for Allauth
 SITE_ID = env.int('SITE_ID')
+# ADAPTER FOR SOCIAL ACCOUNT
+SOCIALACCOUNT_ADAPTER = "core.adapters.CustomSocialAdapter"
+ACCOUNT_LOGIN_METHODS = {'email'}
+
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
+
+ACCOUNT_EMAIL_VERIFICATION = 'optional'     # o 'mandatory'
+ACCOUNT_UNIQUE_EMAIL       = True
+SOCIALACCOUNT_AUTO_SIGNUP  = False          # si quieres forzar la pantalla de alta
+SOCIALACCOUNT_ADAPTER      = 'core.adapters.CustomSocialAdapter'
+
+# SOCIAL ACCOUNT CONFIGURATION
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': GOOGLE_CLIENT_ID,
+            'secret': GOOGLE_CLIENT_SECRET,
+            'key': '',
+        },
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'},
+    }
+}
+
 
 # Internationalization & CONFIG TIME ZONE
 LANGUAGE_CODE = 'es'
@@ -175,23 +197,12 @@ USE_TZ = True
 
 
 # EMAIL CONFIG PRODUCTION
-# ——— EMAIL CONFIG ———
-EMAIL_HOST      = env('EMAIL_HOST')     
+EMAIL_BACKEND = env('EMAIL_BACKEND') 
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-
-if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-    EMAIL_PORT    = env.int('EMAIL_PORT', default=587) # type: ignore[arg-type]
-    EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True) # type: ignore[arg-type]
-    EMAIL_USE_SSL = False
-else:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_PORT    = 465
-    EMAIL_USE_TLS = False
-    EMAIL_USE_SSL = True
-
-EMAIL_TIMEOUT = env.int('EMAIL_TIMEOUT', default=20) # type: ignore[arg-type]
 
 
 # READS & PROCESS ADMINS FROM .ENV
@@ -274,25 +285,6 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # BLACKLISTED USERNAMES
 BLACKLISTED_USERNAMES = ['admin', 'root', 'superuser', 'test', 'cabigote']
-
-# SOCIAL ACCOUNT CONFIGURATION
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': GOOGLE_CLIENT_ID,
-            'secret': GOOGLE_CLIENT_SECRET,
-            'key': '',
-        },
-        'SCOPE': ['profile', 'email'],
-        'AUTH_PARAMS': {'access_type': 'online'},
-    }
-}
-
-# ALLAUTH CONFIGURATION
-ACCOUNT_LOGIN_METHODS       = {'email'}
-ACCOUNT_SIGNUP_FIELDS       = ['email*', 'password1*', 'password2*']
-ACCOUNT_EMAIL_VERIFICATION  = 'optional'   # o 'mandatory'
-
 
 # APP VERSION
 APP_VERSION = "2.3.1"  
