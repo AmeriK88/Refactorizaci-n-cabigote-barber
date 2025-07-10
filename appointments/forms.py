@@ -1,6 +1,6 @@
 # appointments/forms.py
 from django import forms
-from datetime import datetime
+from datetime import datetime, time
 from django.utils import timezone
 from .models import Cita
 from services.models import Servicio
@@ -95,14 +95,25 @@ class CitaForm(forms.ModelForm):
     def clean_fecha(self):
         raw_fecha = self.cleaned_data["fecha"]
 
-        # 🔑  SI viene datetime → conviértelo a date
+        # Convierte datetime → date
         fecha = raw_fecha.date() if isinstance(raw_fecha, datetime) else raw_fecha
 
         if fecha.weekday() >= 5:
             raise forms.ValidationError("¡El finde no curro!")
-        if fecha < timezone.localdate():        # hoy (aware)
+        if fecha < timezone.localdate():
             raise forms.ValidationError("La fecha ya pasó.")
-        return fecha   
+        return fecha  # date limpio
 
+    def clean_hora(self):
+        hora_raw = self.cleaned_data["hora"]  # str del ChoiceField
+        hora = (
+            hora_raw
+            if isinstance(hora_raw, time)
+            else datetime.strptime(hora_raw, "%H:%M").time()
+        )
+
+        if not time(9, 30) <= hora <= time(19, 30):
+            raise forms.ValidationError("Hora fuera de rango.")
+        return hora  # time limpio
 # Autor: José Félix Gordo Castaño
 # Licencia: uso educativo, no comercial
