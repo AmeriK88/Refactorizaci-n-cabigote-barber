@@ -8,6 +8,8 @@ from .models import Cita, FechaBloqueada, Servicio, BloqueoHora
 from .forms import CitaForm  
 from core.utils import enviar_confirmacion_cita, enviar_notificacion_modificacion_cita, enviar_notificacion_eliminacion_cita
 from core.decorators import handle_exceptions  
+
+# APPOINTMENT RESERVATION
 @login_required
 @handle_exceptions
 def reservar_cita(request, servicio_id=None):
