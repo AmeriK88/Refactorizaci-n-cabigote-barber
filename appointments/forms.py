@@ -12,15 +12,15 @@ from products.models import Imagen
 class ServicioChoiceField(forms.ModelChoiceField):
     """Display service name + price in the dropdown."""
     def label_from_instance(self, obj):
-        precio = "€N/A" if obj.precio is None else f"€{obj.precio:.2f}"
-        return f"{obj.nombre} - {precio}"
+        precio = "€N/A" if obj.precio is None else f"€{obj.precio:.2f}" # type: ignore[arg-type]
+        return f"{obj.nombre} - {precio}" # type: ignore[arg-type]
 
 
 class ImagenChoiceField(forms.ModelChoiceField):
     """Display product title + price in the dropdown."""
     def label_from_instance(self, obj):
-        precio = "€N/A" if obj.precio is None else f"€{obj.precio:.2f}"
-        return f"{obj.titulo} - {precio}"
+        precio = "€N/A" if obj.precio is None else f"€{obj.precio:.2f}" # type: ignore[arg-type]
+        return f"{obj.titulo} - {precio}" # type: ignore[arg-type]
 
 
 # ------------------------------------------------------------------
