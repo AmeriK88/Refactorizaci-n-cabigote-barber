@@ -118,7 +118,8 @@ form:hover {
 }
 
 form input,
-form textarea {
+form textarea,
+form select {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
@@ -128,7 +129,8 @@ form textarea {
 }
 
 form input:focus,
-form textarea:focus {
+form textarea:focus,
+form select:focus {
     border-color: var(--primary-color);
 }
 
@@ -147,6 +149,15 @@ form button:hover {
     display: inline-block;
     margin-right: 10px;
 }
+
+/* ⚙️  Selectors dentro de .input-group */
+.input-group > .form-control,
+.input-group > .form-select {
+    width: 1%; 
+    flex: 1 1 auto; 
+    margin-bottom: 0;
+}
+
 
 /* Image Styles */
 img {
