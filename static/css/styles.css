@@ -23,14 +23,20 @@
     --border-error-color: #E6B8B7;
 }
 
+/* Asegurar que todos los navegadores respeten el mismo escalado de texto */
+html {
+  -webkit-text-size-adjust: 100%;  
+  text-size-adjust: 100%;       
+}
+
 /* General Styles */
 html, body {
-    height: 100%;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    overflow-x: hidden;
-    scroll-behavior: smooth;
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -259,6 +265,15 @@ img {
     transition: transform 0.3s ease;
 }
 
+.instagram-embed {
+  width: 100%;
+  aspect-ratio: 4 / 5;   /* o 1 / 1 si prefieres cuadrado */
+}
+.instagram-embed iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
 
 
 /* User Profile Specific */

@@ -136,16 +136,34 @@
             <header>
                 <!-- Iconos Sociales -->
                 <div class="ml-auto d-flex align-items-center">
-                    <a href="https://www.facebook.com/p/Barberia-CaBigote-100030635576349/?locale=es_LA" class="text-white mx-2 social-icon" target="_blank">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="https://www.instagram.com/barberiacabigote/?hl=es" class="text-white mx-2 social-icon" target="_blank">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://twitter.com" class="text-white mx-2 social-icon" target="_blank">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                </div>   
+                <a
+                    href="https://www.facebook.com/p/Barberia-CaBigote-100030635576349/?locale=es_LA"
+                    class="text-white mx-2 social-icon"
+                    target="_blank"
+                    aria-label="Barbería Ca’Bigote en Facebook"
+                    title="Facebook"
+                >
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a
+                    href="https://www.instagram.com/barberiacabigote/?hl=es"
+                    class="text-white mx-2 social-icon"
+                    target="_blank"
+                    aria-label="Barbería Ca’Bigote en Instagram"
+                    title="Instagram"
+                >
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a
+                    href="https://twitter.com"
+                    class="text-white mx-2 social-icon"
+                    target="_blank"
+                    aria-label="Barbería Ca’Bigote en Twitter"
+                    title="Twitter"
+                >
+                    <i class="fab fa-twitter"></i>
+                </a>
+                </div>
 
                 <!--  Mensaje especial -->
                 {% if special_message %}
@@ -269,15 +287,17 @@
             
                         <!-- Mapa / Ubicación -->
                         <div class="col-md-4 text-center">
-                            <h5 class="text-white">Ubicación</h5>
-                            <div class="map-container mb-2">
-                                <iframe 
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3490.4957479491627!2d-13.558574623952396!3d28.972677268552072!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xc46276f9ab656d9%3A0x41c1eb89e4d41c84!2sC.%20el%20Rafael%2C%2043%2C%2035500%20Arrecife%2C%20Las%20Palmas!5e0!3m2!1ses!2ses!4v1741366191645!5m2!1ses!2ses"
-                                    allowfullscreen
-                                    loading="lazy"
-                                    referrerpolicy="no-referrer-when-downgrade">
-                                </iframe>
-                            </div>
+                        <h5 class="text-white">Ubicación</h5>
+                        <div class="map-container mb-2">
+                            <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3490.4957479491627!2d-13.558574623952396!3d28.972677268552072!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xc46276f9ab656d9%3A0x41c1eb89e4d41c84!2sC.%20el%20Rafael%2C%2043%2C%2035500%20Arrecife%2C%20Las%20Palmas!5e0!3m2!1ses!2ses!4v1741366191645!5m2!1ses!2ses"
+                            title="Mapa de la ubicación de Ca’Bigote en Arrecife"
+                            allowfullscreen
+                            loading="lazy"
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            class="w-100 rounded shadow-sm">
+                            </iframe>
+                        </div>
                         </div>
                     </div>
 
@@ -310,9 +330,16 @@
             </footer>            
             
             <!-- BTN flotante de WhatsApp -->
-            <a href="https://wa.me/+34659809165" target="_blank" class="whatsapp-float">
-                <i class="fab fa-whatsapp whatsapp-icon"></i>
+            <a
+            href="https://wa.me/+34659809165"
+            target="_blank"
+            class="whatsapp-float"
+            aria-label="Contactar vía WhatsApp"
+            title="WhatsApp"
+            >
+            <i class="fab fa-whatsapp whatsapp-icon"></i>
             </a>
+
 
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
