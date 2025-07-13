@@ -43,29 +43,6 @@
     <link rel="icon" type="image/x-icon" href="{% static 'imagenes/favicon.ico' %}">
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'imagenes/logo-cb.webp' %}">
 
-    <!-- Parche global: hace passive los touchstart/touchmove de terceros -->
-    <script>
-    ;(function () {
-        let supportsPassive = false;
-        try {
-            const opts = Object.defineProperty({}, 'passive', {
-                get() { supportsPassive = true; }
-            });
-            window.addEventListener('test', null, opts);
-        } catch (e) {}
-        if (supportsPassive) {
-            const orig = EventTarget.prototype.addEventListener;
-            EventTarget.prototype.addEventListener = function (type, listener, options) {
-                if ((type === 'touchstart' || type === 'touchmove') &&
-                    (options === undefined || typeof options === 'boolean')) {
-                    options = { passive: true, capture: !!options };
-                }
-                return orig.call(this, type, listener, options);
-            };
-        }
-    })();
-    </script>
-
     <!-- Bootstrap CSS -->
     <link rel="dns-prefetch" href="//stackpath.bootstrapcdn.com">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -84,6 +61,9 @@
 
     <!-- Visitors Counter -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/themes/odometer-theme-default.min.css">
+
+    <!-- Passive-touch patch (optimiza scroll táctil) -->
+    <script src="{% static 'js/passive-touch.js' %}" defer></script>
 </head>
     <body >
          <!-- Superposición dark -->
@@ -361,30 +341,6 @@
         src="https://connect.facebook.net/es_ES/sdk.js#xfbml=1&version=v17.0">
         </script>
          <!-- Registro del Service Worker -->
-        <script>
-            if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                .then(reg => console.log('SW registrado:', reg.scope))
-                .catch(err => console.error('Error SW:', err));
-            });
-            }
-              // --- Instalación PWA ---
-            let deferredPrompt;
-
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();            // detenemos el banner automático
-                deferredPrompt = e;            // lo guardamos
-                document.getElementById('btn-instalar').classList.remove('d-none');
-            });
-
-            document.getElementById('btn-instalar').addEventListener('click', async () => {
-                if (!deferredPrompt) return;
-                deferredPrompt.prompt();       // lanza diálogo nativo
-                await deferredPrompt.userChoice;
-                deferredPrompt = null;         // limpia
-                document.getElementById('btn-instalar').classList.add('d-none');
-            });
-        </script>
+        <script src="{% static 'js/pwa-install.js' %}" defer></script> 
     </body>
 </html>

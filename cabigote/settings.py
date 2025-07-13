@@ -52,6 +52,7 @@ INSTALLED_APPS = [
 
     # Installed apps
     'django_recaptcha',
+
     # My apps
     'appointments',
     'products',
@@ -64,6 +65,9 @@ INSTALLED_APPS = [
     'widget_tweaks', 
     "crispy_forms",
     "crispy_bootstrap5",
+
+    # Content Security Policy
+    'csp'
 ]
 
 
@@ -77,7 +81,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware',
 ]
 
 ROOT_URLCONF = 'cabigote.urls'
@@ -106,7 +111,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'cabigote.wsgi.application'
 
 
-# settings.py (parte de DATABASES)
 
 # Lee DATABASE_URL si existe (Railway lo inyecta en prod)
 database_url = env('DATABASE_URL', default=None)  # type: ignore[name-defined]
@@ -124,19 +128,12 @@ if database_url:
 database_url = env('DATABASE_URL', default=None)  # type: ignore[name-defined]
 
 if database_url:
-    # 1) Obtén la configuración completa desde la URL
-    db_config = env.db('DATABASE_URL')  
-
-    # 2) Añade las OPTIONS para utf8mb4
+    db_config = env.db('DATABASE_URL')
     db_config['OPTIONS'] = {
         'charset': 'utf8mb4',
         'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
     }
-
-    # 3) Asigna a DATABASES
-    DATABASES = {
-        'default': db_config
-    }
+    DATABASES = {"default": db_config}
 
 else:
     # En local, usa tus DB_* del .env
@@ -253,8 +250,12 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # WHITENOISE CONFIG
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-WHITENOISE_ALLOW_ALL_ORIGINS = True
+if not DEBUG:                                               
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    WHITENOISE_ALLOW_ALL_ORIGINS = True
+    WHITENOISE_ADD_HEADERS_FUNCTION = 'core.whitenoise_headers.add_custom_headers'
+
+
 WHITENOISE_MEDIA_PREFIX = 'media'
 
 # LOGGING CONFIGURATION
@@ -288,7 +289,7 @@ LOGGING = {
     },
 }
 
-# DEFAULT AUTO FIELD
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CSRF CONFIGURATION
@@ -310,5 +311,53 @@ BLACKLISTED_USERNAMES = ['admin', 'root', 'superuser', 'test', 'cabigote']
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
+# Content Security Policy (CSP)
+CONTENT_SECURITY_POLICY = {
+  "DIRECTIVES": {
+    "default-src": ("'self'",),
+    "script-src": (
+      "'self'",
+      "'unsafe-inline'",
+      "https://code.jquery.com",
+      "https://cdnjs.cloudflare.com",
+      "https://stackpath.bootstrapcdn.com",
+      "https://cdn.jsdelivr.net",          # para jquery-zoom, bootstrap bundle…
+    ),
+    "script-src-elem": (
+      "'self'",
+      "https://www.instagram.com",        # embed.js
+      "https://connect.facebook.net",     # Facebook SDK
+    ),
+    "style-src": (
+      "'self'",
+      "'unsafe-inline'",
+      "https://cdnjs.cloudflare.com",
+      "https://stackpath.bootstrapcdn.com",
+      "https://fonts.googleapis.com",
+    ),
+    "font-src": (
+      "'self'",
+      "https://fonts.gstatic.com",
+      "data:",
+    ),
+    "img-src": (
+      "'self'",
+      "data:",
+      "https://www.instagram.com",
+      "https://maps.gstatic.com",
+      "https://maps.googleapis.com",
+    ),
+    "frame-src": (
+      "'self'",
+      "https://www.google.com",
+      "https://www.instagram.com",
+    ),
+    "connect-src": ("'self'",),  # si añades fetch/ajax propios
+    "frame-ancestors": ("'self'",),
+  }
+}
+
+
+
 # APP VERSION
-APP_VERSION = "2.5.0"
+APP_VERSION = "2.5.1"
