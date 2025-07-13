@@ -99,7 +99,31 @@ main {
     flex: 1;
 }
 
-/* Form Styles */
+
+/* TEMPORARY CONFIG */
+.price-item {
+  display: flex;
+  align-items: center;
+}
+
+.service-name {
+  white-space: nowrap;
+}
+.service-name::after {
+  content: "";
+  flex: 1 1 auto;                         
+  border-bottom: 1px dotted var(--border-color);
+  margin: 0 0.75rem;                
+  transform: translateY(-2px);           
+}
+
+.service-price {
+  white-space: nowrap;
+  margin-left: auto; 
+}
+
+
+/* TEMPORARY CONFIG */
 form {
     margin: 0 auto;
     margin-bottom: 2rem;
@@ -118,7 +142,8 @@ form:hover {
 }
 
 form input,
-form textarea {
+form textarea,
+form select {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
@@ -128,7 +153,8 @@ form textarea {
 }
 
 form input:focus,
-form textarea:focus {
+form textarea:focus,
+form select:focus {
     border-color: var(--primary-color);
 }
 
@@ -147,6 +173,14 @@ form button:hover {
     display: inline-block;
     margin-right: 10px;
 }
+
+.input-group > .form-control,
+.input-group > .form-select {
+    width: 1%; 
+    flex: 1 1 auto; 
+    margin-bottom: 0;
+}
+
 
 /* Image Styles */
 img {

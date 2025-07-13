@@ -62,6 +62,8 @@ INSTALLED_APPS = [
     'colorfield',
     'core',
     'widget_tweaks', 
+    "crispy_forms",
+    "crispy_bootstrap5",
 ]
 
 
@@ -127,10 +129,6 @@ if database_url:
         'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
     }
 
-    # 3) Asigna a DATABASES
-    DATABASES = {
-        'default': db_config
-    }
     # 3) Asigna a DATABASES
     DATABASES = {
         'default': db_config
@@ -304,5 +302,9 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # BLACKLISTED USERNAMES
 BLACKLISTED_USERNAMES = ['admin', 'root', 'superuser', 'test', 'cabigote']
 
+# CRISPY FORMS CONFIGURATION
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
 # APP VERSION
-APP_VERSION = "2.4.0"
+APP_VERSION = "2.5.0"
