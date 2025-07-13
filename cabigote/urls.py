@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from core.views import home
 from django.conf.urls.i18n import i18n_patterns
 from django.views.static import serve
+from django.views.generic import TemplateView 
 
 urlpatterns = [
     # Necesario para cambiar idioma
@@ -13,6 +14,14 @@ urlpatterns = [
 
 # Rutas con i18n (sin incluir la ruta de media)
 urlpatterns += i18n_patterns(
+    path(
+        "sw.js",
+        TemplateView.as_view(
+            template_name="sw.js",
+            content_type="application/javascript"
+        ),
+        name="sw.js"
+    ),
     path('admin/', admin.site.urls),
     path('', home, name='home'),
     path('appointments/', include('appointments.urls')),

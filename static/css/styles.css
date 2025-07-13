@@ -182,21 +182,6 @@ form button:hover {
     margin-bottom: 0;
 }
 
-
-/* Image Styles */
-img {
-    max-width: 100%;
-    height: auto;
-    border: 1px solid var(--border-color);
-    padding: 5px;
-    background: var(--light-background);
-    transition: transform 0.3s ease;
-}
-
-img:hover {
-    transform: scale(1.05);
-}
-
 /* Card Styles */
 .card, .card-user-profile {
     border: none;
@@ -208,7 +193,6 @@ img:hover {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     margin: auto;
 }
-
 
 .card:hover, .card-user-profile:hover {
     transform: translateY(-5px);
@@ -237,7 +221,7 @@ img:hover {
 }
 
 .card img:hover, .card-user-profile img:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 .card-body, .card-user-profile  {
@@ -246,10 +230,6 @@ img:hover {
     text-align: center;
 }
 
-.card-text {
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    font-weight: 500}
 
 .card-title  {
     font-size: 1.1rem;
@@ -264,7 +244,22 @@ img:hover {
     margin-bottom: 10px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     text-align: justify;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
 }
+
+/* Image Styles */
+img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--border-color);
+    padding: 5px;
+    background: var(--light-background);
+    transition: transform 0.3s ease;
+}
+
+
 
 /* User Profile Specific */
 .container {
@@ -319,41 +314,45 @@ img:hover {
     border-bottom: 1px solid #ddd;
 }
 
-/* Estilo para la superposición oscura */
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 999;
-    display: none;
+/* =========================================
+   Overlay + Loader (versión completa)
+   ========================================= */
+
+/* ---------- SUPERPOSICIÓN OSCURA ---------- */
+#overlay {
+  position: fixed;
+  inset: 0;                               /* top/right/bottom/left: 0 */
+  background: rgba(0,0,0,.7);
+  z-index: 998;                           /* justo debajo del spinner */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s ease, visibility .3s ease;
+}
+#overlay.show {                            /* <- añades/quitas esto en JS */
+  opacity: 1;
+  visibility: visible;
 }
 
-/* Spinner */
+/* ---------- SPINNER ---------- */
 #loader {
-    display: none;
-    position: fixed;
-    z-index: 999;
-    left: 50%;
-    top: 50%;
-    width: 60px;
-    height: 60px;
-    margin-left: -30px;
-    margin-top: -30px;
-    border: 8px solid #f3f3f3;
-    border-radius: 50%;
-    border-top: 8px solid var(--spinner-color);
-    animation: spin-loader 1s linear infinite; 
-    opacity: 0;
-    transition: opacity 0.3s ease;
+  position: fixed;
+  left: 50%; top: 50%;
+  width: 64px; height: 64px;           
+  margin-left: -32px; margin-top: -32px;  
+  border: 6px solid var(--spinner-bg, #f3f3f3);
+  border-top: 6px solid var(--spinner-color, #F39C12);
+  border-radius: 50%;
+  animation: spin-loader .8s linear infinite;
+  z-index: 999;               
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s ease, visibility .3s ease;
+}
+#loader.show {           
+  opacity: 1;
+  visibility: visible;
 }
 
-#loader.visible {
-    display: block;
-    opacity: 1;
-}
 
 /* Asegura que el contenido del modal tenga texto negro */
 #specialMessageModal .modal-content {
@@ -708,3 +707,20 @@ footer a:hover {
       transform: translateY(-10px);
     }
   }
+
+  /* ---------- Home specific tweaks ---------- */
+
+/* Hero logo */
+.hero-image{ max-width:320px; border:0; padding:0; }
+@media (max-width:575.98px){ .hero-image{ max-width:220px; } }
+
+/* Mockups */
+.mockup-laptop{ max-width:260px; }
+.mockup-phone { max-width:140px; }
+@media (max-width:575.98px){
+  .mockup-laptop{ max-width:180px; }
+  .mockup-phone { max-width:100px; }
+}
+
+/* Asegúrate de no desbordar por borde + padding */
+img{ box-sizing:border-box; }
