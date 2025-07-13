@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load crispy_forms_tags %}    {#  only if you already use crispy  #}
+{% load crispy_forms_tags %}  
 
 {% block title %}Inicio · CaʼBigote Barber Shop{% endblock %}
 
@@ -15,7 +15,7 @@
       <a href="{% url 'services:ver_servicios' %}" class="btn btn-primary btn-lg">Descubre Nuestros Servicios</a>
     </div>
     <div class="col-lg-6 text-center">
-      <img src="{% static 'imagenes/logo-cabigote.png' %}"
+      <img src="{% static 'imagenes/cabigote.webp' %}"
            class="img-fluid rounded hero-image animate-on-load" alt="Logo CaʼBigote" loading="lazy">
     </div>
   </div>
