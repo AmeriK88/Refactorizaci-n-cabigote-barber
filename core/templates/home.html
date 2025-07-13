@@ -12,7 +12,6 @@
     <div class="col-lg-6">
       <h2 class="display-4 fw-bold animate-on-load">Bienvenido a CaʼBigote</h2>
       <p class="lead mb-4">Donde el estilo se encuentra con la tradición. Ubicados en el corazón de Arrecife, ofrecemos cortes de cabello y arreglos de barba con la máxima calidad.</p>
-      <a href="{% url 'services:ver_servicios' %}" class="btn btn-primary btn-lg">Descubre Nuestros Servicios</a>
     </div>
     <div class="col-lg-6 text-center">
       <img src="{% static 'imagenes/cabigote.webp' %}"
@@ -31,9 +30,8 @@
             <ul class="list-unstyled m-0">
                 {% for servicio in servicios|slice:":10" %}
                 <li class="price-item py-2 px-3">
-                    <span class="service-name">{{ servicio.nombre }}</span>
-                    ···················································································
-                    <span class="service-price fw-semibold">{{ servicio.precio }} €</span>
+                  <span class="service-name">{{ servicio.nombre }}</span>
+                  <span class="service-price fw-semibold">{{ servicio.precio }} €</span>
                 </li>
                 {% empty %}
                 <li class="text-center py-4">Todavía no hay servicios cargados.</li>
@@ -45,7 +43,7 @@
     </div>
 
     <div class="text-center mt-4">
-        <a href="{% url 'services:ver_servicios' %}" class="btn btn-outline-primary">Ver todos</a>
+        <a href="{% url 'services:ver_servicios' %}" class="btn btn-primary btn-lg">Descubre Nuestros Servicios</a>
     </div>
     </section>
 

@@ -109,12 +109,13 @@ main {
 .service-name {
   white-space: nowrap;
 }
+
 .service-name::after {
   content: "";
-  flex: 1 1 auto;                         
+  flex: 1 1 auto;
   border-bottom: 1px dotted var(--border-color);
-  margin: 0 0.75rem;                
-  transform: translateY(-2px);           
+  margin: 0 0.75rem;
+  transform: translateY(-2px);
 }
 
 .service-price {
