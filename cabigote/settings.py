@@ -318,49 +318,77 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # Content Security Policy (CSP)
 CONTENT_SECURITY_POLICY = {
-  "DIRECTIVES": {
-    "default-src": ("'self'",),
-    "script-src": (
-      "'self'",
-      "'unsafe-inline'",
-      "https://code.jquery.com",
-      "https://cdnjs.cloudflare.com",
-      "https://stackpath.bootstrapcdn.com",
-      "https://cdn.jsdelivr.net",          # para jquery-zoom, bootstrap bundle…
-    ),
-    "script-src-elem": (
-      "'self'",
-      "https://www.instagram.com",        # embed.js
-      "https://connect.facebook.net",     # Facebook SDK
-    ),
-    "style-src": (
-      "'self'",
-      "'unsafe-inline'",
-      "https://cdnjs.cloudflare.com",
-      "https://stackpath.bootstrapcdn.com",
-      "https://fonts.googleapis.com",
-    ),
-    "font-src": (
-      "'self'",
-      "https://fonts.gstatic.com",
-      "data:",
-    ),
-    "img-src": (
-      "'self'",
-      "data:",
-      "https://www.instagram.com",
-      "https://maps.gstatic.com",
-      "https://maps.googleapis.com",
-    ),
-    "frame-src": (
-      "'self'",
-      "https://www.google.com",
-      "https://www.instagram.com",
-    ),
-    "connect-src": ("'self'",),  
-    "frame-ancestors": ("'self'",),
-  }
+    "DIRECTIVES": {
+        "default-src": ("'self'",),
+
+        # ──────────────  JS  ──────────────
+        "script-src": (
+            "'self'",
+            "'unsafe-inline'",    
+            # CDN que ya tenías
+            "https://code.jquery.com",
+            "https://cdnjs.cloudflare.com",
+            "https://stackpath.bootstrapcdn.com",
+            "https://cdn.jsdelivr.net",
+            # reCAPTCHA  
+            "https://www.google.com/recaptcha/", 
+            "https://www.gstatic.com/recaptcha/", 
+        ),
+        # scripts insertados
+        "script-src-elem": (
+            "'self'",
+            "https://www.instagram.com",
+            "https://connect.facebook.net",
+            # reCAPTCHA nuevamente, por si el navegador separa categorías
+            "https://www.google.com/recaptcha/",
+            "https://www.gstatic.com/recaptcha/",
+        ),
+
+        # ──────────────  CSS  ──────────────
+        "style-src": (
+            "'self'",
+            "'unsafe-inline'",
+            "https://cdnjs.cloudflare.com",
+            "https://stackpath.bootstrapcdn.com",
+            "https://fonts.googleapis.com",
+        ),
+
+        # ──────────────  FUENTES  ──────────────
+        "font-src": (
+            "'self'",
+            "data:",
+            "https://fonts.gstatic.com",       
+            "https://cdnjs.cloudflare.com",   
+        ),
+
+        # ──────────────  IMÁGENES  ──────────────
+        "img-src": (
+            "'self'",
+            "data:",
+            "https://www.instagram.com",
+            "https://maps.gstatic.com",
+            "https://maps.googleapis.com",
+            "https://www.gstatic.com/recaptcha/", 
+        ),
+
+        # ──────────────  MARCOS / iframes  ──────
+        "frame-src": (
+            "'self'",
+            "https://www.google.com",           
+            "https://recaptcha.google.com",    
+            "https://www.instagram.com",
+        ),
+
+        # Llamadas XHR / fetch
+        "connect-src": (
+            "'self'",
+            "https://www.google.com/recaptcha/",
+        ),
+
+        "frame-ancestors": ("'self'",),
+    }
 }
+
 
 
 # APP VERSION
