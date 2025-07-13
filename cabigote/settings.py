@@ -124,19 +124,17 @@ if database_url:
         'charset': 'utf8mb4',
         'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
     }
-# Lee DATABASE_URL si existe (Railway lo inyecta en prod)
-database_url = env('DATABASE_URL', default=None)  # type: ignore[name-defined]
+# settings.py, database config
 
+database_url = env('DATABASE_URL', default=None)  # type: ignore[name-defined]
 if database_url:
     db_config = env.db('DATABASE_URL')
     db_config['OPTIONS'] = {
         'charset': 'utf8mb4',
         'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
     }
-    DATABASES = {"default": db_config}
-
+    DATABASES = {'default': db_config}
 else:
-    # En local, usa tus DB_* del .env
     DATABASES = {
         'default': {
             'ENGINE':   env('DB_ENGINE'),
@@ -151,6 +149,7 @@ else:
             },
         }
     }
+
 
 
 # PASSWORD CONFIGURATION
@@ -249,14 +248,19 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# WHITENOISE CONFIG
-if not DEBUG:                                               
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-    WHITENOISE_ALLOW_ALL_ORIGINS = True
-    WHITENOISE_ADD_HEADERS_FUNCTION = 'core.whitenoise_headers.add_custom_headers'
-
-
+# WhiteNoise (always active, dev + prod)
+WHITENOISE_ALLOW_ALL_ORIGINS = True
+WHITENOISE_ADD_HEADERS_FUNCTION = 'core.whitenoise_headers.add_custom_headers'
 WHITENOISE_MEDIA_PREFIX = 'media'
+# ignore duplicates (see §2-A)
+WHITENOISE_IGNORE_PATTERNS = ['admin/js/popup_response.js', 'admin/js/cancel.js']
+
+# Use compressed-manifest storage only in prod
+if not DEBUG:
+    STATICFILES_STORAGE = (
+        'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    )
+
 
 # LOGGING CONFIGURATION
 LOG_FILE_DIR = os.path.join(BASE_DIR, 'logs')
@@ -352,11 +356,10 @@ CONTENT_SECURITY_POLICY = {
       "https://www.google.com",
       "https://www.instagram.com",
     ),
-    "connect-src": ("'self'",),  # si añades fetch/ajax propios
+    "connect-src": ("'self'",),  
     "frame-ancestors": ("'self'",),
   }
 }
-
 
 
 # APP VERSION

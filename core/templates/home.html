@@ -32,24 +32,22 @@
       </h2>
     </div>
 
-<div class="row g-4 justify-content-center">
-  {% for servicio in servicios %}
-    <div class="col-6 col-md-4 col-lg-3">
-      <div class="card h-100 shadow-sm border-0">
-        <div class="card-body d-flex flex-column">
-          <div class="icon-wrapper mb-3 text-center">
-            <i class="fas fa-concierge-bell fa-2x text-primary"></i>
-          </div>
-          <h5 class="card-title text-center">{{ servicio.nombre }}</h5>
-          <p class="mt-auto text-center fw-bold">{{ servicio.precio }} €</p>
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow-sm">
+          <ul class="list-unstyled m-0">
+            {% for servicio in servicios|slice:":10" %}
+              <li class="price-item py-2 px-3">
+                <span class="service-name">{{ servicio.nombre }}</span>
+                <span class="service-price fw-semibold">{{ servicio.precio }} €</span>
+              </li>
+            {% empty %}
+              <li class="text-center py-4">Todavía no hay servicios cargados.</li>
+            {% endfor %}
+          </ul>
         </div>
       </div>
     </div>
-  {% empty %}
-    <p class="text-center py-4">Todavía no hay servicios cargados.</p>
-  {% endfor %}
-</div>
-
 
     <div class="text-center mt-4">
       <a href="{% url 'services:ver_servicios' %}" class="btn btn-primary btn-lg">
