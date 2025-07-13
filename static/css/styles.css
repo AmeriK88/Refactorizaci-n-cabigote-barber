@@ -101,8 +101,6 @@ main {
 
 
 /* TEMPORARY CONFIG */
-
-/* ─── Price list “barber flyer” style ──────────────────────────── */
 .price-item {
   display: flex;
   align-items: center;
@@ -110,27 +108,22 @@ main {
 
 .service-name {
   white-space: nowrap;
-  /* Hacemos que a continuación del nombre aparezca la línea de puntos */
 }
 .service-name::after {
   content: "";
-  flex: 1 1 auto;                           /* se expande hasta el precio */
+  flex: 1 1 auto;                         
   border-bottom: 1px dotted var(--border-color);
-  margin: 0 0.75rem;                        /* hueco entre texto y puntos */
-  transform: translateY(-2px);              /* centra la línea con el texto */
+  margin: 0 0.75rem;                
+  transform: translateY(-2px);           
 }
 
 .service-price {
   white-space: nowrap;
-  /* opcional: si quieres forzar que el precio quede siempre a la derecha */
   margin-left: auto; 
 }
 
 
 /* TEMPORARY CONFIG */
-
-
-/* Form Styles */
 form {
     margin: 0 auto;
     margin-bottom: 2rem;
@@ -181,7 +174,6 @@ form button:hover {
     margin-right: 10px;
 }
 
-/* ⚙️  Selectors dentro de .input-group */
 .input-group > .form-control,
 .input-group > .form-select {
     width: 1%; 

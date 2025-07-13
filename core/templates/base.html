@@ -312,5 +312,31 @@
         <script async defer crossorigin="anonymous"
         src="https://connect.facebook.net/es_ES/sdk.js#xfbml=1&version=v17.0">
         </script>
+         <!-- Registro del Service Worker -->
+        <script>
+            if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register("{% static 'js/sw.js' %}", { scope: '/' })
+                .then(reg => console.log('SW registrado:', reg.scope))
+                .catch(err => console.error('Error SW:', err));
+            });
+            }
+              // --- Instalación PWA ---
+            let deferredPrompt;
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();            // detenemos el banner automático
+                deferredPrompt = e;            // lo guardamos
+                document.getElementById('btn-instalar').classList.remove('d-none');
+            });
+
+            document.getElementById('btn-instalar').addEventListener('click', async () => {
+                if (!deferredPrompt) return;
+                deferredPrompt.prompt();       // lanza diálogo nativo
+                await deferredPrompt.userChoice;
+                deferredPrompt = null;         // limpia
+                document.getElementById('btn-instalar').classList.add('d-none');
+            });
+        </script>
     </body>
 </html>

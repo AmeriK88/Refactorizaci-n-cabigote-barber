@@ -51,23 +51,47 @@
 
 
   <!-- ◉ 3. APP & DESCARGA ------------------------------------------ -->
-  <section class="my-5 bg-light p-4 rounded-3 shadow-sm">
-    <div class="row align-items-center">
-      <div class="col-lg-6 text-center mb-4 mb-lg-0">
-        <img src="{% static 'imagenes/mockup-laptop.png' %}"
-             class="img-fluid mb-3" alt="Versión escritorio">
-        <img src="{% static 'imagenes/mockup-phone.png' %}"
-             class="img-fluid" style="max-width:180px;" alt="Versión móvil">
-      </div>
-      <div class="col-lg-6">
-        <h3 class="fw-bold mb-3">¡Ya disponible nuestra App!</h3>
-        <p class="mb-4">Reserva citas, recibe recordatorios y gestiona tu perfil desde cualquier dispositivo.</p>
-        <a href="{% static 'apk/cabigote.apk' %}" class="btn btn-primary btn-lg me-2">
-          <i class="bi bi-android2 me-1"></i> Descargar APK
-        </a>
-        <a href="#" class="btn btn-outline-secondary btn-lg disabled" aria-disabled="true">
-          <i class="bi bi-apple me-1"></i> App Store (próximamente)
-        </a>
+  <section class="py-5 bg-light">
+    <div class="container">
+      <div class="card border-0 shadow-sm p-4">
+        <div class="row g-4 align-items-center">
+          
+          <!-- Mockups -->
+          <div class="col-md-6 d-flex justify-content-center">
+            <div class="me-3">
+              <img src="{% static 'imagenes/mockup-laptop.webp' %}"
+                  class="img-fluid rounded" alt="Versión escritorio"
+                  style="max-width: 260px; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
+            </div>
+            <div>
+              <img src="{% static 'imagenes/mockup-phone.webp' %}"
+                  class="img-fluid rounded" alt="Versión móvil"
+                  style="max-width: 140px; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
+            </div>
+          </div>
+
+          <!-- Texto y botones -->
+          <div class="col-md-6">
+            <h3 class="fw-bold mb-3">¡Ya disponible nuestra App!</h3>
+            <p class="text-muted mb-4">
+              Reserva citas, recibe recordatorios y gestiona tu perfil desde cualquier dispositivo.
+            </p>
+            <div class="d-flex flex-wrap gap-2">
+              <div class="d-flex flex-wrap gap-2">
+                <button id="btn-instalar" class="btn btn-success btn-lg d-none">
+                  <i class="bi bi-download me-1"></i> Instalar Cabigote
+                </button>
+              </div>
+
+              <a href="#"
+                class="btn btn-outline-secondary btn-lg disabled"
+                aria-disabled="true">
+                <i class="bi bi-apple me-1"></i> App Store (próximamente)
+              </a>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
   </section>
