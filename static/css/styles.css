@@ -99,6 +99,37 @@ main {
     flex: 1;
 }
 
+
+/* TEMPORARY CONFIG */
+
+/* ─── Price list “barber flyer” style ──────────────────────────── */
+.price-item {
+  display: flex;
+  align-items: center;
+}
+
+.service-name {
+  white-space: nowrap;
+  /* Hacemos que a continuación del nombre aparezca la línea de puntos */
+}
+.service-name::after {
+  content: "";
+  flex: 1 1 auto;                           /* se expande hasta el precio */
+  border-bottom: 1px dotted var(--border-color);
+  margin: 0 0.75rem;                        /* hueco entre texto y puntos */
+  transform: translateY(-2px);              /* centra la línea con el texto */
+}
+
+.service-price {
+  white-space: nowrap;
+  /* opcional: si quieres forzar que el precio quede siempre a la derecha */
+  margin-left: auto; 
+}
+
+
+/* TEMPORARY CONFIG */
+
+
 /* Form Styles */
 form {
     margin: 0 auto;

@@ -62,6 +62,8 @@ INSTALLED_APPS = [
     'colorfield',
     'core',
     'widget_tweaks', 
+    "crispy_forms",
+    "crispy_bootstrap5",
 ]
 
 
@@ -303,6 +305,10 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # BLACKLISTED USERNAMES
 BLACKLISTED_USERNAMES = ['admin', 'root', 'superuser', 'test', 'cabigote']
+
+# CRISPY FORMS CONFIGURATION
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # APP VERSION
 APP_VERSION = "2.4.0"
