@@ -7,6 +7,7 @@ import environ
 import pymysql
 pymysql.install_as_MySQLdb()
 import os
+from core.whitenoise_headers import add_custom_headers
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -250,7 +251,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # WhiteNoise (always active, dev + prod)
 WHITENOISE_ALLOW_ALL_ORIGINS = True
-WHITENOISE_ADD_HEADERS_FUNCTION = 'core.whitenoise_headers.add_custom_headers'
+WHITENOISE_ADD_HEADERS_FUNCTION = add_custom_headers
 WHITENOISE_MEDIA_PREFIX = 'media'
 # ignore duplicates (see §2-A)
 WHITENOISE_IGNORE_PATTERNS = ['admin/js/popup_response.js', 'admin/js/cancel.js']
