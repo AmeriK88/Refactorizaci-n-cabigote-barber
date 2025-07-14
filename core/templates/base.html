@@ -328,6 +328,8 @@
         <script src="https://cdn.jsdelivr.net/npm/jquery-zoom@1.7.21/jquery.zoom.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js"></script>
 
+        {% block extra_scripts %}{% endblock %}
+
         <!-- Scripts personalizados-->
         <script src="{% static 'js/Loader.js' %}" defer></script>
         <script src="{% static 'js/Cookies_modal.js' %}" defer></script>
