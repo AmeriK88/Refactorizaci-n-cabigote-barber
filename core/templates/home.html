@@ -1,35 +1,133 @@
 {% extends 'base.html' %}
-
 {% load static %}
+{% load crispy_forms_tags %}  
 
-{% block title %}Inicio - Cabigote Barber Shop{% endblock %}
+{% block title %}Inicio · CaʼBigote Barber Shop{% endblock %}
 
 {% block content %}
+<div class="container py-5">
 
-<div class="container mt-5">
-    <!-- Hero Section -->
-    <div class="row">
-        <div class="col-lg-6 d-flex flex-column justify-content-center">
-            <div class="hero-content animate-on-load">
-                <h2 class="display-4 fw-bold">Bienvenido a Ca´Bigote</h2>
-                <p class="lead mb-4">Donde el estilo se encuentra con la tradición. Ubicados en el corazón de Arrecife, ofrecemos cortes de cabello y arreglos de barba con la máxima calidad y atención al detalle.</p>
-                <a href="{% url 'services:ver_servicios' %}" class="btn btn-primary btn-lg mb-5">Descubre Nuestros Servicios</a>
-            </div>
-        </div>
-        <div class="col-lg-6 d-flex align-items-center justify-content-center">
-            <img src="{% static 'imagenes/logo-cabigote.png' %}" alt="Imagen de la barbería" class="img-fluid rounded hero-image animate-on-load" loading="lazy">
-        </div>
-    </div>   
-      
-    <!-- About Section -->
-    <div class="row mt-5">
-        <div class="col-lg-12">
-            <div class="card shadow bg-light text-center p-4">
-                <h2 class="display-5 fw-bold mb-3">¿Por Qué Elegirnos?</h2>
-                <p class="lead">En Ca´Bigote Barber Shop, cada visita es una experiencia personalizada. Nuestro equipo de barberos altamente capacitados está dedicado a brindarte el mejor servicio en un ambiente acogedor y moderno. Ya sea que busques un corte clásico o una barba perfectamente arreglada, tenemos todo lo que necesitas.</p>
-                <a href="{% url 'appointments:reservar_cita' %}" class="btn btn-primary btn-lg mt-3">Agenda Tu Cita</a>
-            </div>
-        </div>
+  <!-- ◉ 1. HERO --------------------------------------------------- -->
+  <div class="row align-items-center mb-5 flex-column flex-lg-row">
+    <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
+      <h2 class="display-4 fw-bold animate-on-load">Bienvenido a CaʼBigote</h2>
+      <p class="lead mb-4">
+        Donde el estilo se encuentra con la tradición. Ubicados en el corazón de Arrecife,
+        ofrecemos cortes de cabello y arreglos de barba con la máxima calidad.
+      </p>
     </div>
+
+    <div class="col-lg-6 text-center">
+      <img src="{% static 'imagenes/cabigote.webp' %}"
+           alt="Logo CaʼBigote"
+           class="hero-image img-fluid mx-auto animate-on-load rounded" loading="lazy">
+    </div>
+  </div>
+
+  <!-- ◉ 2. TARIFA DE SERVICIOS ------------------------------------ -->
+  <section class="my-5">
+    <div class="mb-5 card-header gradiente-header shadow-sm bg-light text-center p-3 border-0">
+      <h2 class="h4 fw-bold mb-0">
+        <i class="fas fa-concierge-bell text-primary me-2"></i> Tarifa de Servicios
+      </h2>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow-sm">
+          <ul class="list-unstyled m-0">
+            {% for servicio in servicios|slice:":10" %}
+              <li class="price-item py-2 px-3">
+                <span class="service-name">{{ servicio.nombre }}</span>
+                <span class="service-price fw-semibold">{{ servicio.precio }} €</span>
+              </li>
+            {% empty %}
+              <li class="text-center py-4">Todavía no hay servicios cargados.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="{% url 'services:ver_servicios' %}" class="btn btn-primary btn-lg">
+        Descubre Nuestros Servicios
+      </a>
+    </div>
+  </section>
+
+  <!-- ◉ 3. APP & DESCARGA ----------------------------------------- -->
+  <section class="py-5 bg-light">
+    <div class="container">
+      <div class="card border-0 shadow-sm p-4">
+        <div class="row g-4 align-items-center flex-column flex-md-row">
+
+          <!-- Mockups -->
+          <div class="col-12 col-md-6 d-flex justify-content-center gap-3">
+            <img src="{% static 'imagenes/mockup-laptop.webp' %}"
+                 alt="Versión escritorio"
+                 class="mockup-laptop rounded shadow-sm">
+
+            <img src="{% static 'imagenes/mockup-phone.webp' %}"
+                 alt="Versión móvil"
+                 class="mockup-phone rounded shadow-sm">
+          </div>
+
+          <!-- Texto y botón PWA -->
+          <div class="col-12 col-md-6 text-center text-md-start">
+            <h3 class="fw-bold mb-3">¡Ya disponible nuestra App!</h3>
+            <p class="text-muted mb-4">
+              Reserva citas, recibe recordatorios y gestiona tu perfil desde cualquier dispositivo.
+            </p>
+
+            <button id="btn-instalar"
+                    class="btn btn-success btn-lg d-none">
+              <i class="bi bi-download me-1"></i> Instalar Cabigote
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+    
+  <!-- ◉ 4. ÚLTIMAS PUBLICACIONES SOCIAL --------------------------- -->
+  <section class="my-5">
+    <div class="mb-5 card-header gradiente-header shadow-sm bg-light text-center p-3 border-0">
+      <h2 class="h4 fw-bold mb-0">
+        <i class="fas fa-globe text-primary me-2"></i></i> Publicaciones
+      </h2>
+    </div>
+    <div class="row g-4 justify-content-center">
+      <div class="col-12 col-md-6">
+        <div class="instagram-embed rounded shadow-sm mb-4">
+          <iframe
+            src="https://www.instagram.com/p/C9ecZGftT6b/embed"
+            title="Instagram post by Ca’Bigote"
+            allowtransparency="true"
+            allowfullscreen
+            loading="lazy">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ◉ 5. ABOUT --------------------------------------------------- -->
+  <section class="my-5">
+    <div class="card shadow bg-light text-center p-4">
+      <h3 class="fw-bold mb-3">¿Por qué elegirnos?</h3>
+      <p class="lead">
+        En CaʼBigote cada visita es una experiencia personalizada. Nuestros barberos están
+        dedicados a brindarte el mejor servicio en un ambiente acogedor y moderno.
+      </p>
+      <a href="{% url 'appointments:reservar_cita' %}" class="btn btn-primary btn-lg">
+        Agenda tu Cita
+      </a>
+    </div>
+  </section>
+
 </div>
 {% endblock %}

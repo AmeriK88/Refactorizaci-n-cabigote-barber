@@ -23,14 +23,20 @@
     --border-error-color: #E6B8B7;
 }
 
+/* Asegurar que todos los navegadores respeten el mismo escalado de texto */
+html {
+
+  text-size-adjust: 100%;       
+}
+
 /* General Styles */
 html, body {
-    height: 100%;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    overflow-x: hidden;
-    scroll-behavior: smooth;
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -99,7 +105,32 @@ main {
     flex: 1;
 }
 
-/* Form Styles */
+
+/* TEMPORARY CONFIG */
+.price-item {
+  display: flex;
+  align-items: center;
+}
+
+.service-name {
+  white-space: nowrap;
+}
+
+.service-name::after {
+  content: "";
+  flex: 1 1 auto;
+  border-bottom: 1px dotted var(--border-color);
+  margin: 0 0.75rem;
+  transform: translateY(-2px);
+}
+
+.service-price {
+  white-space: nowrap;
+  margin-left: auto; 
+}
+
+
+/* TEMPORARY CONFIG */
 form {
     margin: 0 auto;
     margin-bottom: 2rem;
@@ -150,27 +181,11 @@ form button:hover {
     margin-right: 10px;
 }
 
-/* ⚙️  Selectors dentro de .input-group */
 .input-group > .form-control,
 .input-group > .form-select {
     width: 1%; 
     flex: 1 1 auto; 
     margin-bottom: 0;
-}
-
-
-/* Image Styles */
-img {
-    max-width: 100%;
-    height: auto;
-    border: 1px solid var(--border-color);
-    padding: 5px;
-    background: var(--light-background);
-    transition: transform 0.3s ease;
-}
-
-img:hover {
-    transform: scale(1.05);
 }
 
 /* Card Styles */
@@ -184,7 +199,6 @@ img:hover {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     margin: auto;
 }
-
 
 .card:hover, .card-user-profile:hover {
     transform: translateY(-5px);
@@ -213,7 +227,7 @@ img:hover {
 }
 
 .card img:hover, .card-user-profile img:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 .card-body, .card-user-profile  {
@@ -222,10 +236,6 @@ img:hover {
     text-align: center;
 }
 
-.card-text {
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    font-weight: 500}
 
 .card-title  {
     font-size: 1.1rem;
@@ -240,7 +250,31 @@ img:hover {
     margin-bottom: 10px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     text-align: justify;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
 }
+
+/* Image Styles */
+img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--border-color);
+    padding: 5px;
+    background: var(--light-background);
+    transition: transform 0.3s ease;
+}
+
+.instagram-embed {
+  width: 100%;
+  aspect-ratio: 4 / 5;   /* o 1 / 1 si prefieres cuadrado */
+}
+.instagram-embed iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
 
 /* User Profile Specific */
 .container {
@@ -295,6 +329,9 @@ img:hover {
     border-bottom: 1px solid #ddd;
 }
 
+/* =========================================
+   Overlay + Loader (versión completa)
+   ========================================= */
 /* Estilo para la superposición oscura */
 .overlay {
     position: fixed;
@@ -684,3 +721,20 @@ footer a:hover {
       transform: translateY(-10px);
     }
   }
+
+  /* ---------- Home specific tweaks ---------- */
+
+/* Hero logo */
+.hero-image{ max-width:320px; border:0; padding:0; }
+@media (max-width:575.98px){ .hero-image{ max-width:220px; } }
+
+/* Mockups */
+.mockup-laptop{ max-width:260px; }
+.mockup-phone { max-width:140px; }
+@media (max-width:575.98px){
+  .mockup-laptop{ max-width:180px; }
+  .mockup-phone { max-width:100px; }
+}
+
+/* Asegúrate de no desbordar por borde + padding */
+img{ box-sizing:border-box; }

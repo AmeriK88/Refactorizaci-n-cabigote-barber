@@ -7,6 +7,7 @@ import environ
 import pymysql
 pymysql.install_as_MySQLdb()
 import os
+from core.whitenoise_headers import add_custom_headers
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
 
     # Installed apps
     'django_recaptcha',
+
     # My apps
     'appointments',
     'products',
@@ -62,6 +64,11 @@ INSTALLED_APPS = [
     'colorfield',
     'core',
     'widget_tweaks', 
+    "crispy_forms",
+    "crispy_bootstrap5",
+
+    # Content Security Policy
+    'csp'
 ]
 
 
@@ -75,7 +82,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware',
 ]
 
 ROOT_URLCONF = 'cabigote.urls'
@@ -83,7 +91,11 @@ ROOT_URLCONF = 'cabigote.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'core', 'templates')],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'core', 'templates'),  
+            os.path.join(BASE_DIR, 'templates'),          
+        ],
+        
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -100,7 +112,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'cabigote.wsgi.application'
 
 
-# settings.py (parte de DATABASES)
 
 # Lee DATABASE_URL si existe (Railway lo inyecta en prod)
 database_url = env('DATABASE_URL', default=None)  # type: ignore[name-defined]
@@ -114,30 +125,17 @@ if database_url:
         'charset': 'utf8mb4',
         'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
     }
-# Lee DATABASE_URL si existe (Railway lo inyecta en prod)
+# settings.py, database config
+
 database_url = env('DATABASE_URL', default=None)  # type: ignore[name-defined]
-
 if database_url:
-    # 1) Obtén la configuración completa desde la URL
-    db_config = env.db('DATABASE_URL')  
-
-    # 2) Añade las OPTIONS para utf8mb4
+    db_config = env.db('DATABASE_URL')
     db_config['OPTIONS'] = {
         'charset': 'utf8mb4',
         'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
     }
-
-    # 3) Asigna a DATABASES
-    DATABASES = {
-        'default': db_config
-    }
-    # 3) Asigna a DATABASES
-    DATABASES = {
-        'default': db_config
-    }
-
+    DATABASES = {'default': db_config}
 else:
-    # En local, usa tus DB_* del .env
     DATABASES = {
         'default': {
             'ENGINE':   env('DB_ENGINE'),
@@ -152,6 +150,7 @@ else:
             },
         }
     }
+
 
 
 # PASSWORD CONFIGURATION
@@ -250,10 +249,19 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# WHITENOISE CONFIG
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# WhiteNoise (always active, dev + prod)
 WHITENOISE_ALLOW_ALL_ORIGINS = True
+WHITENOISE_ADD_HEADERS_FUNCTION = add_custom_headers
 WHITENOISE_MEDIA_PREFIX = 'media'
+# ignore duplicates (see §2-A)
+WHITENOISE_IGNORE_PATTERNS = ['admin/js/popup_response.js', 'admin/js/cancel.js']
+
+# Use compressed-manifest storage only in prod
+if not DEBUG:
+    STATICFILES_STORAGE = (
+        'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    )
+
 
 # LOGGING CONFIGURATION
 LOG_FILE_DIR = os.path.join(BASE_DIR, 'logs')
@@ -286,7 +294,7 @@ LOGGING = {
     },
 }
 
-# DEFAULT AUTO FIELD
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CSRF CONFIGURATION
@@ -304,5 +312,88 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # BLACKLISTED USERNAMES
 BLACKLISTED_USERNAMES = ['admin', 'root', 'superuser', 'test', 'cabigote']
 
+# CRISPY FORMS CONFIGURATION
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+# Content Security Policy (CSP)
+CONTENT_SECURITY_POLICY = {
+    "DIRECTIVES": {
+        "default-src": ("'self'",),
+
+        # ─────────── SCRIPTS ───────────
+        "script-src": (
+            "'self'",
+            "'unsafe-inline'",
+            "https://code.jquery.com",
+            "https://cdnjs.cloudflare.com",
+            "https://stackpath.bootstrapcdn.com",
+            "https://cdn.jsdelivr.net",
+            "https://www.google.com",
+            "https://www.gstatic.com",
+        ),
+        "script-src-elem": (
+            "'self'",
+            "'unsafe-inline'",        
+            "https://code.jquery.com",
+            "https://cdnjs.cloudflare.com",
+            "https://stackpath.bootstrapcdn.com",
+            "https://cdn.jsdelivr.net",
+            "https://www.google.com",
+            "https://www.gstatic.com",
+            "https://connect.facebook.net",
+            "https://www.instagram.com",
+        ),
+
+        # ─────────── ESTILOS ───────────
+        "style-src": (
+            "'self'",
+            "'unsafe-inline'",
+            "https://cdnjs.cloudflare.com",
+            "https://stackpath.bootstrapcdn.com",
+            "https://fonts.googleapis.com",
+            "https://cdn.jsdelivr.net",
+            "https://www.gstatic.com",
+        ),
+
+        # ─────────── FUENTES ───────────
+        "font-src": (
+            "'self'",
+            "data:",
+            "https://fonts.gstatic.com",
+            "https://cdnjs.cloudflare.com",
+        ),
+
+        # ─────────── IMÁGENES ───────────
+        "img-src": (
+            "'self'",
+            "data:",
+            "https://www.instagram.com",
+            "https://maps.gstatic.com",
+            "https://maps.googleapis.com",
+            "https://www.gstatic.com/recaptcha",
+        ),
+
+        # ───────── IFRAME / EMBEDS ─────────
+        "frame-src": (
+            "'self'",
+            "https://www.google.com",
+            "https://recaptcha.google.com",
+            "https://www.instagram.com",
+        ),
+
+        # ───────── AJAX / FETCH ─────────
+        "connect-src": (
+            "'self'",
+            "https://www.google.com",
+            "https://www.gstatic.com",
+        ),
+
+        # Proteger contra clickjacking
+        "frame-ancestors": ("'self'",),
+    }
+}
+
+
 # APP VERSION
-APP_VERSION = "2.4.0"
+APP_VERSION = "2.5.1"

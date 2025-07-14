@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import subprocess
 import os
+from services.models import Servicio
 
 
 def home(request):
@@ -14,15 +15,25 @@ def home(request):
 
     contador.refresh_from_db()
 
+    # Obtener servicios para mostrar en home
+    servicios = Servicio.objects.all().order_by('nombre')
+
+    # Contexto para la plantilla
+    context = {
+        'contador_actualizado': contador.total,
+        'servicios': servicios,
+    }
+
     # Renderizar la plantilla
-    response = render(request, 'home.html', {'contador_actualizado': contador.total})
+    response = render(request, 'home.html', context)
 
     # Forzar cabeceras para que el navegador y proxies no guarden en caché
-    response["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
-    response["Pragma"] = "no-cache"
-    response["Expires"] = "0"
+    response['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
 
     return response
+
 
 @csrf_exempt
 def lanzar_recordatorios(request):
