@@ -1,4 +1,5 @@
 ;(function () {
+  /* PATCH - smooth scroll & remove warning */
   let supportsPassive = false;
   try {
     const opts = Object.defineProperty({}, 'passive', {

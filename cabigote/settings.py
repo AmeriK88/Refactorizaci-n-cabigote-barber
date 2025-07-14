@@ -329,17 +329,18 @@ CONTENT_SECURITY_POLICY = {
             "https://cdnjs.cloudflare.com",
             "https://stackpath.bootstrapcdn.com",
             "https://cdn.jsdelivr.net",
-            "https://www.google.com",             
-            "https://www.gstatic.com",            
+            "https://www.google.com",
+            "https://www.gstatic.com",
         ),
         "script-src-elem": (
             "'self'",
+            "'unsafe-inline'",        
             "https://code.jquery.com",
             "https://cdnjs.cloudflare.com",
             "https://stackpath.bootstrapcdn.com",
             "https://cdn.jsdelivr.net",
-            "https://www.google.com",             
-            "https://www.gstatic.com",            
+            "https://www.google.com",
+            "https://www.gstatic.com",
             "https://connect.facebook.net",
             "https://www.instagram.com",
         ),
@@ -352,7 +353,7 @@ CONTENT_SECURITY_POLICY = {
             "https://stackpath.bootstrapcdn.com",
             "https://fonts.googleapis.com",
             "https://cdn.jsdelivr.net",
-            "https://www.gstatic.com",        
+            "https://www.gstatic.com",
         ),
 
         # ─────────── FUENTES ───────────
@@ -370,7 +371,7 @@ CONTENT_SECURITY_POLICY = {
             "https://www.instagram.com",
             "https://maps.gstatic.com",
             "https://maps.googleapis.com",
-            "https://www.gstatic.com/recaptcha", 
+            "https://www.gstatic.com/recaptcha",
         ),
 
         # ───────── IFRAME / EMBEDS ─────────
@@ -384,8 +385,8 @@ CONTENT_SECURITY_POLICY = {
         # ───────── AJAX / FETCH ─────────
         "connect-src": (
             "'self'",
-            "https://www.google.com",            
-            "https://www.gstatic.com",            
+            "https://www.google.com",
+            "https://www.gstatic.com",
         ),
 
         # Proteger contra clickjacking

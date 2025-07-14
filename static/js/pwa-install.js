@@ -1,22 +1,35 @@
-/* PWA - Instalación “Add to Home Screen” */
+/* pwa-install.js */
 document.addEventListener('DOMContentLoaded', () => {
+  const installBtn = document.getElementById('btn-instalar');
   let deferredPrompt;
 
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();                // Bloquea el banner automático
-    deferredPrompt = e;                // Guarda el evento
-    document.getElementById('btn-instalar').classList.remove('d-none');
+  // A2HS
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installBtn) installBtn.classList.remove('d-none');
   });
 
-  document.getElementById('btn-instalar').addEventListener('click', async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();           // Lanza el diálogo nativo
-    await deferredPrompt.userChoice;   // Espera la elección del usuario
-    deferredPrompt = null;             // Limpia
-    document.getElementById('btn-instalar').classList.add('d-none');
-  });
+  if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      installBtn.classList.add('d-none');
+      deferredPrompt = null;
+    });
+  }
 
   window.addEventListener('appinstalled', () => {
-    document.getElementById('btn-instalar').classList.add('d-none'); // Oculta si ya está instalada
+    if (installBtn) installBtn.classList.add('d-none');
   });
 });
+
+// Registro del Service Worker (separado, fuera de posibles fallos de A2HS)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
+      .then(reg => console.log('SW registrado:', reg))
+      .catch(err => console.error('Error SW:', err));
+  });
+}

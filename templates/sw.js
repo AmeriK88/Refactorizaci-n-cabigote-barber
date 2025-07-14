@@ -1,13 +1,27 @@
 // templates/sw.js
+
+const CACHE_NAME  = 'offline-cache-v1';
+const OFFLINE_URL = '/offline.html';
+
 self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+          .then(cache => cache.add(OFFLINE_URL))
+  );
   self.skipWaiting();
 });
 
 self.addEventListener('activate', event => {
-  clients.claim();
+  event.waitUntil(clients.claim());
 });
 
-// Simple offline fallback
 self.addEventListener('fetch', event => {
-  event.respondWith(fetch(event.request).catch(() => caches.match('/offline.html')));
+  // Solo para peticiones de navegación (página HTML)
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .catch(() => caches.match(OFFLINE_URL))
+    );
+  }
+  // Todas las demás peticiones (scripts, CSS, datos…) se dejan pasar
 });

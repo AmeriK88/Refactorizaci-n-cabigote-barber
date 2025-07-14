@@ -22,7 +22,7 @@ def reservar_cita(request, servicio_id=None):
 
     # Fechas llenas
     horas_por_dia = (
-        Cita.objects.filter(hora__in=valid_hours_str)
+        Cita.objects.filter(hora__in=valid_hours_str)           
         .values("fecha__date")
         .annotate(total_citas=Count("hora"))
         .filter(total_citas=len(valid_hours_str))
@@ -37,6 +37,7 @@ def reservar_cita(request, servicio_id=None):
     # Horas ocupadas
     horas_ocupadas_por_fecha = {}
     for c in Cita.objects.filter(hora__in=valid_hours_str):
+        
         fecha_str = c.fecha.date().isoformat()
         horas_ocupadas_por_fecha.setdefault(fecha_str, []).append(c.hora.strftime("%H:%M"))
 
@@ -60,8 +61,8 @@ def reservar_cita(request, servicio_id=None):
         form = CitaForm(request.POST)
         if form.is_valid():
             # ——— Datos limpios ———
-            fecha = form.cleaned_data["fecha"]   # date (o datetime si viene del widget)
-            hora  = form.cleaned_data["hora"]    # time  o str
+            fecha = form.cleaned_data["fecha"]  
+            hora  = form.cleaned_data["hora"]   
 
             # Normaliza fecha: si llega datetime → date
             if isinstance(fecha, datetime):
@@ -94,8 +95,8 @@ def reservar_cita(request, servicio_id=None):
             if not form.errors:
                 cita = form.save(commit=False)
                 cita.usuario = request.user
-                cita.fecha   = fecha_hora     # aware
-                cita.hora    = hora           # time
+                cita.fecha   = fecha_hora  
+                cita.hora    = hora        
                 cita.save()
 
                 enviar_confirmacion_cita(request.user.email, cita)
@@ -167,7 +168,8 @@ def editar_cita(request, cita_id):
     ]
 
     horas_ocupadas_por_fecha = {}
-    for c in Cita.objects.filter(hora__in=valid_hours_str):
+    for c in Cita.objects.filter(hora__in=valid_hours_str).exclude(id=cita_id):
+        
         fecha_str = c.fecha.date().isoformat()
         horas_ocupadas_por_fecha.setdefault(fecha_str, []).append(c.hora.strftime("%H:%M"))
 
@@ -184,8 +186,8 @@ def editar_cita(request, cita_id):
     if request.method == "POST":
         form = CitaForm(request.POST, instance=cita)
         if form.is_valid():
-            fecha = form.cleaned_data["fecha"]   # date o datetime
-            hora  = form.cleaned_data["hora"]    # time o str
+            fecha = form.cleaned_data["fecha"]  
+            hora  = form.cleaned_data["hora"]  
 
             # Normaliza tipos
             if isinstance(fecha, datetime):
