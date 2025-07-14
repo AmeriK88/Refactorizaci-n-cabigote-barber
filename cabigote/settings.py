@@ -321,74 +321,77 @@ CONTENT_SECURITY_POLICY = {
     "DIRECTIVES": {
         "default-src": ("'self'",),
 
-        # ──────────────  JS  ──────────────
+        # ─────────── SCRIPTS ───────────
         "script-src": (
             "'self'",
-            "'unsafe-inline'",    
-            # CDN que ya tenías
+            "'unsafe-inline'",
             "https://code.jquery.com",
             "https://cdnjs.cloudflare.com",
             "https://stackpath.bootstrapcdn.com",
             "https://cdn.jsdelivr.net",
-            # reCAPTCHA  
-            "https://www.google.com/recaptcha/", 
-            "https://www.gstatic.com/recaptcha/", 
+            "https://www.google.com",             
+            "https://www.gstatic.com",            
         ),
-        # scripts insertados
         "script-src-elem": (
             "'self'",
-            "https://www.instagram.com",
+            "https://code.jquery.com",
+            "https://cdnjs.cloudflare.com",
+            "https://stackpath.bootstrapcdn.com",
+            "https://cdn.jsdelivr.net",
+            "https://www.google.com",             
+            "https://www.gstatic.com",            
             "https://connect.facebook.net",
-            # reCAPTCHA nuevamente, por si el navegador separa categorías
-            "https://www.google.com/recaptcha/",
-            "https://www.gstatic.com/recaptcha/",
+            "https://www.instagram.com",
         ),
 
-        # ──────────────  CSS  ──────────────
+        # ─────────── ESTILOS ───────────
         "style-src": (
             "'self'",
             "'unsafe-inline'",
             "https://cdnjs.cloudflare.com",
             "https://stackpath.bootstrapcdn.com",
             "https://fonts.googleapis.com",
+            "https://cdn.jsdelivr.net",
+            "https://www.gstatic.com",        
         ),
 
-        # ──────────────  FUENTES  ──────────────
+        # ─────────── FUENTES ───────────
         "font-src": (
             "'self'",
             "data:",
-            "https://fonts.gstatic.com",       
-            "https://cdnjs.cloudflare.com",   
+            "https://fonts.gstatic.com",
+            "https://cdnjs.cloudflare.com",
         ),
 
-        # ──────────────  IMÁGENES  ──────────────
+        # ─────────── IMÁGENES ───────────
         "img-src": (
             "'self'",
             "data:",
             "https://www.instagram.com",
             "https://maps.gstatic.com",
             "https://maps.googleapis.com",
-            "https://www.gstatic.com/recaptcha/", 
+            "https://www.gstatic.com/recaptcha", 
         ),
 
-        # ──────────────  MARCOS / iframes  ──────
+        # ───────── IFRAME / EMBEDS ─────────
         "frame-src": (
             "'self'",
-            "https://www.google.com",           
-            "https://recaptcha.google.com",    
+            "https://www.google.com",
+            "https://recaptcha.google.com",
             "https://www.instagram.com",
         ),
 
-        # Llamadas XHR / fetch
+        # ───────── AJAX / FETCH ─────────
         "connect-src": (
             "'self'",
-            "https://www.google.com/recaptcha/",
+            "https://www.google.com",            
+            "https://www.gstatic.com",            
         ),
 
+        # Proteger contra clickjacking
         "frame-ancestors": ("'self'",),
     }
 }
-
 
 
 # APP VERSION

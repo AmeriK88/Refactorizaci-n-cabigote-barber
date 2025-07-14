@@ -45,7 +45,8 @@
 
     <!-- Bootstrap CSS -->
     <link rel="dns-prefetch" href="//stackpath.bootstrapcdn.com">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet" integrity="" crossorigin="anonymous">
 
     <!-- Custom Styles -->
     <link rel="preload" href="{% static 'css/styles.css' %}" as="style">
@@ -322,7 +323,8 @@
 
 
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        defer></script>
         <script src="https://cdn.jsdelivr.net/npm/jquery-zoom@1.7.21/jquery.zoom.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js"></script>
 
@@ -334,12 +336,6 @@
         <script src="{% static 'js/special_message.js' %}" defer></script>
 
         <script async src="//www.instagram.com/embed.js"></script>
-
-        <!-- Facebook SDK -->
-        <div id="fb-root"></div>
-        <script async defer crossorigin="anonymous"
-        src="https://connect.facebook.net/es_ES/sdk.js#xfbml=1&version=v17.0">
-        </script>
          <!-- Registro del Service Worker -->
         <script src="{% static 'js/pwa-install.js' %}" defer></script> 
     </body>
