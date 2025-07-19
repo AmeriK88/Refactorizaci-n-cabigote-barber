@@ -73,6 +73,7 @@ INSTALLED_APPS = [
 
 
 MIDDLEWARE = [
+    'core.redirectionMiddleware.redirectionDomainMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -114,7 +115,7 @@ WSGI_APPLICATION = 'cabigote.wsgi.application'
 
 
 # Lee DATABASE_URL si existe (Railway lo inyecta en prod)
-database_url = env('DATABASE_URL', default=None)  # type: ignore[name-defined]
+database_url = env('DATABASE_URL', default=None)  
 
 if database_url:
     # 1) Obtén la configuración completa desde la URL
@@ -127,7 +128,7 @@ if database_url:
     }
 # settings.py, database config
 
-database_url = env('DATABASE_URL', default=None)  # type: ignore[name-defined]
+database_url = env('DATABASE_URL', default=None)  
 if database_url:
     db_config = env.db('DATABASE_URL')
     db_config['OPTIONS'] = {
@@ -231,7 +232,7 @@ ADMINS = [tuple(admin.split(',')) for admin in admins_env.split(';')] if admins_
 RECAPTCHA_PUBLIC_KEY = env('RECAPTCHA_PUBLIC_KEY')
 RECAPTCHA_PRIVATE_KEY = env('RECAPTCHA_PRIVATE_KEY')
 
-# Configuraciones relacionadas con la autenticación
+# REDIRECT URLS
 LOGIN_URL = '/users/login/' 
 LOGIN_REDIRECT_URL = '/users/perfil/'  
 LOGOUT_REDIRECT_URL = '/' 
@@ -240,16 +241,14 @@ LOGOUT_REDIRECT_URL = '/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# STATIC FILE
+# STATIC FILES DIR CONFIG
 STATIC_URL = '/static/'
-
-# DIRECTORIES FOR STATIC FILES
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# WhiteNoise (always active, dev + prod)
+# WHITENOISE (always active, dev + prod)
 WHITENOISE_ALLOW_ALL_ORIGINS = True
 WHITENOISE_ADD_HEADERS_FUNCTION = add_custom_headers
 WHITENOISE_MEDIA_PREFIX = 'media'
@@ -293,9 +292,6 @@ LOGGING = {
         'level': 'ERROR',
     },
 }
-
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CSRF CONFIGURATION
 CSRF_TRUSTED_ORIGINS = [
@@ -396,4 +392,6 @@ CONTENT_SECURITY_POLICY = {
 
 
 # APP VERSION
-APP_VERSION = "2.5.1"
+APP_VERSION = "2.5.2"
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

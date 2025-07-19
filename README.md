@@ -91,15 +91,24 @@ The project comprises multiple Django apps, each handling specific functionality
 
 ## 🚀 **Main Characteristics**
 
-✅ **User Management:**  
-- Registration, login, and profile customization.
+✅ **Users - Management:**  
+- Registration/login template, user profile & edit profile.
+- Custom register/login forms.
 
-✅ **Appointment Booking:**  
+✅ **Appointments:**  
 - Create, edit, cancel, and manage appointment history.
 - Dynamically disabled blocked dates and occupied time slots.
+- Templates for admin booking graph available in admin panel.
+
+✅ **Core:**  
+- Email reminders 24hrs before the service. Managment/commnads/.
+- Templates home/base.html.
+- Templates social login/register & social error validation.
+- Context processors to inyect special messages in teh UI  & run the visitor count.
+- Custom header to serve whitenoise
 
 ✅ **Reviews:**  
-- Users can add and view star-rated reviews.
+- Authenticated users can add and view star-rated reviews.
 
 ✅ **Producto & Service Gallery:**  
 - Detailed information with images and descriptions.
@@ -109,14 +118,48 @@ The project comprises multiple Django apps, each handling specific functionality
 
 ✅ **Custom Admin Panel:**  
 - Django Suit integration for a modern interface.
-- Visualization of appointment and revenue charts.
+- Visualization of appointment charts.
+- Improved admin panil to a more modern design
 
 ✅ **Dynamic Reports:**  
 - Generate daily/monthly reports by selected date.
 - Downloadable text reports.
 
-✅ **Enhanced Security:**  
-- reCAPTCHA implementation to prevent bots.
+✅ **Date blocker:**  
+- Blocksa a specific date or dates to prevent any new booking.
+- Blocks a specific range of hours in a specific date to provent any new booking.
+
+✅ **Security Features:**  
+
+  - **Environment-based secrets**  
+    • `SECRET_KEY` and all sensitive credentials are read from environment variables (via django-environ).  
+    • `DEBUG` is disabled by default in production.  
+
+  - **Allowed hosts enforcement**  
+    Only your domains (`*.example.com`) are permitted in `ALLOWED_HOSTS`, preventing HTTP Host header attacks.
+
+  - **HTTPS & secure cookies**  
+    • `SESSION_COOKIE_SECURE = True` & `CSRF_COOKIE_SECURE = True` ensure cookies are only sent over HTTPS.  
+    • `SECURE_PROXY_SSL_HEADER` trusts the proxy’s `X-Forwarded-Proto` header.
+
+  - **Password hardening**  
+    Django’s built-in `AUTH_PASSWORD_VALIDATORS` enforce minimum length, complexity and common-password checks.
+
+  - **Content Security Policy (CSP)**  
+    Using `django-csp` middleware to lock down permitted script, style, image and connect domains.
+
+  - **Static file protection**  
+    Whitenoise serves static assets with custom security headers (HSTS, cache-control) via `add_custom_headers`.
+
+  - **Bot prevention**  
+    Integrated Google reCAPTCHA on all public forms (login, signup, appointment booking) to block automated abuse.
+
+  - **Strict CSRF & clickjacking defenses**  
+    • `CsrfViewMiddleware` enabled site-wide.  
+    • CSP’s `frame-ancestors 'self'` prevents embedding in other sites.
+
+  - **Database constraints**  
+    Unique constraints on key models (e.g. appointment `fecha`+`hora`) ensure data integrity even under race conditions.
 
 ---
 
