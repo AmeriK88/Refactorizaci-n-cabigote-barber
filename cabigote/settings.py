@@ -73,6 +73,7 @@ INSTALLED_APPS = [
 
 
 MIDDLEWARE = [
+    'core.redirectionMiddleware.redirectionDomainMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -114,7 +115,7 @@ WSGI_APPLICATION = 'cabigote.wsgi.application'
 
 
 # Lee DATABASE_URL si existe (Railway lo inyecta en prod)
-database_url = env('DATABASE_URL', default=None)  # type: ignore[name-defined]
+database_url = env('DATABASE_URL', default=None)  
 
 if database_url:
     # 1) Obtén la configuración completa desde la URL
@@ -127,7 +128,7 @@ if database_url:
     }
 # settings.py, database config
 
-database_url = env('DATABASE_URL', default=None)  # type: ignore[name-defined]
+database_url = env('DATABASE_URL', default=None)  
 if database_url:
     db_config = env.db('DATABASE_URL')
     db_config['OPTIONS'] = {
@@ -396,4 +397,4 @@ CONTENT_SECURITY_POLICY = {
 
 
 # APP VERSION
-APP_VERSION = "2.5.1"
+APP_VERSION = "2.5.2"
