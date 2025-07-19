@@ -5,7 +5,7 @@ class redirectionDomainMiddleware:
     """
     Middleware to redirect requests from the old domain to the new one with a 301.
     """
-    OLD_HOST = 'if9hv3ou.up.railway.app'
+    OLD_HOST = 'refactorizaci-n-cabigote-barber-production.up.railway.app'
     NEW_HOST = 'cabigotebarbershop.com'
 
     def __init__(self, get_response):
