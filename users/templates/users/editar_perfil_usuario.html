@@ -6,11 +6,11 @@
 {% block content %}
 <div class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-sm-12 col-lg-12 col-xl-12">
+    <div class="col-12">
 
-      <!-- MAIN CARD -->
+      <!-- ───────── MAIN CARD ───────── -->
       <div class="card shadow-sm animate-on-load">
-        <div class="card-header gradiente-header  text-center">
+        <div class="card-header gradiente-header text-center">
           <h4 class="mb-0">
             <i class="fas fa-user-edit text-primary me-2"></i> Edita tu Perfil
           </h4>
@@ -22,7 +22,7 @@
             Todos los campos son opcionales, pero te recomendamos mantener tu información al día.
           </p>
 
-          <!-- ACTUAL INFO -->
+          <!-- INFO ACTUAL -->
           <div class="card mb-5 shadow-sm">
             <div class="card-header text-center main-title">Información del Usuario</div>
             <div class="card-body">
@@ -32,10 +32,11 @@
             </div>
           </div>
 
+          <!-- FORMULARIOS -->
           <form method="post" class="needs-validation" novalidate>
             {% csrf_token %}
 
-            <!-- EMAIL FIELD-->
+            <!-- EMAIL -->
             <h5 class="mb-3">Correo Electrónico</h5>
             {{ user_form.non_field_errors }}
             {% for field in user_form %}
@@ -48,7 +49,7 @@
               </div>
             {% endfor %}
 
-            <!-- PROFILE DATA -->
+            <!-- PROFILE -->
             <h5 class="mt-4 mb-3">Actualizar información</h5>
             {{ profile_form.non_field_errors }}
             {% for field in profile_form %}
@@ -61,7 +62,7 @@
               </div>
             {% endfor %}
 
-            <!-- PASSW CHANGE -->
+            <!-- PASSWORD -->
             <h5 class="mt-4 mb-3">Cambiar Contraseña</h5>
             {{ password_form.non_field_errors }}
             {% for field in password_form %}
@@ -81,16 +82,28 @@
         </div>
 
         <div class="card-footer text-center">
-          <a href="{% url 'users:perfil_usuario' %}" class="btn btn-outline-primary me-2">
+          <a href="{% url 'users:perfil_usuario' %}" class="btn btn-outline-primary">
             ↩️ Volver al Perfil
-          </a>
-
-          <!-- 🗑 Botón eliminar -->
-          <a href="{% url 'users:delete_account' %}" class="btn btn-outline-danger">
-            ❌ Eliminar cuenta
           </a>
         </div>
       </div>
+      <!-- ──────── FIN MAIN CARD ──────── -->
+
+      <!-- ───────── ZONA DE PELIGRO ───────── -->
+      <div class="card mt-4 border-danger shadow-sm">
+        <div class="card-header bg-danger bg-opacity-75 text-white text-center">
+          ⚠️ Zona de peligro
+        </div>
+        <div class="card-body text-center">
+          <p class="mb-3">
+            Eliminar tu cuenta es irreversible. Se borrarán tus datos y citas.
+          </p>
+          <a href="{% url 'users:delete_account' %}"
+             class="btn btn-danger btn-lg"
+             onclick="return confirm('¿Seguro que quieres eliminar tu cuenta? Esta acción no se puede deshacer.');">
+            ❌ Eliminar cuenta definitivamente
+          </a>
+        </div>
     </div>
   </div>
 </div>
