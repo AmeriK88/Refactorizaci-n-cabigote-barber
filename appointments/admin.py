@@ -1,156 +1,193 @@
+"""
+Admin personalizado para la app *appointments*.
+Incluye:
+    • Listado de citas con accesos rápidos y acciones.
+    • Gráfico de estadísticas de los últimos 6 meses —sin depender de funciones SQL
+      incompatibles— generado con Matplotlib y servible también en formato JSON
+      para Chart.js.
+
+© 2024‑2025  José Félix Gordo Castaño — Uso educativo, no comercial.
+"""
+
+from collections import defaultdict
+import io
+import base64
+
+import matplotlib
+matplotlib.use("Agg")  # render headless
+import matplotlib.pyplot as plt
+
 from django.contrib import admin
-from django.utils.html import format_html
+from django.db.models import Count
 from django.urls import path, reverse
-from django.shortcuts import render
 from django.http import JsonResponse
-from django.db.models import Count, DateField
+from django.shortcuts import render
 from django.utils import timezone
-from django.db.models.functions import TruncMonth
+from django.utils.html import format_html
+from django.utils.timezone import localtime
 
 from .models import Cita, FechaBloqueada, BloqueoHora
 
-# Configuración para usar Matplotlib sin UI
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-import io, base64
 
+# ────────────────────────────────────────────────────────────────────────────────
+# CITA ADMIN
+# ────────────────────────────────────────────────────────────────────────────────
 @admin.register(Cita)
 class CitaAdmin(admin.ModelAdmin):
-    list_display    = ('usuario', 'servicio', 'fecha', 'hora',
-                       'comentario_corto', 'vista_icon', 'ver_grafico_link')
-    search_fields   = ('usuario__username', 'servicio__nombre', 'fecha')
-    list_filter     = ('fecha', 'servicio')
-    ordering        = ('-fecha',)
-    list_per_page   = 20
-    actions         = ['marcar_como_vistas']
+    """Gestión de citas + estadísticas gráficas."""
+
+    # -------- Tabla principal --------
+    list_display = (
+        "usuario",
+        "servicio",
+        "fecha",
+        "hora",
+        "comentario_corto",
+        "vista_icon",
+        "ver_grafico_link",
+    )
+    search_fields = ("usuario__username", "servicio__nombre", "fecha")
+    list_filter = ("fecha", "servicio")
+    ordering = ("-fecha",)
+    list_per_page = 20
+
+    # -------- Acciones --------
+    actions = ["marcar_como_vistas"]
 
     def marcar_como_vistas(self, request, queryset):
         actualizado = queryset.update(vista=True)
-        self.message_user(request, f'{actualizado} cita(s) marcadas como vista(s).')
+        self.message_user(request, f"{actualizado} cita(s) marcadas como vista(s).")
+
     marcar_como_vistas.short_description = "Marcar como vistas"
 
+    # -------- Column helpers --------
     def comentario_corto(self, obj):
         texto = obj.comentario or ""
         if len(texto) > 50:
             return format_html('<span title="{}">{}…</span>', texto, texto[:50])
         return texto
-    comentario_corto.short_description = 'Comentario'
+
+    comentario_corto.short_description = "Comentario"
 
     def vista_icon(self, obj):
-        return '✔️' if obj.vista else '❌'
+        return "✔️" if obj.vista else "❌"
 
     def ver_grafico_link(self, obj):
-        url = reverse('admin:cita_graph')
+        url = reverse("admin:cita_graph")
         return format_html('<a class="button ver-grafico" href="{}">📊 Ver Gráfico</a>', url)
-    ver_grafico_link.short_description = 'Gráfico'
 
+    ver_grafico_link.short_description = "Gráfico"
+
+    # -------- URLs extra --------
     def get_urls(self):
         urls = super().get_urls()
         custom = [
-            path('graficar/', self.admin_site.admin_view(self.graficar_citas), name='cita_graph'),
-            path('graficar/data/', self.admin_site.admin_view(self.graficar_citas_data), name='cita_graph_data'),
+            path("graficar/", self.admin_site.admin_view(self.graficar_citas), name="cita_graph"),
+            path(
+                "graficar/data/",
+                self.admin_site.admin_view(self.graficar_citas_data),
+                name="cita_graph_data",
+            ),
         ]
         return custom + urls
 
-    def generar_grafico(self):
-        """
-        Crea un gráfico de barras con el número de citas en los últimos 6 meses.
-        Devuelve un URI base64 para incrustar como <img>.
-        """
-        six_months_ago = timezone.now() - timezone.timedelta(days=180)
-        qs = (
-            Cita.objects
-                .filter(fecha__gte=six_months_ago)
-                .exclude(fecha__year=0)                  
-                .annotate(mes=TruncMonth('fecha', output_field=DateField()))
-                .exclude(mes=None)                      
-                .values('mes')
-                .annotate(count=Count('id'))
-                .order_by('mes')
-        )
-        meses   = [item['mes'].strftime('%Y-%m') for item in qs]
-        totales = [item['count'] for item in qs]
+    # ------------------------------------------------------------------
+    #   ESTADÍSTICAS   (agrupación puramente en Python: máxima compatibilidad)
+    # ------------------------------------------------------------------
+    def _contar_citas_por_mes(self, meses_atras: int = 12):
+        """Devuelve (labels, counts) desde *meses_atras* hasta hoy (incluye futuro)."""
+        inicio = timezone.now() - timezone.timedelta(days=30 * meses_atras)
 
-        # Generar gráfico
+        fechas = (
+            Cita.objects.filter(fecha__gte=inicio, fecha__isnull=False)
+            .values_list("fecha", flat=True)
+        )
+
+        contador = defaultdict(int)
+        for fecha in fechas:
+            f_local = localtime(fecha)
+            label = f"{f_local.year}-{f_local.month:02d}"
+            contador[label] += 1
+
+        labels = sorted(contador.keys())
+        counts = [contador[l] for l in labels]
+
+        if not labels:
+            labels, counts = ["Sin datos"], [0]
+
+        return labels, counts
+
+    # -------- Gráfico PNG embebido (Matplotlib) --------
+    def generar_grafico(self):
+        """Devuelve una cadena data‑URI PNG para incrustar en <img>."""
+        labels, counts = self._contar_citas_por_mes()
+
         plt.figure(figsize=(10, 5))
-        plt.bar(meses, totales, color='skyblue')
+        plt.bar(labels, counts, color="skyblue")
         plt.xticks(rotation=45)
-        plt.title('Citas en los últimos 6 meses')
+        plt.title("Citas por mes")
         plt.tight_layout()
 
         buf = io.BytesIO()
-        plt.savefig(buf, format='png')
+        plt.savefig(buf, format="png")
         buf.seek(0)
-        img_b64 = base64.b64encode(buf.read()).decode('utf-8')
+        img_b64 = base64.b64encode(buf.read()).decode("utf-8")
         plt.close()
 
-        return f'data:image/png;base64,{img_b64}'
+        return f"data:image/png;base64,{img_b64}"
 
+    # -------- Vistas admin --------
     def graficar_citas(self, request):
-        """
-        Vista que renderiza el template con el gráfico incrustado como <img>.
-        """
-        context = {'grafico': self.generar_grafico()}
-        return render(request, 'admin/grafico_citas.html', context)
+        """Renderiza el template con la imagen en base64."""
+        contexto = {"grafico": self.generar_grafico()}
+        return render(request, "admin/grafico_citas.html", contexto)
 
     def graficar_citas_data(self, request):
-        """
-        Endpoint JSON para Chart.js (si se prefiere usar JS en lugar de img).
-        """
-        six_months_ago = timezone.now() - timezone.timedelta(days=180)
-        qs = (
-            Cita.objects
-                .filter(fecha__gte=six_months_ago)
-                .exclude(fecha__year=0)                          # ← ② igual aquí
-                .annotate(mes=TruncMonth('fecha', output_field=DateField()))
-                .exclude(mes=None)
-                .values('mes')
-                .annotate(count=Count('id'))
-                .order_by('mes')
-        )
-        data = {
-            'labels': [item['mes'].strftime('%Y-%m') for item in qs],
-            'counts': [item['count'] for item in qs],
-        }
-        return JsonResponse(data)
+        """Retorna JSON labels/counts para Chart.js."""
+        labels, counts = self._contar_citas_por_mes()
+        return JsonResponse({"labels": labels, "counts": counts})
 
+    # -------- Media extra --------
     class Media:
-        css = {
-            'all': ('admin/css/adminCSS.css',)
-        }
+        css = {"all": ("admin/css/adminCSS.css",)}
 
+
+# ────────────────────────────────────────────────────────────────────────────────
+# FECHA BLOQUEADA ADMIN
+# ────────────────────────────────────────────────────────────────────────────────
 @admin.register(FechaBloqueada)
 class FechaBloqueadaAdmin(admin.ModelAdmin):
-    list_display   = ('fecha', 'razon', 'tiene_bloqueos', 'ver_bloqueos_link')
-    search_fields  = ('fecha', 'razon')
-    list_filter    = ('fecha',)
+    list_display = ("fecha", "razon", "tiene_bloqueos", "ver_bloqueos_link")
+    search_fields = ("fecha", "razon")
+    list_filter = ("fecha",)
 
     def tiene_bloqueos(self, obj):
         return BloqueoHora.objects.filter(fecha=obj.fecha).exists()
+
     tiene_bloqueos.boolean = True
-    tiene_bloqueos.short_description = 'Tiene bloqueos'
+    tiene_bloqueos.short_description = "Tiene bloqueos"
 
     def ver_bloqueos_link(self, obj):
         url = (
-            reverse('admin:appointments_bloqueohora_changelist')
-            + f'?fecha__exact={obj.fecha.isoformat()}'
+            reverse("admin:appointments_bloqueohora_changelist")
+            + f"?fecha__exact={obj.fecha.isoformat()}"
         )
         return format_html('<a href="{}">Ver franjas</a>', url)
-    ver_bloqueos_link.short_description = 'Franjas'
+
+    ver_bloqueos_link.short_description = "Franjas"
 
     class Media:
-        css = {
-            'all': ('admin/css/adminCSS.css',)
-        }
+        css = {"all": ("admin/css/adminCSS.css",)}
 
+
+# ────────────────────────────────────────────────────────────────────────────────
+# BLOQUEO HORA ADMIN
+# ────────────────────────────────────────────────────────────────────────────────
 @admin.register(BloqueoHora)
 class BloqueoHoraAdmin(admin.ModelAdmin):
-    list_display   = ('fecha', 'hora_inicio', 'hora_fin', 'razon')
-    list_filter    = ('fecha',)
-    search_fields  = ('fecha', 'razon')
+    list_display = ("fecha", "hora_inicio", "hora_fin", "razon")
+    list_filter = ("fecha",)
+    search_fields = ("fecha", "razon")
 
     class Media:
-        css = {
-            'all': ('admin/css/adminCSS.css',)
-        }
+        css = {"all": ("admin/css/adminCSS.css",)}
