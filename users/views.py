@@ -9,6 +9,7 @@ from .models import UserProfile
 from .forms import CustomUserCreationForm, UserProfileForm, UserForm, CustomAuthenticationForm  
 from core.decorators import handle_exceptions
 from appointments.models import Cita 
+from django.db import transaction
 
 # Registro de usuario
 @handle_exceptions
@@ -137,4 +138,30 @@ def editar_perfil_usuario(request):
     }
     
     return render(request, 'users/editar_perfil_usuario.html', context)  
+
+# Delete account
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        with transaction.atomic():
+            # 1) Anonimizar perfil (opcional, pero recomendable)
+            UserProfile.objects.filter(user=user).update(
+                nombre     = '',
+                apellido   = '',
+                email      = '',
+                telefono   = ''
+            )
+            # 2) Anonimizar / desactivar cuenta
+            user.is_active = False
+            user.email     = ''
+            user.username  = f'deleted_{user.pk}'
+            user.save(update_fields=['is_active', 'email', 'username'])
+        # 3) Cerrar sesión y avisar
+        auth_logout(request)
+        messages.info(request, 'Tu cuenta ha sido desactivada. ¡Vuelve cuando quieras, puntal!')
+        return redirect('home')
+
+    # GET → página de confirmación
+    return render(request, 'users/account_delete_confirm.html')
 

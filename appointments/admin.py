@@ -60,13 +60,16 @@ class CitaAdmin(admin.ModelAdmin):
         """
         six_months_ago = timezone.now() - timezone.timedelta(days=180)
         qs = (
-            Cita.objects.filter(fecha__gte=six_months_ago)
-                  .annotate(mes=TruncMonth('fecha', output_field=DateField()))
-                  .values('mes')
-                  .annotate(count=Count('id'))
-                  .order_by('mes')
+            Cita.objects
+                .filter(fecha__gte=six_months_ago)
+                .exclude(fecha__year=0)                  
+                .annotate(mes=TruncMonth('fecha', output_field=DateField()))
+                .exclude(mes=None)                      
+                .values('mes')
+                .annotate(count=Count('id'))
+                .order_by('mes')
         )
-        meses = [item['mes'].strftime('%Y-%m') for item in qs]
+        meses   = [item['mes'].strftime('%Y-%m') for item in qs]
         totales = [item['count'] for item in qs]
 
         # Generar gráfico
@@ -97,11 +100,14 @@ class CitaAdmin(admin.ModelAdmin):
         """
         six_months_ago = timezone.now() - timezone.timedelta(days=180)
         qs = (
-            Cita.objects.filter(fecha__gte=six_months_ago)
-                  .annotate(mes=TruncMonth('fecha', output_field=DateField()))
-                  .values('mes')
-                  .annotate(count=Count('id'))
-                  .order_by('mes')
+            Cita.objects
+                .filter(fecha__gte=six_months_ago)
+                .exclude(fecha__year=0)                          # ← ② igual aquí
+                .annotate(mes=TruncMonth('fecha', output_field=DateField()))
+                .exclude(mes=None)
+                .values('mes')
+                .annotate(count=Count('id'))
+                .order_by('mes')
         )
         data = {
             'labels': [item['mes'].strftime('%Y-%m') for item in qs],

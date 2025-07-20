@@ -5,24 +5,29 @@ from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from django.views.static import serve
 from django.views.generic import TemplateView
-
+from django.views.decorators.cache import never_cache
 from core.views import home
 
-# 1️⃣  Service-worker en la raíz (sin prefijo /es/)
+#  Service-worker en la raíz
 urlpatterns = [
     path(
-        'sw.js',
-        TemplateView.as_view(
-            template_name='sw.js',
-            content_type='application/javascript'
+        "sw.js",
+        never_cache(            
+            TemplateView.as_view(
+                template_name="sw.js",
+                content_type="application/javascript"
+            )
         ),
-        name='sw.js'
+        name="sw.js",
     ),
-    # Cambio de idioma
-    path('i18n/', include('django.conf.urls.i18n')),
+    path(
+        "offline.html",
+        TemplateView.as_view(template_name="offline.html"),
+        name="offline",
+    ),
 ]
 
-# 2️⃣  El resto de rutas traducibles
+#  Translateable URLs
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     path('', home, name='home'),
@@ -37,7 +42,7 @@ urlpatterns += i18n_patterns(
     path('', include('core.urls')),
 )
 
-# 3️⃣  Media
+#  Media
 urlpatterns += [
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]

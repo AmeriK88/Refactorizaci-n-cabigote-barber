@@ -392,6 +392,6 @@ CONTENT_SECURITY_POLICY = {
 
 
 # APP VERSION
-APP_VERSION = "2.5.2"
+APP_VERSION = "2.6.0"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

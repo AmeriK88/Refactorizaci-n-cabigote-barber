@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+  <div class="text-center">
+
+    <h2 class="text-danger fw-bold">
+      <i class="fas fa-exclamation-triangle me-2"></i>
+      ¿Seguro que quieres eliminar tu cuenta?
+    </h2>
+
+    <p class="lead">
+      Esta acción es <span class="fw-bold text-danger">permanente</span>.
+      Tus citas y facturas se conservarán, pero
+      <u>no podrás volver a iniciar sesión</u>.
+    </p>
+
+    <form method="post" class="d-inline">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-lg btn-danger shadow-sm">
+        <i class="fas fa-user-slash me-1"></i> Sí, eliminar mi cuenta
+      </button>
+    </form>
+
+    <a href="{% url 'users:perfil_usuario' %}"
+       class="btn btn-lg btn-outline-secondary ms-2 mt-2">
+       ✋ Cancelar
+    </a>
+
+  </div>
+</div>
+{% endblock %}

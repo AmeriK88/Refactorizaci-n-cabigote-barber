@@ -1,27 +1,40 @@
-// templates/sw.js
-
 const CACHE_NAME  = 'offline-cache-v1';
 const OFFLINE_URL = '/offline.html';
 
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-          .then(cache => cache.add(OFFLINE_URL))
+          .then(cache =>
+            cache.add(new Request(OFFLINE_URL, {cache: 'reload'}))
+          )
   );
   self.skipWaiting();
 });
 
-self.addEventListener('activate', event => {
-  event.waitUntil(clients.claim());
-});
+self.addEventListener('activate', event => event.waitUntil(clients.claim()));
 
 self.addEventListener('fetch', event => {
-  // Solo para peticiones de navegación (página HTML)
-  if (event.request.mode === 'navigate') {
+
+  // Interceptamos SOLAMENTE navegaciones de nuestro dominio
+  // excluyendo todo lo que empiece por /accounts/  (allauth)
+  if (
+      event.request.mode   === 'navigate' &&
+      event.request.method === 'GET'      &&
+      event.request.url.startsWith(self.location.origin) &&
+      !event.request.url.includes('/accounts/')
+  ) {
+
     event.respondWith(
       fetch(event.request)
-        .catch(() => caches.match(OFFLINE_URL))
+        .then(resp => {
+          //  Si la respuesta es redirect → la dejamos pasar
+          if (resp.type === 'opaqueredirect' || resp.redirected) {
+            return resp;
+          }
+          return resp;           // normal
+        })
+        .catch(() => caches.match(OFFLINE_URL))   // solo sin red
     );
   }
-  // Todas las demás peticiones (scripts, CSS, datos…) se dejan pasar
+  // Todo lo demás (Google OAuth, APIs…) lo maneja el navegador
 });

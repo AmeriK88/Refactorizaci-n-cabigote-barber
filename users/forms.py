@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from django.db import transaction
 from django_recaptcha.fields import ReCaptchaField
 from django.conf import settings
-
 from .models import UserProfile
 
 
@@ -118,3 +117,7 @@ class UserForm(forms.ModelForm):
                 attrs={'autocomplete': 'email', 'id': 'user-email'}
             ),
         }
+
+
+
+

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Cuenta desactivada · Ca’Bigote{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h2 class="text-danger mb-3">
+        <i class="fas fa-user-slash me-2"></i> Cuenta desactivada
+      </h2>
+      <p class="mb-4">
+        Tu cuenta está inactiva. Si crees que es un error, <br>
+        <a href="mailto:cabigotebarbershop@gmail.com">contáctanos</a> o
+        crea una nueva cuenta.
+      </p>
+      <a href="{% url 'users:register' %}" class="btn btn-primary">
+        ✍️ Registrarme de nuevo
+      </a>
+      <a href="{% url 'home' %}" class="btn btn-outline-secondary ms-2">
+        🔙 Volver al inicio
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

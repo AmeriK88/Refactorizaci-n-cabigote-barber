@@ -81,12 +81,16 @@
         </div>
 
         <div class="card-footer text-center">
-          <a href="{% url 'users:perfil_usuario' %}" class="btn btn-outline-primary">
+          <a href="{% url 'users:perfil_usuario' %}" class="btn btn-outline-primary me-2">
             ↩️ Volver al Perfil
+          </a>
+
+          <!-- 🗑 Botón eliminar -->
+          <a href="{% url 'users:delete_account' %}" class="btn btn-outline-danger">
+            ❌ Eliminar cuenta
           </a>
         </div>
       </div>
-
     </div>
   </div>
 </div>
