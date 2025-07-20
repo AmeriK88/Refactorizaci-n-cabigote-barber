@@ -2,7 +2,7 @@
 Admin personalizado para la app *appointments*.
 Incluye:
     • Listado de citas con accesos rápidos y acciones.
-    • Gráfico de estadísticas de los últimos 6 meses —sin depender de funciones SQL
+    • Gráfico de estadísticas de los últimos 12 meses —sin depender de funciones SQL
       incompatibles— generado con Matplotlib y servible también en formato JSON
       para Chart.js.
 
@@ -14,11 +14,9 @@ import io
 import base64
 
 import matplotlib
-matplotlib.use("Agg")  # render headless
+matplotlib.use("Agg") 
 import matplotlib.pyplot as plt
-
 from django.contrib import admin
-from django.db.models import Count
 from django.urls import path, reverse
 from django.http import JsonResponse
 from django.shortcuts import render
