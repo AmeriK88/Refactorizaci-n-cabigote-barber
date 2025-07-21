@@ -72,7 +72,7 @@ class CitaAdmin(admin.ModelAdmin):
 
     def ver_grafico_link(self, obj):
         url = reverse("admin:cita_graph")
-        return format_html('<a class="button ver-grafico" href="{}">📊 Ver Gráfico</a>', url)
+        return format_html('<a class="button btn-admin-action" href="{}">📊 Ver Gráfico</a>', url)
 
     ver_grafico_link.short_description = "Gráfico"
 
