@@ -53,15 +53,14 @@ class ReporteMensualAdmin(admin.ModelAdmin):
     )
 
     def descargar_reporte_link(self, obj):
-        """
-        Devuelve un enlace (HTML) que permite descargar un archivo .txt con el reporte completo.
-        Para el reverso de la URL, se utiliza el nombre definido en get_urls.
-        """
-        # Si tienes problemas con el reverse, podrías usar la fórmula:
-        # url = reverse("admin:%s_%s_descargar_reporte" % (self.model._meta.app_label, self.model._meta.model_name))
         url = reverse('admin:descargar_reporte')
-        return format_html('<a href="{}">Descargar</a>', url)
-    descargar_reporte_link.short_description = _("Descargar Reporte")
+        return format_html(
+            '<a class="button btn-admin-action" href="{}" download>'
+            '  📥 Descargar'
+            '</a>',
+            url
+        )
+    descargar_reporte_link.short_description = _("Descargar")
 
     def get_urls(self):
         """

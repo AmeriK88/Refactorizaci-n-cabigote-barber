@@ -61,8 +61,8 @@
   padding: 6px 14px;
   font-size: .875rem;
   font-weight: 600;
-  color: #fff;
-  background: #198754;        /* verde Bootstrap “success” */
+
+  background: #198754;    
   border-radius: 4px;
   text-decoration: none;
   transition: background .2s ease, transform .15s ease;
@@ -70,4 +70,5 @@
 .btn-admin-action:hover {
   background: #157347;        /* tono más oscuro al hover */
   transform: translateY(-2px);
+  color: white;
 }

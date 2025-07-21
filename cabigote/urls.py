@@ -7,6 +7,49 @@ from django.views.static import serve
 from django.views.generic import TemplateView
 from django.views.decorators.cache import never_cache
 from core.views import home
+from django.utils import timezone
+from appointments.models import Cita
+from services.models import Servicio
+from decimal import Decimal
+from datetime import datetime, time, timedelta
+
+# --- VISTA QUE ENVUELVE EL ÍNDICE DEL ADMIN ---
+def admin_dashboard(request):
+    # 1) acceso restringido a staff
+    if not (request.user.is_authenticated and request.user.is_staff):
+        return admin.site.login(request)
+
+    # 2) calcula inicio/fin del día en tu zona (aware)
+    local_tz = timezone.get_current_timezone()
+    today = timezone.localdate()
+    start_of_day = timezone.make_aware(datetime.combine(today, time.min), local_tz)
+    end_of_day   = start_of_day + timedelta(days=1)
+
+    # 3) filtra las citas en ese rango
+    citas_qs = (
+        Cita.objects
+            .filter(fecha__gte=start_of_day, fecha__lt=end_of_day)
+            .select_related("producto", "servicio")
+    )
+
+    # 4) métricas
+    citas_hoy = citas_qs.count()
+    ingresos_hoy = Decimal("0")
+    for c in citas_qs:
+        if c.servicio:
+            ingresos_hoy += c.servicio.precio or 0
+        if c.producto and hasattr(c.producto, "precio"):
+            ingresos_hoy += c.producto.precio or 0
+
+    extra_context = {
+        "citas_hoy":      citas_hoy,
+        "ingresos_hoy":   ingresos_hoy,
+        "servicios_total": Servicio.objects.count(),
+    }
+
+    # 5) delega al index estándar del admin
+    admin_index = admin.site.admin_view(admin.site.index)
+    return admin_index(request, extra_context=extra_context)
 
 # ──────────────────────────────────────────────────────────
 # Rutas sin prefijo de idioma
@@ -37,6 +80,7 @@ urlpatterns = [
 # Rutas traducibles
 # ──────────────────────────────────────────────────────────
 urlpatterns += i18n_patterns(
+    path("admin/", admin_dashboard, name="admin-dashboard"),    
     path("admin/", admin.site.urls),
     path("", home, name="home"),
     path("appointments/", include("appointments.urls")),

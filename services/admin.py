@@ -7,6 +7,7 @@ class ServicioAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'descripcion', 'precio', 'imagen_preview')
     search_fields  = ('nombre',)
     ordering       = ('nombre',)
+    readonly_fields = ('imagen_preview',)
 
     def imagen_preview(self, obj):
         if obj.imagen:

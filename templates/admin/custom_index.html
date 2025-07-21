@@ -1,0 +1,23 @@
+{% extends "admin/index.html" %}
+{% load tz %}
+
+{% block content %}
+  <h1 style="margin-bottom:1rem">Panel de control Ca’Bigote</h1>
+
+  <!-- Tarjetas métricas -->
+  <div style="display:flex; gap:1rem">
+    <div style="flex:1; padding:1rem; background:#f5f5f5; border-radius:6px">
+      📆 Citas hoy: {{ citas_hoy }}
+    </div>
+    <div style="flex:1; padding:1rem; background:#f5f5f5; border-radius:6px">
+      💶 Ingresos hoy: €{{ ingresos_hoy|floatformat:2 }}
+    </div>
+    <div style="flex:1; padding:1rem; background:#f5f5f5; border-radius:6px">
+      🛠️ Servicios activos: {{ servicios_total }}
+    </div>
+  </div>
+
+  <hr>
+
+  {{ block.super }}  {# ← deja debajo la lista de apps #}
+{% endblock %}
