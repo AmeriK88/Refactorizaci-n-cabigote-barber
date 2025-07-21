@@ -16,18 +16,15 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
-/* 2) Tabla del change-list un poco más compacta */
 .change-list table {
   font-size: .95rem;
 }
 
-/* 3) Badge gris para teléfono (UserAdmin) */
 .badge.bg-secondary {
   font-size: .85rem;
   padding: .35em .55em;
 }
 
-/* 4) Columnas con iconos booleanos – ancho fijo */
 .column-staff_icon,
 .column-active_icon,
 .column-super_icon,
@@ -42,7 +39,6 @@
   vertical-align: middle;
 }
 
-/* 6) Hover suave sobre las estrellas de puntuación */
 .change-list .field-puntuacion_icon span:hover {
   filter: brightness(1.1);
   transition: filter .2s ease;
@@ -68,7 +64,72 @@
   transition: background .2s ease, transform .15s ease;
 }
 .btn-admin-action:hover {
-  background: #157347;        /* tono más oscuro al hover */
+  background: #157347;       
   transform: translateY(-2px);
   color: white;
+}
+
+/* ────────────────────────────────────────────────────────── */
+/* 9) Dashboard metrics cards                                 */
+/* ────────────────────────────────────────────────────────── */
+
+.dashboard-cards {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem auto 3rem;
+  max-width: 900px;
+  flex-wrap: wrap;
+}
+
+.metric-card {
+  flex: 1;
+  min-width: 200px;
+  max-width: 280px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  text-align: center;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.metric-icon {
+  font-size: 2.5rem;
+  margin-bottom: .5rem;
+  display: block;
+}
+
+.metric-title {
+  font-size: 1.1rem;
+  margin-bottom: .75rem;
+  color: #333;
+}
+
+.metric-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #111;
+}
+
+/* ────────────────────────────────────────────────────────── */
+/* 10) Dashboard header styles                               */
+/* ────────────────────────────────────────────────────────── */
+
+.dashboard-title {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  color: #222;
+}
+
+.dashboard-subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 2rem;
+  font-size: 1rem;
 }

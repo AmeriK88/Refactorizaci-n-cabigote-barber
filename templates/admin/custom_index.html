@@ -1,23 +1,42 @@
 {% extends "admin/index.html" %}
-{% load tz %}
+{% load static tz %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'admin/css/adminCSS.css' %}">
+{% endblock %}
 
 {% block content %}
-  <h1 style="margin-bottom:1rem">Panel de control Ca’Bigote</h1>
+  <h1 class="dashboard-title">
+    👋 ¡Bienvenido de nuevo, {{ request.user.get_full_name|default:request.user.username }}!
+  </h1>
+  <p class="dashboard-subtitle">
+    Hoy es {% now "l, d F Y" %}
+  </p>
 
-  <!-- Tarjetas métricas -->
-  <div style="display:flex; gap:1rem">
-    <div style="flex:1; padding:1rem; background:#f5f5f5; border-radius:6px">
-      📆 Citas hoy: {{ citas_hoy }}
+
+  <div class="dashboard-cards">
+    <div class="metric-card">
+      <span class="metric-icon">📆</span>
+      <div class="metric-title">Citas hoy</div>
+      <div class="metric-value">{{ citas_hoy }}</div>
     </div>
-    <div style="flex:1; padding:1rem; background:#f5f5f5; border-radius:6px">
-      💶 Ingresos hoy: €{{ ingresos_hoy|floatformat:2 }}
+    <div class="metric-card">
+      <span class="metric-icon">💶</span>
+      <div class="metric-title">Ingresos hoy</div>
+      <div class="metric-value">€{{ ingresos_hoy|floatformat:2 }}</div>
     </div>
-    <div style="flex:1; padding:1rem; background:#f5f5f5; border-radius:6px">
-      🛠️ Servicios activos: {{ servicios_total }}
+    <div class="metric-card">
+      <span class="metric-icon">🛠️</span>
+      <div class="metric-title">Servicios activos</div>
+      <div class="metric-value">{{ servicios_total }}</div>
     </div>
   </div>
 
-  <hr>
+<div style="text-align:center; margin-bottom:2rem">
+  <a href="{% url 'admin:descargar_reporte' %}" class="button btn-admin-action">📥 Descargar Informe</a>
+</div>
 
-  {{ block.super }}  {# ← deja debajo la lista de apps #}
+  <hr>
+  {{ block.super }}
 {% endblock %}
