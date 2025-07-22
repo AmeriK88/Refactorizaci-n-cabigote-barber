@@ -96,7 +96,7 @@ class CitaForm(forms.ModelForm):
     # --------------------------
     def clean_fecha(self):
         """Return an *aware* datetime (00:00) instead of a naive date."""
-        raw = self.cleaned_data["fecha"]  # date or datetime
+        raw = self.cleaned_data["fecha"]  
         dia = raw.date() if isinstance(raw, datetime) else raw
 
         if dia.weekday() >= 5:
@@ -109,7 +109,7 @@ class CitaForm(forms.ModelForm):
         return timezone.make_aware(dt_midnight, timezone.get_current_timezone())
 
     def clean_hora(self):
-        hora_raw = self.cleaned_data["hora"]  # string from ChoiceField
+        hora_raw = self.cleaned_data["hora"] 
         hora = (
             hora_raw
             if isinstance(hora_raw, time)

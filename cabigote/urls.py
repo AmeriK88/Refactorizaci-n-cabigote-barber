@@ -12,6 +12,7 @@ from appointments.models import Cita
 from services.models import Servicio
 from decimal import Decimal
 from datetime import datetime, time, timedelta
+from django.contrib.auth import get_user_model
 
 # --- VISTA QUE ENVUELVE EL ÍNDICE DEL ADMIN ---
 def admin_dashboard(request):
@@ -41,10 +42,16 @@ def admin_dashboard(request):
         if c.producto and hasattr(c.producto, "precio"):
             ingresos_hoy += c.producto.precio or 0
 
+    # 5) usuarios totales
+    User = get_user_model()
+    usuarios_total = User.objects.count() 
+
+    
     extra_context = {
         "citas_hoy":      citas_hoy,
         "ingresos_hoy":   ingresos_hoy,
         "servicios_total": Servicio.objects.count(),
+        "usuarios_total":   usuarios_total,
     }
 
     # 5) delega al index estándar del admin

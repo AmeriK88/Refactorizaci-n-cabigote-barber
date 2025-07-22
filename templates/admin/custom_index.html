@@ -31,11 +31,19 @@
       <div class="metric-title">Servicios activos</div>
       <div class="metric-value">{{ servicios_total }}</div>
     </div>
+    <div class="metric-card">
+      <span class="metric-icon">👥</span>
+      <div class="metric-title">Usuarios registrados</div>
+      <div class="metric-value">{{ usuarios_total }}</div>
+    </div>
   </div>
 
-<div style="text-align:center; margin-bottom:2rem">
-  <a href="{% url 'admin:descargar_reporte' %}" class="button btn-admin-action">📥 Descargar Informe</a>
-</div>
+  <div class="button-row">
+    <a href="{% url 'admin:descargar_reporte' %}" class="button btn-admin-action">📥 Descargar Informe</a>
+    <a href="{% url 'admin:appointments_cita_changelist' %}" class="button btn-admin-action">👁️ Ver Citas</a>
+    <a href="{% url 'admin:auth_user_changelist' %}" class="button btn-admin-action">👤 Usuarios</a>
+  </div>
+
 
   <hr>
   {{ block.super }}
