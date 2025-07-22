@@ -39,25 +39,61 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     if (inputFecha) {
-        // Call the function to update occupied hours on initial load
+      
+    // 1) Llama una vez al cargar
+    // ──────────────────────────────────────────────────────────
+    updateOccupiedHours();
+
+    // ──────────────────────────────────────────────────────────
+    // 2) Listener: al enfocar el campo fecha
+    // ──────────────────────────────────────────────────────────
+    inputFecha.addEventListener('focus', () => {
+    // Normalizamos listas a YYYY‑MM‑DD
+    const reservedDates = fechasOcupadas.map(
+        f => new Date(f).toISOString().split('T')[0]
+    );
+    const blockedDates = fechasBloqueadas.map(
+        f => new Date(f).toISOString().split('T')[0]
+    );
+
+    // ───── Listener interno: cada vez que cambia la fecha ─────
+    inputFecha.addEventListener('input', () => {
+        const selectedDate = inputFecha.value;
+
+        if (blockedDates.includes(selectedDate)) {
+        alert("¡Estás bonito! Te recuerdo que este día no curro niñote.");
+        inputFecha.value = '';
+        return;
+        }
+
+        if (reservedDates.includes(selectedDate)) {
+        alert("¡Chacho loco! La fecha seleccionada está completamente reservada.");
+        inputFecha.value = '';
+        return;
+        }
+
+        // Fecha válida → actualizamos horas
         updateOccupiedHours();
 
-        inputFecha.addEventListener('focus', () => {
-            const reservedDates = fechasOcupadas.map(fecha => new Date(fecha).toISOString().split('T')[0]);
-            const blockedDates = fechasBloqueadas.map(fecha => new Date(fecha).toISOString().split('T')[0]);
+        /* ────────────────────────────────────────────────
+        3) Si la fecha es hoy, deshabilita horas pasadas
+        ──────────────────────────────────────────────── */
+        const hoyISO = new Date().toISOString().split('T')[0];
 
-            inputFecha.addEventListener('input', () => {
-                const selectedDate = inputFecha.value;
-                if (blockedDates.includes(selectedDate)) {
-                    alert("¡Estás bonito! Te recuerdo que este día no curro niñote.");
-                    inputFecha.value = '';
-                } else if (reservedDates.includes(selectedDate)) {
-                    alert("¡Chacho loco! La fecha seleccionada está completamente reservada.");
-                    inputFecha.value = '';
-                } else {
-                    updateOccupiedHours();
-                }
+        if (selectedDate === hoyISO) {
+        const ahora = new Date();
+
+        Array.from(inputHora.options).forEach(opt => {
+            if (!opt.value) return;            
+            const [h, m] = opt.value.split(':').map(Number);
+            const optDate = new Date();
+            optDate.setHours(h, m, 0, 0);
+
+            // Desactiva si la hora ya ocurrió
+            if (optDate <= ahora) opt.disabled = true;
             });
+          }
         });
-    }
-});
+      });   
+    }  
+  });         

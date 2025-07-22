@@ -100,9 +100,9 @@ class CitaForm(forms.ModelForm):
         dia = raw.date() if isinstance(raw, datetime) else raw
 
         if dia.weekday() >= 5:
-            raise forms.ValidationError("¡El finde no curro!")
+            raise forms.ValidationError("¡El finde no curro mi niño!")
         if dia < timezone.localdate():
-            raise forms.ValidationError("La fecha ya pasó.")
+            raise forms.ValidationError("La fecha ya pasó puntal.")
 
         # Build aware datetime at midnight in current TZ
         dt_midnight = datetime.combine(dia, time.min)
@@ -118,7 +118,8 @@ class CitaForm(forms.ModelForm):
 
         if not time(9, 30) <= hora <= time(19, 30):
             raise forms.ValidationError("Hora fuera de rango.")
-        return hora  # clean time
+        return hora
+    
 
 
 # Autor / Licencia: José Félix Gordo Castaño — Uso educativo, no comercial
