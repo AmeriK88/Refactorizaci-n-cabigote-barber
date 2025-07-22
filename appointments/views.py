@@ -262,10 +262,11 @@ def eliminar_cita(request, cita_id):
 
     if request.method == 'POST':
         cita_detalle = {
-            'email': request.user.email,
+            'usuario' : request.user.get_full_name() or request.user.username,
+            'email'   : request.user.email,
             'servicio': cita.servicio.nombre,
-            'fecha': cita.fecha,
-            'hora': cita.hora
+            'fecha'   : cita.fecha,
+            'hora'    : cita.hora,
         }
         
         cita.delete()
