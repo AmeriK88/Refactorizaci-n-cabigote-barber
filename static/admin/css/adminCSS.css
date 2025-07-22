@@ -133,3 +133,14 @@
   margin-bottom: 2rem;
   font-size: 1rem;
 }
+
+
+/* ────────────────────────────────────────────────────────── */
+/* 12) Botones en línea con flexbox                          */
+/* ────────────────────────────────────────────────────────── */
+.button-row {
+  display: flex;
+  gap: 1rem;             /* separación entre botones */
+  justify-content: center; /* opcional: centra horizontalmente */
+  margin-bottom: 2rem;
+}
