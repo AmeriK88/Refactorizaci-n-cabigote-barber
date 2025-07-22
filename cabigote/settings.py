@@ -25,7 +25,6 @@ DEBUG = env.bool('DEBUG', default=False) # type: ignore[arg-type]
 
 
 ALLOWED_HOSTS = [
-    'if9hv3ou.up.railway.app',
     '127.0.0.1','localhost', '0.0.0.0',
     'refactorizaci-n-cabigote-barber-production.up.railway.app', 
     'cabigotebarbershop.com', 
@@ -295,7 +294,7 @@ LOGGING = {
 
 # CSRF CONFIGURATION
 CSRF_TRUSTED_ORIGINS = [
-    'https://if9hv3ou.up.railway.app',
+    'https://*.up.railway.app',
     'https://refactorizaci-n-cabigote-barber-production.up.railway.app',
     'https://cabigotebarbershop.com',
     'https://www.cabigotebarbershop.com',
