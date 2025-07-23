@@ -34,12 +34,16 @@
 
     <div class="row justify-content-center">
       <div class="col-md-8">
-        <div class="card shadow-sm">
+        <div class="card shadow-sm overflow-hidden">
+          <div class="price-card-head text-center py-2">
+            <i class="fas fa-scissors me-2"></i> Lista de Precios
+          </div>
+
           <ul class="list-unstyled m-0">
             {% for servicio in servicios|slice:":10" %}
-              <li class="price-item py-2 px-3">
+              <li class="price-item">
                 <span class="service-name">{{ servicio.nombre }}</span>
-                <span class="service-price fw-semibold">{{ servicio.precio }} €</span>
+                <span class="service-price">{{ servicio.precio }} €</span>
               </li>
             {% empty %}
               <li class="text-center py-4">Todavía no hay servicios cargados.</li>
