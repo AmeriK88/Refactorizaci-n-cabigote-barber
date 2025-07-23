@@ -1,6 +1,6 @@
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from allauth.socialaccount.models import SocialAccount
-from allauth.exceptions import ImmediateHttpResponse   # importa desde allauth.exceptions
+from allauth.exceptions import ImmediateHttpResponse  
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
 
@@ -12,35 +12,35 @@ class CustomSocialAdapter(DefaultSocialAccountAdapter):
     """
 
     def pre_social_login(self, request, sociallogin):
-        # 0) Si viene de un "connect" explícito, permitir siempre
+        # 0) "connect" explicitly skips this check
         if sociallogin.state.get("process") == "connect":
             return
 
-        # 1) Si la SocialAccount ya existe para este usuario, nada que hacer
+        # 1) If SocialAccount / nothing to do
         if sociallogin.is_existing:
             return
 
         email = sociallogin.user.email
         if not email:
-            return   # proveedor sin e‑mail → deja que allauth gestione
+            return   
 
         User = get_user_model()
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            return   # e‑mail nuevo → deja que allauth cree usuario
+            return  
 
-        # 2) Si el usuario YA está logeado y coincide con ese e‑mail, permitir
+        # 2) If user email already logged in, allow
         if request.user.is_authenticated and request.user == user:
             return
 
-        # 3) Si ese user ya tiene SocialAccount para este provider, permitir
+        # 3) If SocialAccount already exists for this user, allow
         if SocialAccount.objects.filter(user=user,
                                         provider=sociallogin.account.provider
                                         ).exists():
             return
 
-        # 4) Usuario local sin vínculo: bloqueamos
+        # 4) Block login if email is already registered as a local user
         response = render(
             request,
             "socialaccount/social_error.html",

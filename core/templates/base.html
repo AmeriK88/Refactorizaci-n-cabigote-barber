@@ -63,11 +63,11 @@
     <!-- Visitors Counter -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/themes/odometer-theme-default.min.css">
 
-    <!-- Passive-touch patch (optimiza scroll táctil) -->
+    <!-- TOUCH-PATCH -->
     <script src="{% static 'js/passive-touch.js' %}" defer></script>
 </head>
     <body >
-         <!-- Superposición dark -->
+         <!-- OVERLAY -->
         <div id="overlay" class="overlay"></div>
         <!-- Loading spinner -->
         <div id="loader" class="visible"></div>
@@ -89,7 +89,7 @@
                 </div>
             </div>
         </div>
-        <!-- Modal de Política de Privacidad -->
+        <!-- POLICY -->
         <div class="modal fade" id="privacyPolicyModal" tabindex="-1" role="dialog" aria-labelledby="privacyPolicyModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -115,7 +115,7 @@
 
         <div class="d-flex flex-column min-vh-100">  
             <header>
-                <!-- Iconos Sociales -->
+                <!-- SOCIAL ICONS -->
                 <div class="ml-auto d-flex align-items-center">
                 <a
                     href="https://www.facebook.com/p/Barberia-CaBigote-100030635576349/?locale=es_LA"
@@ -151,18 +151,15 @@
                 <div class="modal fade" id="specialMessageModal" tabindex="-1" aria-labelledby="specialMessageModalLabel" aria-hidden="true" data-message-id="{{ special_message.id }}">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
-                            <!-- Encabezado del modal -->
                             <div class="modal-header">
                                 <h5 class="modal-title" id="specialMessageModalLabel">
                                     {{ special_message.titulo|default:"¡Atención!" }}
                                 </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                             </div>
-                            <!-- Cuerpo del modal -->
                             <div class="modal-body">
                                 {{ special_message.contenido|safe }}
                             </div>
-                            <!-- Pie del modal (opcional) -->
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                     Cerrar
@@ -173,7 +170,7 @@
                 </div>
                 {% endif %}
 
-                <!--  Título header -->
+                <!-- TITLE -->
                 <div class="container mt-5 mb-5">
                     <h1 class="text-center">
                         <img src="{% static 'imagenes/barber-pole.webp' %}" alt="Barber pole icon" class="icon">
@@ -181,7 +178,7 @@
                         <img src="{% static 'imagenes/barber-pole.webp' %}" alt="Barber pole icon" class="icon">
                     </h1>  
                 </div>       
-                <!--  Navegación -->
+                <!--  NAV -->
                 <nav class="navbar navbar-expand-lg navbar-dark rounded">
                     <a class="navbar-brand" href="{% url 'home' %}">
                         <img src="{% static 'imagenes/logo-cb.webp' %}" alt="Logo de Ca'Bigote" class="rounded-circle" style="height: 65px;">
@@ -224,7 +221,7 @@
             </header>
 
             <main class="flex-fill">
-                <!-- Mensaje -->
+                <!-- MSG -->
                 {% if messages %}
                 <div class="container mt-3 animate-on-load">
                     <div class="row justify-content-center">
@@ -240,19 +237,19 @@
                 {% endif %}
 
                 {% block content %}
-                <!-- Contenido templates -->
+                <!-- CONTENT TEMPLATES -->
                 {% endblock %}
             </main>
             <footer class="primary-color text-white-50 py-4">
                 <div class="container">
                     <div class="row">
-                        <!-- Sección Sobre Nosotros -->
+                        <!-- ABOUT -->
                         <div class="col-md-4">
                             <h5 class="text-white text-center">Sobre Nosotros</h5>
                             <p>Ca'Bigote es una barbería moderna con un toque clásico. Nos dedicamos a ofrecer los mejores cortes y afeitados con la mejor atención al cliente.</p>
                         </div>
             
-                        <!-- Enlaces Rápidos -->
+                        <!-- ACTIONS -->
                         <div class="col-md-4">
                             <h5 class="text-white">Enlaces Rápidos</h5>
                             <ul class="list-unstyled">
@@ -261,12 +258,9 @@
                                 <li><a href="{% url 'appointments:reservar_cita' %}" class="text-white-50">Reservar Cita</a></li>
                                 <li><a href="{% url 'products:ver_imagenes' %}" class="text-white-50">Productos</a></li>
                             </ul>
-                            <!-- Modal links -->
-                            <span class="mb-5"> 
-                            </span>   
                         </div>
             
-                        <!-- Mapa / Ubicación -->
+                        <!-- LOCATION -->
                         <div class="col-md-4 text-center">
                         <h5 class="text-white">Ubicación</h5>
                         <div class="map-container mb-2">
@@ -282,7 +276,7 @@
                         </div>
                     </div>
 
-                    <!-- Visitors -->
+                    <!-- VISITOR COUNT -->
                     <div class="visits-counter-card">
                         <div class="counter-icon animate-icon">
                           <i class="fas fa-user-friends"></i>
@@ -292,7 +286,7 @@
                     </div>                      
                     
                     <hr class="border-light">
-                    <!-- Copyright -->
+
                     <div class="row mt-3">
                         <div class="col text-center">
                             <p class="mb-0">&copy; 2024 Ca´Bigote. Todos los derechos reservados.</p>
@@ -303,14 +297,14 @@
                         </div>
                     </div>
                     <hr class="border-light">
-                    <!-- Versión -->
+                    <!-- VERSION -->
                 <div class="text-center mt-2">
                     <small>v{{ APP_VERSION }}</small>
                 </div>
                 </div>
             </footer>            
             
-            <!-- BTN flotante de WhatsApp -->
+            <!-- BTN WHATSAPP -->
             <a
             href="https://wa.me/+34659809165"
             target="_blank"
@@ -330,7 +324,7 @@
 
         {% block extra_scripts %}{% endblock %}
 
-        <!-- Scripts personalizados-->
+        <!-- CUSTOM SCRIPTS-->
         <script src="{% static 'js/Loader.js' %}" defer></script>
         <script src="{% static 'js/Cookies_modal.js' %}" defer></script>
         <script src="{% static 'js/Animations.js' %}" defer></script>
@@ -338,7 +332,7 @@
         <script src="{% static 'js/special_message.js' %}" defer></script>
 
         <script async src="https://www.instagram.com/embed.js"></script>
-         <!-- Registro del Service Worker -->
+         <!-- SERVICE WORKER INSTALL -->
         <script src="{% static 'js/pwa-install.js' %}" defer></script> 
     </body>
 </html>

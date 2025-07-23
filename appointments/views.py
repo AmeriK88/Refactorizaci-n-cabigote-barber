@@ -60,25 +60,21 @@ def reservar_cita(request, servicio_id=None):
     if request.method == "POST":
         form = CitaForm(request.POST)
         if form.is_valid():
-            # ——— Datos limpios ———
+
             fecha = form.cleaned_data["fecha"]  
             hora  = form.cleaned_data["hora"]   
 
-            # Normaliza fecha: si llega datetime → date
             if isinstance(fecha, datetime):
                 fecha = fecha.date()
 
-            # Normaliza hora: si llega str → time
             if isinstance(hora, str):
                 hora = datetime.strptime(hora, "%H:%M").time()
 
-            # Combina y convierte a aware
             fecha_hora = timezone.make_aware(
                 datetime.combine(fecha, hora),
                 timezone.get_current_timezone(),
             )
 
-            # ——— Reglas de dominio ———
             if fecha.isoformat() in fechas_bloqueadas:
                 form.add_error("fecha", "Esta fecha está bloqueada. Selecciona otra.")
             else:
@@ -91,7 +87,7 @@ def reservar_cita(request, servicio_id=None):
                         )
                         break
 
-            # ---------- Guardar ----------
+            # ---------- SAVE ----------
             if not form.errors:
                 cita = form.save(commit=False)
                 cita.usuario = request.user
@@ -152,7 +148,7 @@ def editar_cita(request, cita_id):
         messages.error(request, "¡Ñooosss! ¡Se te fue el baifo! La fecha ya pasó.")
         return redirect("appointments:ver_citas")
 
-    # -------- 1) BLOQUEOS Y OCUPACIONES --------
+    # -------- 1) BLOCKED & OCCUPIED --------
     valid_hours_str = [h[0] for h in CitaForm.HORA_CHOICES if h[0]]
 
     horas_por_dia = (
@@ -200,15 +196,15 @@ def editar_cita(request, cita_id):
                 timezone.get_current_timezone(),
             )
 
-            # --- Regla: fecha bloqueada
+            # ---DATE VALIDATIONS---
             if fecha.isoformat() in fechas_bloqueadas:
                 form.add_error("fecha", "Esta fecha está bloqueada. Selecciona otra.")
 
-            # --- Regla: duplicado
+            # --- DUPLICICATE CHECK
             elif Cita.objects.filter(fecha=fecha_hora).exclude(id=cita_id).exists():
                 form.add_error(None, "Ya hay otra cita en esa fecha y hora.")
 
-            # --- Regla: hora bloqueada
+            # BLOCKED HOURS
             else:
                 for bloqueo in BloqueoHora.objects.filter(fecha=fecha):
                     if bloqueo.hora_inicio <= hora < bloqueo.hora_fin:
@@ -219,7 +215,7 @@ def editar_cita(request, cita_id):
                         )
                         break
 
-            # Guardar
+            # SAVE
             if not form.errors:
                 cita = form.save(commit=False)
                 cita.fecha = fecha_hora

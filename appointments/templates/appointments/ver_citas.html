@@ -12,14 +12,14 @@
                 </h2>
             </div>            
 
-            <!-- Sección de Citas Activas -->
+            <!-- ACTIVE -->
             <h2 class="mt-5 text-center display-5 font-weight-bold">Citas Activas</h2>
             {% if citas_activas %}
                 <div class="row g-4 animate-on-load">
                     {% for cita in citas_activas %}
                     <div class="col-12 {% if citas_activas|length > 1 %}col-md-6 col-lg-4{% endif %} mt-5">
                         <div class="card h-100 shadow-sm">
-                            <!-- Imagen del servicio como banner -->
+                            <!-- SERVICE BANNER IMG -->
                             {% if cita.servicio.imagen %}
                             <div class="card-img-top-container">
                                 <img src="{{ cita.servicio.imagen.url }}" alt="{{ cita.servicio.nombre }}" class="card-img-top banner-img">
@@ -28,19 +28,19 @@
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title">{{ cita.servicio.nombre }}</h5>
                                 
-                                <!-- Campo Fecha -->
+                                <!-- DATE FIELD -->
                                 <p class="card-text d-flex align-items-center">
                                     <i class="m-3 bi bi-calendar-event me-2 text-primary"></i>
                                     <span><strong>Fecha:</strong> {{ cita.fecha }}</span>
                                 </p>
                                 
-                                <!-- Campo Hora -->
+                                <!-- TIME FIELD -->
                                 <p class="card-text d-flex align-items-center">
                                     <i class="m-3 bi bi-clock me-2 text-success"></i>
                                     <span><strong>Hora:</strong> {{ cita.hora }}</span>
                                 </p>
                                 
-                                <!-- Campo Comentario -->
+                                <!-- MESSAGE FIELD -->
                                 <p class="card-text d-flex align-items-center">
                                     <i class="m-3 bi bi-chat-left-dots me-2 text-secondary"></i>
                                     <span><strong>Comentario:</strong> {{ cita.comentario }}</span>
@@ -67,7 +67,7 @@
                 </div>
             {% endif %}
 
-            <!-- Sección de Historial de Citas -->
+            <!--APPOINTMENT HISTORY -->
             <h2 class="mt-5 text-center display-5 font-weight-bold">Historial de Citas</h2>
             {% if citas_pasadas %}
                 <p class="text-center text-muted">
@@ -80,19 +80,16 @@
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title">{{ cita.servicio.nombre }}</h5>
                                 
-                                <!-- Campo Fecha -->
                                 <p class="card-text d-flex align-items-center">
                                     <i class="m-3 bi bi-calendar-event me-2 text-primary"></i>
                                     <span><strong>Fecha:</strong> {{ cita.fecha }}</span>
                                 </p>
                                 
-                                <!-- Campo Hora -->
                                 <p class="card-text d-flex align-items-center">
                                     <i class="m-3 bi bi-clock me-2 text-success"></i>
                                     <span><strong>Hora:</strong> {{ cita.hora }}</span>
                                 </p>
                                 
-                                <!-- Campo Comentario -->
                                 <p class="card-text d-flex align-items-center">
                                     <i class="m-3 bi bi-chat-left-dots me-2 text-secondary"></i>
                                     <span><strong>Comentario:</strong> {{ cita.comentario }}</span>
@@ -102,7 +99,7 @@
                     </div>
                     {% endfor %}
                 </div>
-                
+                {# ------- BTN LOAD MORE ------- #}
                 {% if citas_pasadas|length > 5 %}
                 <div class="text-center mt-3">
                     <button id="cargar-mas-btn" class="btn btn-primary">Cargar más</button>

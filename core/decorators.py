@@ -17,7 +17,7 @@ def handle_exceptions(view_func):
             return render(request, 'errors/403.html', status=403)
         except Exception as e:
             logger = logging.getLogger(__name__)
-            # Esto te imprime la traza completa en los logs
+            # PRINT LOGS
             logger.error("Error inesperado en %s:\n%s", view_func.__name__, traceback.format_exc())
             return render(request, 'errors/500.html', status=500)
     return _wrapped_view

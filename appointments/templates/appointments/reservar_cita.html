@@ -8,14 +8,14 @@
 <div class="container py-5">
   <div class="row justify-content-center">
     <div class="col-12 col-md-12 col-lg-12">
-      {# 🔔 errores globales simplificados #}
+
         {% if form.errors %}
           <p class="alert alert-error">
             ¡Aguita papá! Ha ocurrido un error. Por favor revisa los datos e inténtalo de nuevo.
           </p>
         {% endif %}
 
-      <!-- 📋 Tarjeta principal -->
+      <!-- MAIN CARD -->
       <div class="card shadow-sm">
         <div class="card-header gradiente-header text-center">
           <h4 class="mb-0">
@@ -25,7 +25,7 @@
           <form method="post" class="needs-validation animate-on-load" novalidate>
             {% csrf_token %}
 
-            {# ------- SERVICIO ------- #}
+            {# ------- SERVICE ------- #}
             <div class="mb-3">
               <label class="form-label" for="id_servicio">💈 Servicio</label>
               {{ form.servicio|add_class:"form-select form-select-lg" }}
@@ -34,7 +34,7 @@
               {% endfor %}
             </div>
 
-            {# ------- PRODUCTO (opcional) ------- #}
+            {# ------- PRODUCT ------- #}
             <div class="mb-3">
               <label class="form-label" for="id_producto">🛍️ Producto (opcional)</label>
               {{ form.producto|add_class:"form-select form-select-lg" }}
@@ -43,7 +43,7 @@
               {% endfor %}
             </div>
 
-            {# ------- FECHA ------- #}
+            {# ------- DATE ------- #}
             <div class="mb-3">
               <label class="form-label" for="id_fecha">📆 Fecha</label>
               <div class="input-group">
@@ -55,7 +55,7 @@
               {% endfor %}
             </div>
 
-            {# ------- HORA ------- #}
+            {# ------- TIME ------- #}
             <div class="mb-3">
               <label class="form-label" for="id_hora">⏰ Hora</label>
               <div class="input-group">
@@ -67,7 +67,7 @@
               {% endfor %}
             </div>
 
-            {# ------- COMENTARIO ------- #}
+            {# ------- MESSAGE ------- #}
             <div class="mb-3">
               <label class="form-label" for="id_comentario">📝 Comentario</label>
               {{ form.comentario|add_class:"form-control form-control-lg" }}
@@ -76,7 +76,6 @@
               {% endfor %}
             </div>
 
-            {# ------- BOTÓN ------- #}
             <button type="submit" class="btn btn-primary btn-lg w-100">
             ✨ Reservar Ahora
             </button>

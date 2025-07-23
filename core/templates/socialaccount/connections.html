@@ -15,13 +15,14 @@
     {% trans "Puedes iniciar sesión utilizando cualquiera de las siguientes cuentas enlazadas:" %}
   </p>
 
-  {# ───────── MENSAJES DE ERROR DE LA VISTA ───────── #}
+  {# ───────── ERROR MESSAGE  ───────── #}
   {% if form.non_field_errors %}
     <div class="alert alert-danger shadow-sm">
       {{ form.non_field_errors }}
     </div>
   {% endif %}
 
+ {# ───────── CONNECTIONS TABLE ───────── #}
   <table class="table table-striped shadow-sm">
     <thead class="table-light">
       <tr>
@@ -44,7 +45,6 @@
         <td class="text-end">
           <form method="post" action="{% url 'socialaccount_connections' %}">
             {% csrf_token %}
-            {#  La vista solo necesita "account"  #}
             <button type="submit"
                     name="account"
                     value="{{ account.id }}"
@@ -65,7 +65,7 @@
   </table>
 
   <div class="text-center mt-4">
-    {#  Botón para añadir nuevas cuentas (process="connect")  #}
+    {#  BTN TO ADD NEW ACCOUTNS  #}
     {% include "socialaccount/snippets/provider_list.html" with process="connect" %}
   </div>
 

@@ -4,6 +4,7 @@ from core.utils import enviar_recordatorio_cita
 from django.utils import timezone
 from datetime import timedelta
 
+# CRON JOB: REMINDER FOR APPOINTMENTS TOMORROW
 class Command(BaseCommand):
     help = 'Envía recordatorios por correo a los usuarios con citas para mañana.'
 

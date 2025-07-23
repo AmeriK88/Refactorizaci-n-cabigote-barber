@@ -34,7 +34,7 @@ from .models import Cita, FechaBloqueada, BloqueoHora
 class CitaAdmin(admin.ModelAdmin):
     """Gestión de citas + estadísticas gráficas."""
 
-    # -------- Tabla principal --------
+    # -------- MAIN BOARD --------
     list_display = (
         "usuario",
         "servicio",
@@ -49,7 +49,7 @@ class CitaAdmin(admin.ModelAdmin):
     ordering = ("-fecha",)
     list_per_page = 20
 
-    # -------- Acciones --------
+    # -------- ACTIONS --------
     actions = ["marcar_como_vistas"]
 
     def marcar_como_vistas(self, request, queryset):
@@ -58,7 +58,7 @@ class CitaAdmin(admin.ModelAdmin):
 
     marcar_como_vistas.short_description = "Marcar como vistas"
 
-    # -------- Column helpers --------
+    # -------- HELPERS --------
     def comentario_corto(self, obj):
         texto = obj.comentario or ""
         if len(texto) > 50:
@@ -90,7 +90,7 @@ class CitaAdmin(admin.ModelAdmin):
         return custom + urls
 
     # ------------------------------------------------------------------
-    #   ESTADÍSTICAS   (agrupación puramente en Python: máxima compatibilidad)
+    #   STATS 
     # ------------------------------------------------------------------
     def _contar_citas_por_mes(self, meses_atras: int = 12):
         """Devuelve (labels, counts) desde *meses_atras* hasta hoy (incluye futuro)."""

@@ -174,10 +174,10 @@ GOOGLE_CLIENT_ID     = env("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = env("GOOGLE_CLIENT_SECRET")
 
 # Allauth ― configuración global
-SITE_ID = env.int("SITE_ID")                     # id del registro en django_site
+SITE_ID = env.int("SITE_ID")   
 SOCIALACCOUNT_ADAPTER = "core.adapters.CustomSocialAdapter"
 
-# ─── AUTENTICACIÓN LOCAL ────────────────────────────────────────────
+# ─── LOCAL AUTH ────────────────────────────────────────────
 ACCOUNT_LOGIN_METHODS = {"email"}  
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 ACCOUNT_EMAIL_VERIFICATION = "optional"

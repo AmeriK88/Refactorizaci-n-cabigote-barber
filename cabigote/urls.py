@@ -16,24 +16,23 @@ from django.contrib.auth import get_user_model
 
 # --- VISTA QUE ENVUELVE EL ÍNDICE DEL ADMIN ---
 def admin_dashboard(request):
-    # 1) acceso restringido a staff
     if not (request.user.is_authenticated and request.user.is_staff):
         return admin.site.login(request)
 
-    # 2) calcula inicio/fin del día en tu zona (aware)
+    # 2) CALCULATE TODAY'S DATE RANGE
     local_tz = timezone.get_current_timezone()
     today = timezone.localdate()
     start_of_day = timezone.make_aware(datetime.combine(today, time.min), local_tz)
     end_of_day   = start_of_day + timedelta(days=1)
 
-    # 3) filtra las citas en ese rango
+    # 3) FILTER RANGE
     citas_qs = (
         Cita.objects
             .filter(fecha__gte=start_of_day, fecha__lt=end_of_day)
             .select_related("producto", "servicio")
     )
 
-    # 4) métricas
+    # 4) METRICS
     citas_hoy = citas_qs.count()
     ingresos_hoy = Decimal("0")
     for c in citas_qs:
@@ -42,7 +41,7 @@ def admin_dashboard(request):
         if c.producto and hasattr(c.producto, "precio"):
             ingresos_hoy += c.producto.precio or 0
 
-    # 5) usuarios totales
+    # 5) TOTAL USERS
     User = get_user_model()
     usuarios_total = User.objects.count() 
 
@@ -53,8 +52,7 @@ def admin_dashboard(request):
         "servicios_total": Servicio.objects.count(),
         "usuarios_total":   usuarios_total,
     }
-
-    # 5) delega al index estándar del admin
+    # 6) CALL THE ADMIN INDEX VIEW
     admin_index = admin.site.admin_view(admin.site.index)
     return admin_index(request, extra_context=extra_context)
 
@@ -62,7 +60,7 @@ def admin_dashboard(request):
 # Rutas sin prefijo de idioma
 # ──────────────────────────────────────────────────────────
 urlpatterns = [
-    # service‑worker en la raíz
+    # ─── SW.js ─────────────────────────────────────────────
     path(
         "sw.js",
         never_cache(
@@ -101,7 +99,7 @@ urlpatterns += i18n_patterns(
     path("", include("core.urls")),
 )
 
-# Media y debug (sin cambios) …
+# Media y debug 
 urlpatterns += [
     re_path(r"^media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
 ]
