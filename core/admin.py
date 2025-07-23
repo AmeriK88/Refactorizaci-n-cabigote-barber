@@ -12,7 +12,6 @@ class MensajeEspecialAdmin(admin.ModelAdmin):
     list_filter  = ('activo',)
     search_fields = ('titulo',)
 
-    # columna personalizada 
     @admin.display(description='Activo', ordering='activo')
     def activo_icon(self, obj):
         return '✔️' if obj.activo else '❌'

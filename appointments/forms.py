@@ -1,4 +1,3 @@
-# appointments/forms.py
 from django import forms
 from datetime import datetime, time
 from django.utils import timezone

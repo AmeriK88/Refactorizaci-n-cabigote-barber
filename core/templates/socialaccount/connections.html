@@ -1,0 +1,79 @@
+{# templates/socialaccount/connections.html #}
+{% extends "base.html" %}
+{% load i18n socialaccount %}
+
+{% block title %}{% trans "Conexiones de cuenta" %} · Ca’Bigote{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  <h2 class="mb-4 text-center">
+    {% trans "Conexiones de cuenta" %}
+  </h2>
+
+  <p class="text-muted text-center mb-5">
+    {% trans "Puedes iniciar sesión utilizando cualquiera de las siguientes cuentas enlazadas:" %}
+  </p>
+
+  {# ───────── ERROR MESSAGE  ───────── #}
+  {% if form.non_field_errors %}
+    <div class="alert alert-danger shadow-sm">
+      {{ form.non_field_errors }}
+    </div>
+  {% endif %}
+
+ {# ───────── CONNECTIONS TABLE ───────── #}
+  <table class="table table-striped shadow-sm">
+    <thead class="table-light">
+      <tr>
+        <th>{% trans "Proveedor" %}</th>
+        <th>{% trans "Cuenta" %}</th>
+        <th class="text-end">{% trans "Acciones" %}</th>
+      </tr>
+    </thead>
+
+    <tbody>
+    {% for account in form.accounts %}
+      <tr>
+        <td>
+          <i class="fab fa-{{ account.provider }} text-danger me-1"></i>
+          {{ account.get_provider_display }}
+        </td>
+
+        <td>{{ account.extra_data.email }}</td>
+
+        <td class="text-end">
+          <form method="post" action="{% url 'socialaccount_connections' %}">
+            {% csrf_token %}
+            <button type="submit"
+                    name="account"
+                    value="{{ account.id }}"
+                    class="btn btn-sm btn-outline-danger">
+              {% trans "Eliminar" %}
+            </button>
+          </form>
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="3" class="text-center text-muted">
+          {% trans "No hay conexiones activas." %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="text-center mt-4">
+    {#  BTN TO ADD NEW ACCOUTNS  #}
+    {% include "socialaccount/snippets/provider_list.html" with process="connect" %}
+  </div>
+
+  <div class="mt-5 text-center">
+    <a href="{% url 'users:perfil_usuario' %}" class="btn btn-outline-primary">
+      ↩️ Volver al Perfil
+    </a>
+  </div>
+
+</div>
+{% endblock %}

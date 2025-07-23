@@ -12,7 +12,7 @@ class redirectionDomainMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        # Extract host without port
+        # EXTRAC HOST
         host = request.get_host().split(':')[0]
         if host == self.OLD_HOST:
             # Permanent redirect to new domain, preserving path and querystring

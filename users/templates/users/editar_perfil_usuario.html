@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static tz widget_tweaks %}
+{% load static tz widget_tweaks socialaccount %}
 
 {% block title %}Editar Perfil · Ca’Bigote{% endblock %}
 
@@ -22,7 +22,35 @@
             Todos los campos son opcionales, pero te recomendamos mantener tu información al día.
           </p>
 
-          <!-- INFO ACTUAL -->
+          <!-- ───────── CUENTA DE GOOGLE ───────── -->
+          <div class="card mb-5 shadow-sm">
+            <div class="card-header text-center main-title">
+              Acceso con Google
+            </div>
+
+            <div class="card-body text-center">
+              {% if has_google %}
+                <p class="text-success fw-semibold mb-3">
+                  <i class="fab fa-google me-1"></i>
+                  ¡Tu cuenta ya está vinculada!
+                </p>
+                <a href="{% url 'socialaccount_connections' %}"
+                  class="btn btn-outline-secondary">
+                  Gestionar vínculos
+                </a>
+              {% else %}
+                <p class="mb-3">
+                  Vincula tu cuenta para iniciar sesión con Google en un clic.
+                </p>
+                <a href="{% provider_login_url 'google' process='connect' %}"
+                  class="btn btn-outline-danger">
+                  <i class="fab fa-google me-2"></i> Vincular con Google
+                </a>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- CURRENT INFO -->
           <div class="card mb-5 shadow-sm">
             <div class="card-header text-center main-title">Información del Usuario</div>
             <div class="card-body">
@@ -32,7 +60,7 @@
             </div>
           </div>
 
-          <!-- FORMULARIOS -->
+          <!-- FORMS -->
           <form method="post" class="needs-validation" novalidate>
             {% csrf_token %}
 

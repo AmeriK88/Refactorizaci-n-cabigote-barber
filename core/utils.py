@@ -3,7 +3,6 @@ from django.conf import settings
 from django.utils import timezone
 
 
-# ──────────────────────────────────────────────────────────────
 def _formatear_fecha_hora(dt):
     """
     Convierte un DateTimeField (aware o UTC) a la zona Atlantic/Canary
@@ -11,7 +10,6 @@ def _formatear_fecha_hora(dt):
     """
     local = timezone.localtime(dt)
     return local.strftime("%d/%m/%Y"), local.strftime("%H:%M")
-# ──────────────────────────────────────────────────────────────
 
 
 def enviar_correo_admin(asunto, mensaje):
@@ -28,7 +26,7 @@ def enviar_correo_admin(asunto, mensaje):
 
 
 # ══════════════════════════════════════════════════════════════
-# 1) CONFIRMACIÓN DE NUEVA CITA
+# 1) CONFIRMATION NOTIFICATION
 # ══════════════════════════════════════════════════════════════
 def enviar_confirmacion_cita(usuario_email, cita):
     fecha_str, hora_str = _formatear_fecha_hora(cita.fecha)
@@ -59,7 +57,6 @@ def enviar_confirmacion_cita(usuario_email, cita):
     """
     send_mail(asunto, mensaje, settings.EMAIL_HOST_USER, [usuario_email])
 
-    # Notificar a los administradores
     mensaje_admin = f"""Un usuario ha reservado una cita:
 
     Usuario    : {getattr(cita.usuario, 'username', 'Usuario no disponible')}
@@ -73,7 +70,7 @@ def enviar_confirmacion_cita(usuario_email, cita):
 
 
 # ══════════════════════════════════════════════════════════════
-# 2) NOTIFICACIÓN DE ELIMINACIÓN
+# 2) DELETE NOTIFICATIONS
 # ══════════════════════════════════════════════════════════════
 def enviar_notificacion_eliminacion_cita(usuario_email, cita_detalle):
     fecha_str, hora_str = _formatear_fecha_hora(cita_detalle["fecha"])
@@ -98,7 +95,7 @@ def enviar_notificacion_eliminacion_cita(usuario_email, cita_detalle):
     """
     send_mail(asunto, mensaje, settings.EMAIL_HOST_USER, [usuario_email])
 
-    # Notificar a los administradores
+    # ADMIN NOTIFICATIONS
     mensaje_admin = f"""Un usuario ha eliminado una cita:
 
     Usuario    : {cita_detalle.get('usuario', 'Usuario no disponible')}
@@ -112,7 +109,7 @@ def enviar_notificacion_eliminacion_cita(usuario_email, cita_detalle):
 
 
 # ══════════════════════════════════════════════════════════════
-# 3) NOTIFICACIÓN DE MODIFICACIÓN
+# 3) UPDATE EMAIL
 # ══════════════════════════════════════════════════════════════
 def enviar_notificacion_modificacion_cita(usuario_email, cita):
     fecha_str, hora_str = _formatear_fecha_hora(cita.fecha)
@@ -153,7 +150,7 @@ def enviar_notificacion_modificacion_cita(usuario_email, cita):
 
 
 # ══════════════════════════════════════════════════════════════
-# 4) RECORDATORIO (sin cambios de lógica, sólo formateo)
+# 4) REMINDERS
 # ══════════════════════════════════════════════════════════════
 def enviar_recordatorio_cita(usuario_email, cita):
     fecha_str, hora_str = _formatear_fecha_hora(cita.fecha)

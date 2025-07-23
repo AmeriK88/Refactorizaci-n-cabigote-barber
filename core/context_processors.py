@@ -5,7 +5,7 @@ from .models import MensajeEspecial, ContadorVisitas
 def mensaje_especial_context(request):
     hoy = timezone.now().date()
 
-    # Obtener el mensaje especial activo
+    # ACTIVE MESSAGE
     mensaje = (
         MensajeEspecial.objects
         .filter(
@@ -17,7 +17,7 @@ def mensaje_especial_context(request):
         .first()
     )
 
-    # Obtener el contador desde la BD
+    # OBTAIN COUNTER FROM DB
     try:
         contador_obj = ContadorVisitas.objects.get(pk=1)
         contador_global = contador_obj.total

@@ -9,7 +9,7 @@ class MensajeEspecial(models.Model):
 
     def save(self, *args, **kwargs):
         if self.activo:
-            # Desactivar otros mensajes activos
+            # DEACTIVATION OF MSGS
             MensajeEspecial.objects.filter(activo=True).exclude(id=self.id).update(activo=False)  # type: ignore[arg-type]
         super().save(*args, **kwargs)
 

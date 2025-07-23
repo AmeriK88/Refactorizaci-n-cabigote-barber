@@ -5,8 +5,16 @@
 {% block content %}
 
 <div class="container mt-3">
-    <a href="{% url 'users:editar_perfil_usuario' %}" class="btn btn-primary btn-sm ml-2 mt-3">Editar Perfil</a>
-    <a href="{% url 'appointments:ver_citas' %}" class="btn btn-outline-secondary btn-sm ml-2 mt-3">Mis citas</a>
+  <a href="{% url 'users:editar_perfil_usuario' %}"
+     class="btn btn-primary btn-sm rounded-pill ms-2 mt-3 d-inline-flex align-items-center">
+    <i class="fas fa-user-edit m-1"></i> 
+    Editar Perfil
+  </a>
+  <a href="{% url 'appointments:ver_citas' %}"
+     class="btn btn-outline-secondary btn-sm rounded-pill ms-2 mt-3 d-inline-flex align-items-center">
+    <i class="fas fa-calendar-check m-1"></i>
+    Mis Citas
+  </a>
 </div>
 
 <div class="container mt-5">

@@ -1,7 +1,6 @@
-# core/adapters.py
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from allauth.socialaccount.models import SocialAccount
-from allauth.core.exceptions import ImmediateHttpResponse
+from allauth.exceptions import ImmediateHttpResponse  
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
 
@@ -13,36 +12,43 @@ class CustomSocialAdapter(DefaultSocialAccountAdapter):
     """
 
     def pre_social_login(self, request, sociallogin):
-        # 1) Si la SocialAccount ya existe para este usuario, no hacemos nada
+        # 0) "connect" explicitly skips this check
+        if sociallogin.state.get("process") == "connect":
+            return
+
+        # 1) If SocialAccount / nothing to do
         if sociallogin.is_existing:
             return
 
         email = sociallogin.user.email
         if not email:
-            return   # proveedor sin e-mail → dejamos que allauth resuelva
+            return   
 
-        # 2) ¿Hay usuario local con ese e-mail?
         User = get_user_model()
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            return   
-
-        # 3) ¿Tiene YA enlace con este proveedor?
-        if SocialAccount.objects.filter(
-            user=user,
-            provider=sociallogin.account.provider
-        ).exists():
             return  
 
-        # 4) Usuario local SIN vínculo: bloqueamos y mostramos plantilla
+        # 2) If user email already logged in, allow
+        if request.user.is_authenticated and request.user == user:
+            return
+
+        # 3) If SocialAccount already exists for this user, allow
+        if SocialAccount.objects.filter(user=user,
+                                        provider=sociallogin.account.provider
+                                        ).exists():
+            return
+
+        # 4) Block login if email is already registered as a local user
         response = render(
             request,
             "socialaccount/social_error.html",
             {
                 "error_message": (
-                    "Ese correo ya está registrado como cuenta local. "
-                    "Inicia sesión con tu usuario y contraseña. "
+                    "¡Chacho! Ese correo ya está registrado como cuenta local. "
+                    "Inicia sesión con tu usuario y contraseña y vincula "
+                    "Google desde tu perfil."
                 )
             },
             status=403
