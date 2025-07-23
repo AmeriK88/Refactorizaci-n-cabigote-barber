@@ -102,42 +102,44 @@ def perfil_usuario(request):
 def editar_perfil_usuario(request):
     # Obtiene o crea el perfil de usuario relacionado
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-    
+
     if request.method == 'POST':
         # Crea formularios con los datos enviados por el usuario
-        profile_form = UserProfileForm(request.POST, instance=user_profile)
-        user_form = UserForm(request.POST, instance=request.user)
+        profile_form  = UserProfileForm(request.POST, instance=user_profile)
+        user_form     = UserForm(request.POST, instance=request.user)
         password_form = PasswordChangeForm(user=request.user, data=request.POST)
-        
+
         # Verifica si los formularios son válidos
         if profile_form.is_valid() and user_form.is_valid() and password_form.is_valid():
-            user_form.save()  
-            # Guarda los cambios del perfil & cambia contraseña
-            profile_form.save()  
-            password_form.save() 
-            
-            # Mantiene la sesión activa después de cambiar la contraseña
-            update_session_auth_hash(request, request.user)  
-            messages.success(request, '!El que quiera lapas que se moje el culo¡. Perfil actualizado exitosamente.') 
-            return redirect('users:perfil_usuario')  
+            user_form.save()          # guarda cambios de User
+            profile_form.save()       # guarda cambios de perfil
+            password_form.save()      # cambia contraseña
+            update_session_auth_hash(request, request.user)  # mantiene sesión
+            messages.success(request, '!El que quiera lapas que se moje el culo¡. Perfil actualizado exitosamente.')
+            return redirect('users:perfil_usuario')
         else:
-            messages.error(request, '!Chacho¡ Tu o el servidor están en la parra. Prueba de nuevo.') 
+            messages.error(request, '!Chacho¡ Tu o el servidor están en la parra. Prueba de nuevo.')
     else:
         # Si no es POST, muestra los formularios con los datos actuales
-        profile_form = UserProfileForm(instance=user_profile)
-        user_form = UserForm(instance=request.user)
+        profile_form  = UserProfileForm(instance=user_profile)
+        user_form     = UserForm(instance=request.user)
         password_form = PasswordChangeForm(user=request.user)
-    
+
+    # ─── NUEVA LÍNEA ───
+    has_google = request.user.socialaccount_set.filter(provider="google").exists()
+
     context = {
-        'profile_form': profile_form,
-        'user_form': user_form,
+        'profile_form':  profile_form,
+        'user_form':     user_form,
         'password_form': password_form,
-        'username': request.user.username,
+        'username':      request.user.username,
         'current_email': request.user.email,
-        'current_phone': user_profile.telefono
+        'current_phone': user_profile.telefono,
+        'has_google':    has_google,           # ← ya definido
     }
-    
-    return render(request, 'users/editar_perfil_usuario.html', context)  
+
+    return render(request, 'users/editar_perfil_usuario.html', context)
+
 
 # Delete account
 @login_required

@@ -1,7 +1,6 @@
-# core/adapters.py
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from allauth.socialaccount.models import SocialAccount
-from allauth.core.exceptions import ImmediateHttpResponse
+from allauth.exceptions import ImmediateHttpResponse   # importa desde allauth.exceptions
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
 
@@ -13,36 +12,43 @@ class CustomSocialAdapter(DefaultSocialAccountAdapter):
     """
 
     def pre_social_login(self, request, sociallogin):
-        # 1) Si la SocialAccount ya existe para este usuario, no hacemos nada
+        # 0) Si viene de un "connect" explícito, permitir siempre
+        if sociallogin.state.get("process") == "connect":
+            return
+
+        # 1) Si la SocialAccount ya existe para este usuario, nada que hacer
         if sociallogin.is_existing:
             return
 
         email = sociallogin.user.email
         if not email:
-            return   # proveedor sin e-mail → dejamos que allauth resuelva
+            return   # proveedor sin e‑mail → deja que allauth gestione
 
-        # 2) ¿Hay usuario local con ese e-mail?
         User = get_user_model()
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            return   
+            return   # e‑mail nuevo → deja que allauth cree usuario
 
-        # 3) ¿Tiene YA enlace con este proveedor?
-        if SocialAccount.objects.filter(
-            user=user,
-            provider=sociallogin.account.provider
-        ).exists():
-            return  
+        # 2) Si el usuario YA está logeado y coincide con ese e‑mail, permitir
+        if request.user.is_authenticated and request.user == user:
+            return
 
-        # 4) Usuario local SIN vínculo: bloqueamos y mostramos plantilla
+        # 3) Si ese user ya tiene SocialAccount para este provider, permitir
+        if SocialAccount.objects.filter(user=user,
+                                        provider=sociallogin.account.provider
+                                        ).exists():
+            return
+
+        # 4) Usuario local sin vínculo: bloqueamos
         response = render(
             request,
             "socialaccount/social_error.html",
             {
                 "error_message": (
-                    "Ese correo ya está registrado como cuenta local. "
-                    "Inicia sesión con tu usuario y contraseña. "
+                    "¡Chacho! Ese correo ya está registrado como cuenta local. "
+                    "Inicia sesión con tu usuario y contraseña y vincula "
+                    "Google desde tu perfil."
                 )
             },
             status=403

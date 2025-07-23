@@ -169,34 +169,37 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# GOOGLE ALLAUTH CONFIG
-GOOGLE_CLIENT_ID = env('GOOGLE_CLIENT_ID')
-GOOGLE_CLIENT_SECRET = env('GOOGLE_CLIENT_SECRET')
+# ─────────── GOOGLE ALLAUTH CONFIG ───────────
+GOOGLE_CLIENT_ID     = env("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = env("GOOGLE_CLIENT_SECRET")
 
-# SITE ID for Allauth
-SITE_ID = env.int('SITE_ID')
-# ADAPTER FOR SOCIAL ACCOUNT
+# Allauth ― configuración global
+SITE_ID = env.int("SITE_ID")                     # id del registro en django_site
 SOCIALACCOUNT_ADAPTER = "core.adapters.CustomSocialAdapter"
-ACCOUNT_LOGIN_METHODS = {'email'}
 
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
+# ─── AUTENTICACIÓN LOCAL ────────────────────────────────────────────
+ACCOUNT_LOGIN_METHODS = {"email"}  
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
+ACCOUNT_EMAIL_VERIFICATION = "optional"
+ACCOUNT_UNIQUE_EMAIL      = True     
 
-ACCOUNT_EMAIL_VERIFICATION = 'optional'     # o 'mandatory'
-ACCOUNT_UNIQUE_EMAIL       = True
-SOCIALACCOUNT_AUTO_SIGNUP  = False       
+# ─── SOCIAL ─────────────────────────────────────────────────────────
+SOCIALACCOUNT_AUTO_SIGNUP  = False
+SOCIALACCOUNT_QUERY_EMAIL  = True
+SOCIALACCOUNT_STORE_TOKENS = True
 
-# SOCIAL ACCOUNT CONFIGURATION
 SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': GOOGLE_CLIENT_ID,
-            'secret': GOOGLE_CLIENT_SECRET,
-            'key': '',
+    "google": {
+        "APP": {
+            "client_id": GOOGLE_CLIENT_ID,
+            "secret":    GOOGLE_CLIENT_SECRET,
+            "key": "",
         },
-        'SCOPE': ['profile', 'email'],
-        'AUTH_PARAMS': {'access_type': 'online'},
+        "SCOPE": ["profile", "email"],
+        "AUTH_PARAMS": {"access_type": "online"},
     }
 }
+
 
 
 # Internationalization & CONFIG TIME ZONE
@@ -223,7 +226,7 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 
 # READS & PROCESS ADMINS FROM .ENV
-admins_env = env('ADMINS', default='')   # type: ignore[name-defined]
+admins_env = env('ADMINS', default='') 
 
 ADMINS = [tuple(admin.split(',')) for admin in admins_env.split(';')] if admins_env else []  # type: ignore[arg-type]
 
@@ -391,6 +394,6 @@ CONTENT_SECURITY_POLICY = {
 
 
 # APP VERSION
-APP_VERSION = "2.6.2"
+APP_VERSION = "2.6.3"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
