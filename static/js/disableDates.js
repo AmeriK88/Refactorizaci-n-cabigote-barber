@@ -1,10 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     const inputFecha = document.querySelector('input[name="fecha"]');
-    const inputHora = document.querySelector('select[name="hora"]');
+    const inputHora  = document.querySelector('select[name="hora"]');
 
+    // ------------------------------------------------------
+    // Helper: formatea con cero a la izquierda (para "HH:MM")
+    // ------------------------------------------------------
+    const pad = n => String(n).padStart(2, '0');
+
+    // ------------------------------------------------------
     // Function to update (enable/disable) occupied hours
+    // ------------------------------------------------------
     const updateOccupiedHours = () => {
-        const selectedDate = inputFecha.value;
+        const selectedDate  = inputFecha.value;
         const horasOcupadas = horasOcupadasPorFecha[selectedDate] || [];
 
         // First, enable all options
@@ -23,11 +30,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Also disable blocked hours
         updateBlockedHours();
+
+        // ------------------------------------------------------
+        // NEW: disable past hours if the selected date is today
+        // ------------------------------------------------------
+        const todayISO = new Date().toISOString().split('T')[0];
+        if (selectedDate === todayISO) {
+            const now        = new Date();
+            const horaActual = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+            Array.from(inputHora.options).forEach(option => {
+                if (option.value && option.value <= horaActual) {
+                    option.disabled = true;
+                }
+            });
+        }
     };
 
+    // ------------------------------------------------------
     // New function: disable hours specified in the blocked hours dictionary
+    // ------------------------------------------------------
     const updateBlockedHours = () => {
-        const selectedDate = inputFecha.value;
+        const selectedDate    = inputFecha.value;
         // 'bloqueos_por_fecha' should be provided as a JSON object from your backend
         const horasBloqueadas = bloqueos_por_fecha[selectedDate] || [];
 
@@ -39,61 +63,32 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     if (inputFecha) {
-      
-    // 1) Llama una vez al cargar
-    // ──────────────────────────────────────────────────────────
-    updateOccupiedHours();
+        // ------------------------------------------------------
+        // Optional UX: prevent choosing past dates at all
+        // ------------------------------------------------------
+        const minDateISO = new Date().toISOString().split('T')[0];
+        inputFecha.setAttribute('min', minDateISO);
 
-    // ──────────────────────────────────────────────────────────
-    // 2) Listener: al enfocar el campo fecha
-    // ──────────────────────────────────────────────────────────
-    inputFecha.addEventListener('focus', () => {
-    // Normalizamos listas a YYYY‑MM‑DD
-    const reservedDates = fechasOcupadas.map(
-        f => new Date(f).toISOString().split('T')[0]
-    );
-    const blockedDates = fechasBloqueadas.map(
-        f => new Date(f).toISOString().split('T')[0]
-    );
-
-    // ───── Listener interno: cada vez que cambia la fecha ─────
-    inputFecha.addEventListener('input', () => {
-        const selectedDate = inputFecha.value;
-
-        if (blockedDates.includes(selectedDate)) {
-        alert("¡Estás bonito! Te recuerdo que este día no curro niñote.");
-        inputFecha.value = '';
-        return;
-        }
-
-        if (reservedDates.includes(selectedDate)) {
-        alert("¡Chacho loco! La fecha seleccionada está completamente reservada.");
-        inputFecha.value = '';
-        return;
-        }
-
-        // Fecha válida → actualizamos horas
+        // Update hours
         updateOccupiedHours();
 
-        /* ────────────────────────────────────────────────
-        3) Si la fecha es hoy, deshabilita horas pasadas
-        ──────────────────────────────────────────────── */
-        const hoyISO = new Date().toISOString().split('T')[0];
+        const reservedDates = fechasOcupadas.map(fecha   => new Date(fecha).toISOString().split('T')[0]);
+        const blockedDates  = fechasBloqueadas.map(fecha => new Date(fecha).toISOString().split('T')[0]);
 
-        if (selectedDate === hoyISO) {
-        const ahora = new Date();
-
-        Array.from(inputHora.options).forEach(opt => {
-            if (!opt.value) return;            
-            const [h, m] = opt.value.split(':').map(Number);
-            const optDate = new Date();
-            optDate.setHours(h, m, 0, 0);
-
-            // Desactiva si la hora ya ocurrió
-            if (optDate <= ahora) opt.disabled = true;
-            });
-          }
+        // ------------------------------------------------------
+        // Listener directo al input (no dentro de 'focus' para evitar duplicados)
+        // ------------------------------------------------------
+        inputFecha.addEventListener('input', () => {
+            const selectedDate = inputFecha.value;
+            if (blockedDates.includes(selectedDate)) {
+                alert("¡Estás bonito! Te recuerdo que este día no curro niñote.");
+                inputFecha.value = '';
+            } else if (reservedDates.includes(selectedDate)) {
+                alert("¡Chacho loco! La fecha seleccionada está completamente reservada.");
+                inputFecha.value = '';
+            } else {
+                updateOccupiedHours();
+            }
         });
-      });   
-    }  
-  });         
+    }
+});

@@ -1,4 +1,3 @@
-{# templates/socialaccount/connections.html #}
 {% extends "base.html" %}
 {% load i18n socialaccount %}
 
@@ -22,47 +21,49 @@
     </div>
   {% endif %}
 
- {# ───────── CONNECTIONS TABLE ───────── #}
-  <table class="table table-striped shadow-sm">
-    <thead class="table-light">
-      <tr>
-        <th>{% trans "Proveedor" %}</th>
-        <th>{% trans "Cuenta" %}</th>
-        <th class="text-end">{% trans "Acciones" %}</th>
-      </tr>
-    </thead>
+  {# ───────── CONNECTIONS TABLE ───────── #}
+  <div class="table-responsive">
+    <table class="table table-striped shadow-sm mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>{% trans "Proveedor" %}</th>
+          <th>{% trans "Cuenta" %}</th>
+          <th class="text-end">{% trans "Acciones" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for account in form.accounts %}
+        <tr>
+          <td data-label="{% trans 'Proveedor' %}">
+            <i class="fab fa-{{ account.provider }} text-danger me-1"></i>
+            {{ account.get_provider_display }}
+          </td>
+          <td data-label="{% trans 'Cuenta' %}">
+            {{ account.extra_data.email }}
+          </td>
+          <td data-label="{% trans 'Acciones' %}" class="text-end">
+            <form method="post" action="{% url 'socialaccount_connections' %}">
+              {% csrf_token %}
+              <button type="submit"
+                      name="account"
+                      value="{{ account.id }}"
+                      class="btn btn-sm btn-outline-danger m-auto">
+                {% trans "Eliminar" %}
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3" class="text-center text-muted">
+            {% trans "No hay conexiones activas." %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
-    <tbody>
-    {% for account in form.accounts %}
-      <tr>
-        <td>
-          <i class="fab fa-{{ account.provider }} text-danger me-1"></i>
-          {{ account.get_provider_display }}
-        </td>
-
-        <td>{{ account.extra_data.email }}</td>
-
-        <td class="text-end">
-          <form method="post" action="{% url 'socialaccount_connections' %}">
-            {% csrf_token %}
-            <button type="submit"
-                    name="account"
-                    value="{{ account.id }}"
-                    class="btn btn-sm btn-outline-danger">
-              {% trans "Eliminar" %}
-            </button>
-          </form>
-        </td>
-      </tr>
-    {% empty %}
-      <tr>
-        <td colspan="3" class="text-center text-muted">
-          {% trans "No hay conexiones activas." %}
-        </td>
-      </tr>
-    {% endfor %}
-    </tbody>
-  </table>
 
   <div class="text-center mt-4">
     {#  BTN TO ADD NEW ACCOUTNS  #}
