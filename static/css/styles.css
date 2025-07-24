@@ -316,6 +316,37 @@ footer a:hover { color: var(--link-hover-background);}
     to { transform: translateY(-10px);}
   }
 
+  @media (max-width: 575.98px) {
+  .table-responsive table {
+    border: 0;
+  }
+  .table-responsive thead {
+    display: none;
+  }
+  .table-responsive tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: 0.75rem 0.5rem;
+  }
+  .table-responsive td {
+    display: block;
+    text-align: right;
+    padding: 0.5rem 0;
+    position: relative;
+  }
+  .table-responsive td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0.75rem;
+    width: 50%;
+    text-align: left;
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+}
+
   /* ---------- Home specific tweaks ---------- */
 
 /* Hero logo */

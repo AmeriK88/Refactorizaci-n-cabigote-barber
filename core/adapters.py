@@ -1,6 +1,6 @@
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
-from allauth.socialaccount.models import SocialAccount
-from allauth.exceptions import ImmediateHttpResponse  
+from allauth.socialaccount.models import SocialAccount 
+from allauth.core.exceptions import ImmediateHttpResponse  
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
 
@@ -35,9 +35,10 @@ class CustomSocialAdapter(DefaultSocialAccountAdapter):
             return
 
         # 3) If SocialAccount already exists for this user, allow
-        if SocialAccount.objects.filter(user=user,
-                                        provider=sociallogin.account.provider
-                                        ).exists():
+        if SocialAccount.objects.filter(
+            user=user,
+            provider=sociallogin.account.provider
+        ).exists():
             return
 
         # 4) Block login if email is already registered as a local user
