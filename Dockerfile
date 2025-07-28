@@ -31,5 +31,5 @@ ENV PYTHONUNBUFFERED=1
 # Expone el puerto para el servidor
 EXPOSE 8000
 
-# Forma JSON recomendada: sin shell, sin warnings del linter
-CMD ["/app/start.sh"]
+# Ejecuta migraciones, collectstatic y Gunicorn
+CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn cabigote.wsgi:application --bind 0.0.0.0:8000"]
