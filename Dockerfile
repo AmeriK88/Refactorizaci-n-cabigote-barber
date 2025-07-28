@@ -1,31 +1,34 @@
 # Usa una imagen base con Python
 FROM python:3.10-slim
 
-# Dependencias del sistema (MySQL/MariaDB si las necesitas)
+# Actualiza el sistema e instala las dependencias necesarias
 RUN apt-get update && apt-get install -y \
     build-essential \
     default-libmysqlclient-dev \
     pkg-config \
     libmariadb-dev-compat \
     libmariadb-dev \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    && apt-get clean
 
+# Establece el directorio de trabajo en el contenedor
 WORKDIR /app
 
-# Copia e instala dependencias
+# Copia el archivo de dependencias
 COPY requirements.txt .
-RUN python -m pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
 
-# Copia el código (incluye start.sh)
+# 1) Actualizar pip antes de instalar dependencias
+RUN python -m pip install --upgrade pip
+
+# Instala las dependencias de Python
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copia todo el código del proyecto
 COPY . .
 
-# Asegura permisos de ejecución y corrige CRLF si viniera de Windows
-RUN chmod +x /app/start.sh && \
-    sed -i 's/\r$//' /app/start.sh
-
+# Configura las variables de entorno necesarias para la ejecución
 ENV PYTHONUNBUFFERED=1
 
+# Expone el puerto para el servidor
 EXPOSE 8000
 
 # Forma JSON recomendada: sin shell, sin warnings del linter
