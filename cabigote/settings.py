@@ -113,43 +113,40 @@ WSGI_APPLICATION = 'cabigote.wsgi.application'
 
 
 
-# Lee DATABASE_URL si existe (Railway lo inyecta en prod)
-database_url = env('DATABASE_URL', default=None)  
+# ───────── DATABASE CONFIG ─────────
+db_url = env('DATABASE_URL', default='')  # str o '' si no existe
 
-if database_url:
-    # 1) Obtén la configuración completa desde la URL
-    db_config = env.db('DATABASE_URL')  
-
-    # 2) Añade las OPTIONS para utf8mb4
-    db_config['OPTIONS'] = {
-        'charset': 'utf8mb4',
-        'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
-    }
-# settings.py, database config
-
-database_url = env('DATABASE_URL', default=None)  
-if database_url:
-    db_config = env.db('DATABASE_URL')
-    db_config['OPTIONS'] = {
-        'charset': 'utf8mb4',
-        'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
-    }
-    DATABASES = {'default': db_config}
+if db_url:
+    # django-environ parsea la URL y devuelve un dict listo para Django
+    db_config = env.db('DATABASE_URL')  # alias de db_url()
 else:
-    DATABASES = {
-        'default': {
-            'ENGINE':   env('DB_ENGINE'),
-            'NAME':     env('DB_NAME'),
-            'USER':     env('DB_USER'),
-            'PASSWORD': env('DB_PASSWORD'),
-            'HOST':     env('DB_HOST'),
-            'PORT':     env('DB_PORT'),
-            'OPTIONS': {
-                'charset': 'utf8mb4',
-                'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
-            },
-        }
+    # Config local por variables sueltas
+    db_config = {
+        'ENGINE':   env('DB_ENGINE'),
+        'NAME':     env('DB_NAME'),
+        'USER':     env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST':     env('DB_HOST'),
+        'PORT':     env('DB_PORT'),
     }
+
+# Asegura que OPTIONS es un dict y añade charset + timeouts
+opts = db_config.get('OPTIONS') or {}
+if not isinstance(opts, dict):
+    opts = {}
+opts.update({
+    'charset': 'utf8mb4',
+    'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
+    'connect_timeout': 10,
+    'read_timeout': 20,
+    'write_timeout': 20,
+})
+db_config['OPTIONS'] = opts
+
+# Conexiones persistentes (segundos). Sube a 300 si todo va fino.
+db_config['CONN_MAX_AGE'] = 60
+
+DATABASES = {'default': db_config}
 
 
 
@@ -392,8 +389,20 @@ CONTENT_SECURITY_POLICY = {
     }
 }
 
+# REDIS RAILWAY CACHE CONFIG
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': env('REDIS_URL'),
+        'KEY_PREFIX': 'cabigote',
+    }
+}
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+SESSION_COOKIE_AGE = 7 * 24 * 60 * 60
+
 
 # APP VERSION
-APP_VERSION = "2.6.3"
+APP_VERSION = "2.6.5"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
