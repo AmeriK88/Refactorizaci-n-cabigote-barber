@@ -114,11 +114,11 @@ WSGI_APPLICATION = 'cabigote.wsgi.application'
 
 
 # ───────── DATABASE CONFIG ─────────
-db_url = env('DATABASE_URL', default='')  # str o '' si no existe
+db_url = env('DATABASE_URL', default='') 
 
 if db_url:
     # django-environ parsea la URL y devuelve un dict listo para Django
-    db_config = env.db('DATABASE_URL')  # alias de db_url()
+    db_config = env.db('DATABASE_URL') 
 else:
     # Config local por variables sueltas
     db_config = {
@@ -143,8 +143,8 @@ opts.update({
 })
 db_config['OPTIONS'] = opts
 
-# Conexiones persistentes (segundos). Sube a 300 si todo va fino.
-db_config['CONN_MAX_AGE'] = 60
+# Conexiones persistentes (segundos).
+db_config['CONN_MAX_AGE'] = 300
 
 DATABASES = {'default': db_config}
 
