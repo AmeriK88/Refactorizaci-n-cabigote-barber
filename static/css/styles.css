@@ -198,9 +198,35 @@ footer a:hover { color: var(--link-hover-background);}
 #cookiesPolicyLink {  padding-top: 1rem; padding-bottom: 1rem;}
 
 /* Estilo para la ubicación */
-.map-container { position: relative; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); width: 100%;    padding-bottom: 56.25%; background-color: #f5f5f5; margin-top: 1rem;       }
+.map-container{ position: relative; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,.15); width: 100%; padding-bottom: 56.25%; background-color: #0b0f14; margin-top: 1rem;}
 
-.map-container iframe { position: absolute; top: 0; left: 0; width: 100%;  height: 100%; border: none; border-radius: 8px;}
+/* Iframe ocupa todo el contenedor */
+.map-container iframe{
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: none; border-radius: 8px;
+}
+
+/* Placeholder (bloqueado) ocupa todo el contenedor igual que el iframe */
+#gmaps-placeholder{
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 2px solid rgba(255,255,255,.2);
+  color: #e6eef7;
+  text-align: center;
+}
+
+/* Botón del placeholder */
+#gmaps-placeholder .btn{
+  margin-top: .5rem;
+}
+
 
 /* Estilo para el botón flotante */
 .whatsapp-float {position: fixed;width: 60px;height: 60px;bottom: 20px;right: 20px;background-color: #25d366;color: white;border-radius: 50%;text-align: center;font-size: 30px;z-index: 1000;box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);transition: transform 0.3s ease, box-shadow 0.3s ease;}

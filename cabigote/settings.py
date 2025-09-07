@@ -385,9 +385,10 @@ CONTENT_SECURITY_POLICY = {
         ),
 
         # Proteger contra clickjacking
-        "frame-ancestors": ("'self'",),
+        "frame-ancestors": ("'self'",), 
     }
 }
+
 
 # REDIS RAILWAY CACHE CONFIG
 CACHES = {
@@ -398,11 +399,12 @@ CACHES = {
     }
 }
 
+
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_COOKIE_AGE = 7 * 24 * 60 * 60
 
 
 # APP VERSION
-APP_VERSION = "2.6.5"
+APP_VERSION = "2.6.7"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

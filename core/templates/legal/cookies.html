@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load static i18n %}
+{% block title %}Política de cookies | Ca’Bigote{% endblock %}
+
+{% block content %}
+<main class="container py-4" id="cookies">
+  <h1 class="mb-3">Política de cookies</h1>
+  <p><strong>Última actualización:</strong> 07/09/2025</p>
+
+  <p>
+    En este sitio (“<strong>Ca’Bigote</strong>”) utilizamos cookies y tecnologías similares para
+    hacer que la web funcione, recordar tus preferencias y, si lo aceptas, habilitar servicios de terceros
+    como mapas integrados. Solo las cookies <strong>necesarias</strong> están activas por defecto.
+  </p>
+
+  <h2 class="h4 mt-4">1. ¿Qué son las cookies?</h2>
+  <p>Son pequeños archivos que el navegador almacena para recordar información técnica, de preferencia o de sesión.</p>
+
+  <h2 class="h4 mt-4">2. ¿Qué tipos usamos?</h2>
+  <ul>
+    <li><strong>Necesarias (propias):</strong> operativa básica del sitio (seguridad, sesión, navegación).</li>
+    <li><strong>Preferencias:</strong> recuerdan ajustes de la interfaz.</li>
+    <li><strong>Estadística:</strong> medición anónima y agregada del uso (solo si la activas).</li>
+    <li><strong>Marketing:</strong> seguimiento/segmentación publicitaria (si se llegara a usar).</li>
+    <li><strong>Mapas y terceros:</strong> servicios embebidos (p. ej., Google Maps, Instagram) que pueden instalar cookies.</li>
+  </ul>
+
+  <h2 class="h4 mt-4">3. Panel de configuración</h2>
+  <p>
+    Puedes cambiar tu elección en cualquier momento desde el
+    <a href="#" data-ck-open>panel de preferencias de cookies</a>.
+  </p>
+
+  <h2 class="h4 mt-4">4. Detalle de cookies concretas</h2>
+
+  <div class="table-responsive">
+    <table class="table table-sm table-bordered">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">Nombre</th>
+          <th scope="col">Proveedor</th>
+          <th scope="col">Finalidad</th>
+          <th scope="col">Duración</th>
+          <th scope="col">Tipo</th>
+          <th scope="col">Categoría</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Necesarias (Django) -->
+        <tr>
+          <td><code>csrftoken</code></td>
+          <td>Propia (cabigotebarbershop.com)</td>
+          <td>Seguridad CSRF en formularios.</td>
+          <td>~12 meses</td>
+          <td>HTTP</td>
+          <td>Necesarias</td>
+        </tr>
+        <tr>
+          <td><code>sessionid</code></td>
+          <td>Propia (cabigotebarbershop.com)</td>
+          <td>Mantener sesión de usuario autenticado.</td>
+          <td>Sesión</td>
+          <td>HTTP</td>
+          <td>Necesarias</td>
+        </tr>
+        <!-- Preferencias (localStorage, a título informativo) -->
+        <tr>
+          <td><code>ck-consent-v1</code> (localStorage)</td>
+          <td>Propia</td>
+          <td>Recordar tus preferencias de cookies.</td>
+          <td>Persistente</td>
+          <td>LocalStorage</td>
+          <td>Necesarias</td>
+        </tr>
+        <!-- Terceros: Google Maps (solo si activas “Mapas y terceros”) -->
+        <tr>
+          <td>NID / 1P_JAR / CONSENT (ejemplos)</td>
+          <td>Google</td>
+          <td>Operar y mostrar el mapa embebido.</td>
+          <td>Sesión / 6–24 meses</td>
+          <td>HTTP</td>
+          <td>Mapas y terceros</td>
+        </tr>
+        <!-- Añade aquí analytics/ads si los incorporas más adelante -->
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="h4 mt-4">5. ¿Cómo cambiar o retirar el consentimiento?</h2>
+  <ul>
+    <li>Desde el <a href="#" data-ck-open>panel de preferencias</a>.</li>
+    <li>Desde tu navegador (eliminando cookies o bloqueándolas). Consulta la ayuda de tu navegador.</li>
+  </ul>
+
+  <h2 class="h4 mt-4">6. Terceros y transferencias</h2>
+  <p>
+    El uso de servicios de terceros (p. ej., Google Maps o Instagram) puede implicar transferencias internacionales.
+    Revisa sus políticas para más información:
+    <a href="https://policies.google.com/technologies/cookies?hl=es" target="_blank" rel="noopener">Google</a>,
+    <a href="https://privacycenter.instagram.com/policy/?entry_point=ig_help_center_data_policy_redirect" target="_blank" rel="noopener">Instagram</a>.
+  </p>
+
+  <h2 class="h4 mt-4">7. Actualizaciones</h2>
+  <p>Podemos actualizar esta política para reflejar cambios legales o técnicos. Te recomendamos revisarla periódicamente.</p>
+</main>
+{% endblock %}
