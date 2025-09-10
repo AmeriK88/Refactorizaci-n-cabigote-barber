@@ -80,7 +80,7 @@
             <!-- Puntuación -->
             <div class="mb-4">
               <label class="form-label d-block">⭐ Puntuación</label>
-              <div class="d-flex flex-wrap gap-2">
+              <div class="d-flex flex-nowrap gap-2 overflow-auto rating-group">
                 {% for radio in form.puntuacion %}
                   <div class="form-check form-check-inline">
                     {{ radio.tag }}
