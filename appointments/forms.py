@@ -1,5 +1,5 @@
-from django import forms
-from datetime import datetime, time
+from django import forms 
+from datetime import datetime, time, timedelta
 from django.utils import timezone
 from .models import Cita
 from services.models import Servicio
@@ -115,10 +115,41 @@ class CitaForm(forms.ModelForm):
             else datetime.strptime(hora_raw, "%H:%M").time()
         )
 
-        if not time(9, 30) <= hora <= time(19, 30):
+        # Valida dinámicamente contra las opciones definidas en HORA_CHOICES
+        opciones_str = [h for h, _ in self.HORA_CHOICES if h]  # sin el placeholder ""
+        opciones_time = [datetime.strptime(h, "%H:%M").time() for h in opciones_str]
+
+        if hora not in opciones_time:
             raise forms.ValidationError("Hora fuera de rango.")
+
         return hora
-    
+
+    def clean(self):
+        cleaned = super().clean()
+        fecha = cleaned.get("fecha")
+        hora = cleaned.get("hora")
+
+        if not fecha or not hora:
+            return cleaned  # otros errores ya reportados
+
+        # Normaliza tipos
+        dia = fecha.date() if isinstance(fecha, datetime) else fecha
+        if isinstance(hora, str):
+            try:
+                hora = datetime.strptime(hora, "%H:%M").time()
+            except ValueError:
+                self.add_error("hora", "Formato de hora inválido.")
+                return cleaned
+
+        # Combina a datetime aware en la TZ actual
+        tz = timezone.get_current_timezone()
+        seleccion = timezone.make_aware(datetime.combine(dia, hora), tz)
+
+        # Regla: mínimo 1 hora de antelación
+        if seleccion < timezone.now() + timedelta(hours=1):
+            self.add_error("hora", "Debes reservar con al menos 1 hora de antelación.")
+
+        return cleaned
 
 
 # Autor / Licencia: José Félix Gordo Castaño — Uso educativo, no comercial
