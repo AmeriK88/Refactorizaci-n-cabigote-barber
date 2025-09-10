@@ -72,18 +72,31 @@ INSTALLED_APPS = [
 
 
 MIDDLEWARE = [
-    'core.redirectionMiddleware.redirectionDomainMiddleware',
+    # Seguridad y estáticos primero
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+
+    # Sesión y localización
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.locale.LocaleMiddleware', 
     'django.middleware.common.CommonMiddleware',
+
+    # Protección de formularios
     'django.middleware.csrf.CsrfViewMiddleware',
+
+    # Auth + Allauth + Mensajes
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    #'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # Cabeceras de seguridad
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # CSP (cabecera en la respuesta, bien al final)
     'csp.middleware.CSPMiddleware',
+
+    # Tu middleware de redirección (mejor aquí, tras Common/CSRF)
+    'core.redirectionMiddleware.redirectionDomainMiddleware',
 ]
 
 ROOT_URLCONF = 'cabigote.urls'
@@ -390,15 +403,27 @@ CONTENT_SECURITY_POLICY = {
 }
 
 
+X_FRAME_OPTIONS = 'SAMEORIGIN' 
 
 # REDIS RAILWAY CACHE CONFIG
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': env('REDIS_URL'),
-        'KEY_PREFIX': 'cabigote',
+REDIS_URL = env('REDIS_URL', default=None)
+
+if REDIS_URL:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': REDIS_URL,
+            'KEY_PREFIX': 'cabigote',
+        }
     }
-}
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'cabigote-local',
+        }
+    }
+
 
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
@@ -406,6 +431,6 @@ SESSION_COOKIE_AGE = 7 * 24 * 60 * 60
 
 
 # APP VERSION
-APP_VERSION = "2.6.7"
+APP_VERSION = "2.6.8"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
