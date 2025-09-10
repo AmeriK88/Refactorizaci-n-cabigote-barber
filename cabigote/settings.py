@@ -390,7 +390,7 @@ CONTENT_SECURITY_POLICY = {
 }
 
 
-"""
+
 # REDIS RAILWAY CACHE CONFIG
 CACHES = {
     'default': {
@@ -399,7 +399,6 @@ CACHES = {
         'KEY_PREFIX': 'cabigote',
     }
 }
-"""
 
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
