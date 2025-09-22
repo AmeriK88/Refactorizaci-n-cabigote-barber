@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Acceso bloqueado{% endblock %}
+
+{% block content %}
+<meta name="robots" content="noindex,nofollow">
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <div class="card shadow-sm border-danger">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center mb-3">
+            <i class="bi bi-shield-lock text-danger fs-4 me-2" aria-hidden="true"></i>
+            <h1 class="h4 mb-0">Acceso bloqueado por seguridad</h1>
+          </div>
+
+          <p class="mb-3">
+            Se han detectado <strong>demasiados intentos fallidos de inicio de sesión</strong>.
+            Por tu seguridad, el acceso ha sido bloqueado temporalmente.
+          </p>
+
+          {% if cooloff_time %}
+            <p class="small text-muted mb-3">
+              Tiempo de espera aproximado: <strong>{{ cooloff_time }}</strong>
+            </p>
+          {% else %}
+            <p class="small text-muted mb-3">
+              Tiempo de espera aproximado: <strong>1 hora</strong>
+            </p>
+          {% endif %}
+
+          {% if username %}
+            <p class="small text-muted mb-4">
+              Usuario afectado: <code>{{ username }}</code>
+            </p>
+          {% endif %}
+
+          <div class="d-flex gap-2 flex-wrap">
+            <a class="btn btn-primary" href="{% url 'users:login' %}">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Volver a iniciar sesión
+            </a>
+            <a class="btn btn-outline-secondary" href="{% url 'home' %}">
+              <i class="bi bi-house me-1"></i> Ir al inicio
+            </a>
+          </div>
+
+          <hr class="my-4">
+          <p class="small text-muted mb-0">
+            ¿No fuiste tú? Te recomendamos cambiar tu contraseña y habilitar verificación en dos pasos si está disponible.
+            Si necesitas ayuda, escríbenos a
+            <a href="mailto:{{ EMAIL_HOST_USER|default:'cabigotebarbershop@gmail.com' }}">soporte</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
