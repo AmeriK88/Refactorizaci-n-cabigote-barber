@@ -67,7 +67,9 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
 
     # Content Security Policy
-    'csp'
+    'csp',
+    # Seguridad
+    'axes',
 ]
 
 
@@ -87,6 +89,8 @@ MIDDLEWARE = [
     # Auth + Allauth + Mensajes
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    # Contador/bloqueo de intentos fallidos
+    'axes.middleware.AxesMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 
     # Cabeceras de seguridad
@@ -120,6 +124,14 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+
+# Autenticación
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesStandaloneBackend',
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 WSGI_APPLICATION = 'cabigote.wsgi.application'
@@ -282,28 +294,66 @@ if not os.path.exists(LOG_FILE_DIR):
     os.makedirs(LOG_FILE_DIR)
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'ERROR',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': LOG_FILE_PATH, 
-            'maxBytes': 500000,
-            'backupCount': 5,
-            'formatter': 'verbose',
+    "version": 1,
+    "disable_existing_loggers": False,
+
+    "handlers": {
+        "file": {
+            "level": "ERROR",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": LOG_FILE_PATH,
+            "maxBytes": 500000,
+            "backupCount": 5,
+            "formatter": "verbose",
+        },
+        # Seguridad: guarda eventos de Axes y avisos de seguridad
+        "security_file": {
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_FILE_DIR, "security.log"),
+            "maxBytes": 1024 * 1024 * 5,
+            "backupCount": 5,
+            "formatter": "verbose",
+        },
+        "console": {
+            "class": "logging.StreamHandler",
+            "level": "INFO",
         },
     },
-    'formatters': {
-        'verbose': {
-            'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+
+    "formatters": {
+        "verbose": {
+            "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         },
     },
-    'root': {
-        'handlers': ['file'],
-        'level': 'ERROR',
+
+    "root": {
+        "handlers": ["file"],
+        "level": "ERROR",
+    },
+
+    "loggers": {
+        # Intentos y bloqueos de django-axes
+        "axes": {
+            "handlers": ["security_file", "console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        # Avisos de seguridad de Django (CSRF, etc.)
+        "django.security": {
+            "handlers": ["security_file", "console"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+        # Errores 500 en peticiones
+        "django.request": {
+            "handlers": ["security_file", "console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
     },
 }
+
 
 # CSRF CONFIGURATION
 CSRF_TRUSTED_ORIGINS = [
@@ -425,12 +475,16 @@ else:
     }
 
 
+# django-axes: 5 intentos -> bloqueo 1 hora
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = 1  # horas
+AXES_LOCKOUT_TEMPLATE = 'errors/locked_out.html'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_COOKIE_AGE = 7 * 24 * 60 * 60
 
 
 # APP VERSION
-APP_VERSION = "2.6.8"
+APP_VERSION = "2.7.0"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
