@@ -485,6 +485,6 @@ SESSION_COOKIE_AGE = 7 * 24 * 60 * 60
 
 
 # APP VERSION
-APP_VERSION = "2.6.8"
+APP_VERSION = "2.7.0"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
