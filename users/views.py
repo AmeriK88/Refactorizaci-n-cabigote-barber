@@ -33,22 +33,24 @@ def register(request):
 # Inicio de sesión
 @handle_exceptions
 def login_view(request):
-    if request.method == 'POST':
-        # Crea formulario de autenticación con los datos de la solicitud
-        form = CustomAuthenticationForm(data=request.POST)  
-        # Verifica si el formulario es válido
+    next_url = request.GET.get("next") or request.POST.get("next")
+
+    if request.method == "POST":
+        # ¡Importante!: pasa request al form para que django-axes funcione
+        form = CustomAuthenticationForm(request, data=request.POST)
         if form.is_valid():
-            # Obtiene el usuario autenticado & inicia sesión
-            user = form.get_user()  
-            auth_login(request, user)  
-            messages.success(request, f'¿¡Que pasó viejito!?¡Bienvenido de nuevo, {user.username}!') 
-            return redirect('users:perfil_usuario')  
+            user = form.get_user()
+            auth_login(request, user)
+            messages.success(request, f'¿¡Que pasó viejito!? ¡Bienvenido de nuevo, {user.username}!')
+            return redirect(next_url or 'users:perfil_usuario')
         else:
-            messages.error(request, '¡Eres un tolete! Nombre de usuario o contraseña incorrectos.')  
+            messages.error(request, '¡Eres un tolete! Nombre de usuario o contraseña incorrectos.')
     else:
-        # Si no es POST, muestra el formulario vacío
-        form = CustomAuthenticationForm()  
-    return render(request, 'users/login.html', {'form': form}) 
+        # También en GET se pasa request
+        form = CustomAuthenticationForm(request)
+
+    return render(request, 'users/login.html', {'form': form, 'next': next_url})
+
 
 # Cierre de sesión
 @login_required

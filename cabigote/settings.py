@@ -161,7 +161,7 @@ if not isinstance(opts, dict):
     opts = {}
 opts.update({
     'charset': 'utf8mb4',
-    'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'",
+    'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci', time_zone = '+00:00'",
     'connect_timeout': 10,
     'read_timeout': 20,
     'write_timeout': 20,
@@ -485,6 +485,6 @@ SESSION_COOKIE_AGE = 7 * 24 * 60 * 60
 
 
 # APP VERSION
-APP_VERSION = "2.7.0"
+APP_VERSION = "2.7.1"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
