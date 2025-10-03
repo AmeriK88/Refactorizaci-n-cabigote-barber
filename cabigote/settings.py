@@ -223,7 +223,6 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 
-
 # Internationalization & CONFIG TIME ZONE
 LANGUAGE_CODE = 'es'
 

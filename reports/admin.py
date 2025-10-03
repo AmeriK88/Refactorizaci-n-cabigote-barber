@@ -7,7 +7,7 @@ from django.utils.timezone import now
 from django.utils.html import format_html
 from django import forms
 from .models import ReporteMensual, ReporteDiario
-from .utils import calcular_reporte, limpiar_reportes, calcular_reporte_diario
+from .utils import calcular_reporte, limpiar_reportes_admin, calcular_reporte_diario
 
 # ------------------------------------------------------------------------------
 # Formulario personalizado para ReporteMensual
@@ -85,17 +85,13 @@ class ReporteMensualAdmin(admin.ModelAdmin):
 
     def custom_report_view(self, request):
         """
-        Vista personalizada para generar automáticamente (ejemplo) 5 meses de reportes 
-        y mostrarlos en una plantilla. Se invoca desde el Admin.
+        Genera/actualiza 5 meses a partir del primero del mes actual (SIN borrar).
         """
-        limpiar_reportes()  # Elimina todos los reportes existentes
-        # Genera 5 meses a partir del primer día del mes actual
-        reports = calcular_reporte(now().date().replace(day=1))
-        context = dict(
-            self.admin_site.each_context(request),
-            reportes=reports,
-        )
+        base = now().date().replace(day=1)
+        reports = calcular_reporte(base, meses_ahead=5)
+        context = dict(self.admin_site.each_context(request), reportes=reports)
         return TemplateResponse(request, "admin/custom_report.html", context)
+
 
     def descargar_reporte(self, request):
         """
@@ -126,36 +122,29 @@ class ReporteMensualAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         """
-        Al guardar, se genera/actualiza el reporte mensual para el mes indicado.
-        - Se fuerza el día a 1 para que el reporte se corresponda siempre con el primer día del mes.
-        - Se llama a 'calcular_reporte' con 'meses_ahead=1' para calcular solo ese mes.
+        Genera/actualiza el reporte del mes indicado SIN insertar manualmente
+        para no violar la unicidad. No llamamos a super().save_model().
         """
-        # Forzar el día a 1 en caso de que el usuario seleccione otro día del mes
+        # Normaliza al día 1
         mes_inicial = obj.mes.replace(day=1)
-        obj.mes = mes_inicial
 
-        # Guarda inicialmente el objeto con los valores por defecto (evitando que queden campos en NULL)
-        # Esto es necesario para que la BD no lance un error de integridad.
-        obj.total_citas = obj.total_citas or 0
-        obj.ingresos_totales = obj.ingresos_totales or 0
-        obj.ingresos_proyectados = obj.ingresos_proyectados or 0
-        super().save_model(request, obj, form, change)
+        # ¿Ya existía?
+        existed = ReporteMensual.objects.filter(mes=mes_inicial).exists()
 
-        # Llamamos a la función que calcula el reporte para el mes indicado.
+        # Genera/actualiza vía util (idempotente)
         calcular_reporte(mes_inicial, meses_ahead=1)
 
-        # Actualizamos el objeto con los nuevos datos calculados
-        obj.refresh_from_db()
-
-        self.message_user(
-            request, 
-            f"✅ Reporte mensual generado/actualizado para {mes_inicial.strftime('%B %Y')}"
-        )
-
-    class Media:
-        css = {
-            'all': ('admin/css/adminCSS.css',)
-        }
+        # Mensaje amigable
+        if existed:
+            self.message_user(
+                request,
+                f"♻️ Reporte mensual ACTUALIZADO para {mes_inicial.strftime('%B %Y')}"
+            )
+        else:
+            self.message_user(
+                request,
+                f"✅ Reporte mensual CREADO para {mes_inicial.strftime('%B %Y')}"
+            )
 
 # ------------------------------------------------------------------------------
 # Formularios para uso en vistas custom (opcional)
@@ -169,10 +158,13 @@ class FechaReporteForm(forms.Form):
         label="Selecciona una fecha"
     )
 
+
 class ReporteDiarioForm(forms.ModelForm):
     """
-    Formulario para ReporteDiario que sólo edita el campo 'dia'.
-    Los demás campos se calculan automáticamente.
+    Form del Admin para ReporteDiario:
+    - Desactiva la validación de unicidad del ModelForm (_validate_unique = False)
+      para que el POST no se bloquee cuando ya exista el día.
+    - El guardado real lo hace save_model() de forma idempotente.
     """
     class Meta:
         model = ReporteDiario
@@ -181,11 +173,22 @@ class ReporteDiarioForm(forms.ModelForm):
             'dia': forms.DateInput(attrs={'type': 'date'})
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Clave: evitar que el ModelForm invoque instance.validate_unique()
+        self._validate_unique = False
+
+    def clean_dia(self):
+        d = self.cleaned_data['dia']
+        return d
+
+
 # ------------------------------------------------------------------------------
 # Admin para ReporteDiario
 # ------------------------------------------------------------------------------
 @admin.register(ReporteDiario)
 class ReporteDiarioAdmin(admin.ModelAdmin):
+    form = ReporteDiarioForm
     list_display = ('dia', 'total_citas', 'ingresos_totales', 'creado_el')
     readonly_fields = ('total_citas', 'ingresos_totales', 'creado_el')  # Solo se edita la fecha
 
@@ -197,18 +200,21 @@ class ReporteDiarioAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         """
-        Al guardar, generar el reporte automáticamente.
+        Genera/actualiza el reporte diario SIN insertar manualmente (no llamamos a super()).
+        De este modo, si ya existe, se actualiza; si no, se crea.
         """
-        from .utils import calcular_reporte_diario
-        calcular_reporte_diario(obj.dia)  # Generar el reporte con la fecha seleccionada
-        if not change:
-            self.message_user(request, f"✅ Reporte generado para el día {obj.dia.strftime('%d/%m/%Y')}")
+        dia = form.cleaned_data['dia']  # usa el valor limpio del form
+        existed = ReporteDiario.objects.filter(dia=dia).exists()
 
-    class Media:
-        css = {
-            'all': ('admin/css/adminCSS.css',)
-        }
+        # Idempotente: crea o actualiza
+        calcular_reporte_diario(dia)
 
+        # Mensaje al admin
+        if existed:
+            self.message_user(request, f"♻️ Reporte diario ACTUALIZADO para {dia:%d/%m/%Y}")
+        else:
+            self.message_user(request, f"✅ Reporte diario CREADO para {dia:%d/%m/%Y}")
+        # Ojo: no llamamos a super().save_model() para no intentar un INSERT que viole unicidad.
 
 # ------------------------------------------------------------------------------
 # Metadata del archivo
