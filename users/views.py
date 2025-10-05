@@ -19,9 +19,20 @@ def register(request):
         form = CustomUserCreationForm(request.POST)
         # Verifica si el formulario es válido
         if form.is_valid():
-            # Guarda el nuevo usuario y lo autentica
+            # Guarda el nuevo usuario
             user = form.save()
-            auth_login(request, user)
+            # Autentica para que el objeto user tenga el atributo `backend` cuando hay
+            # múltiples backends configurados. Si por alguna razón authenticate falla,
+            # asignamos el primer backend configurado como fallback.
+            password = form.cleaned_data.get('password1')
+            authed_user = authenticate(request, username=user.username, password=password)
+            if authed_user is None:
+                from django.conf import settings
+                # set backend attribute so auth_login can proceed
+                user.backend = settings.AUTHENTICATION_BACKENDS[0]
+                auth_login(request, user)
+            else:
+                auth_login(request, authed_user)
             messages.success(request, f'¡¡Échale mojo! Bienvenido a Ca\'Bigote, {user.username}! Cuenta operativa.!')
             # Redirige al perfil del usuario
             return redirect('users:perfil_usuario')  
