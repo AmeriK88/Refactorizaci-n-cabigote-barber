@@ -1,12 +1,12 @@
 """
-Admin personalizado para la app *appointments*.
-Incluye:
-    • Listado de citas con accesos rápidos y acciones.
-    • Gráfico de estadísticas de los últimos 12 meses —sin depender de funciones SQL
-      incompatibles— generado con Matplotlib y servible también en formato JSON
-      para Chart.js.
+Custom Admin for the *appointments* app.
 
-© 2024‑2025  José Félix Gordo Castaño — Uso educativo, no comercial.
+Includes:
+    • Appointment changelist with quick actions and admin-only extras.
+    • 12-month stats chart (Matplotlib) without DB-specific SQL functions,
+      and a JSON endpoint suitable for Chart.js.
+
+© 2024-2025  José Félix Gordo Castaño — Educational, non-commercial use only.
 """
 
 from collections import defaultdict
@@ -14,12 +14,15 @@ import io
 import base64
 
 import matplotlib
-matplotlib.use("Agg") 
+matplotlib.use("Agg")  # Non-interactive backend for server environments
 import matplotlib.pyplot as plt
+
+from datetime import timedelta
+
 from django.contrib import admin
 from django.urls import path, reverse
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.timezone import localtime
@@ -28,11 +31,32 @@ from .models import Cita, FechaBloqueada, BloqueoHora
 
 
 # ────────────────────────────────────────────────────────────────────────────────
+# SIMPLE LIST FILTER: "Today"
+# Shows a visible filter chip and can be triggered via querystring (?hoy=1)
+# ────────────────────────────────────────────────────────────────────────────────
+class TodayFilter(admin.SimpleListFilter):
+    title = "Today"
+    parameter_name = "hoy"  # keep param key in Spanish to match the shortcut naming
+
+    def lookups(self, request, model_admin):
+        return (("1", "Today"),)
+
+    def queryset(self, request, queryset):
+        if self.value() == "1":
+            now = timezone.localtime()
+            start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+            end = start + timedelta(days=1)
+            # Filter by local-day range [00:00, 24:00) — DST-safe
+            return queryset.filter(fecha__gte=start, fecha__lt=end)
+        return queryset
+
+
+# ────────────────────────────────────────────────────────────────────────────────
 # CITA ADMIN
 # ────────────────────────────────────────────────────────────────────────────────
 @admin.register(Cita)
 class CitaAdmin(admin.ModelAdmin):
-    """Gestión de citas + estadísticas gráficas."""
+    """Appointment management + stats chart."""
 
     # -------- MAIN BOARD --------
     list_display = (
@@ -45,7 +69,7 @@ class CitaAdmin(admin.ModelAdmin):
         "ver_grafico_link",
     )
     search_fields = ("usuario__username", "servicio__nombre", "fecha")
-    list_filter = ("fecha", "servicio")
+    list_filter = ("fecha", "servicio", TodayFilter)  # add visible "Today" filter
     ordering = ("-fecha",)
     list_per_page = 20
 
@@ -53,48 +77,58 @@ class CitaAdmin(admin.ModelAdmin):
     actions = ["marcar_como_vistas"]
 
     def marcar_como_vistas(self, request, queryset):
-        actualizado = queryset.update(vista=True)
-        self.message_user(request, f"{actualizado} cita(s) marcadas como vista(s).")
+        updated = queryset.update(vista=True)
+        self.message_user(request, f"{updated} appointment(s) marked as viewed.")
+    marcar_como_vistas.short_description = "Mark as viewed"
 
-    marcar_como_vistas.short_description = "Marcar como vistas"
-
-    # -------- HELPERS --------
+    # -------- HELPERS (list_display) --------
     def comentario_corto(self, obj):
-        texto = obj.comentario or ""
-        if len(texto) > 50:
-            return format_html('<span title="{}">{}…</span>', texto, texto[:50])
-        return texto
-
-    comentario_corto.short_description = "Comentario"
+        """Truncate long comments with a tooltip."""
+        text = obj.comentario or ""
+        if len(text) > 50:
+            return format_html('<span title="{}">{}…</span>', text, text[:50])
+        return text
+    comentario_corto.short_description = "Comment"
 
     def vista_icon(self, obj):
+        """Visual boolean for 'vista'."""
         return "✔️" if obj.vista else "❌"
 
     def ver_grafico_link(self, obj):
+        """Per-row link to the chart page (convenience)."""
         url = reverse("admin:cita_graph")
-        return format_html('<a class="button btn-admin-action" href="{}">📊 Ver Gráfico</a>', url)
+        return format_html('<a class="button btn-admin-action" href="{}">📊 Chart</a>', url)
+    ver_grafico_link.short_description = "Chart"
 
-    ver_grafico_link.short_description = "Gráfico"
+    # -------- SHORTCUT: "Today" redirect --------
+    def citas_hoy_redirect(self, request):
+        """
+        Redirect to the Cita changelist applying the 'Today' filter.
+        We use the SimpleListFilter via querystring (?hoy=1) so the filter chip is visible.
+        """
+        changelist_url = reverse("admin:appointments_cita_changelist")
+        return redirect(f"{changelist_url}?hoy=1")
 
-    # -------- URLs extra --------
+    # -------- EXTRA ADMIN URLs --------
     def get_urls(self):
         urls = super().get_urls()
         custom = [
             path("graficar/", self.admin_site.admin_view(self.graficar_citas), name="cita_graph"),
-            path(
-                "graficar/data/",
-                self.admin_site.admin_view(self.graficar_citas_data),
-                name="cita_graph_data",
-            ),
+            path("graficar/data/", self.admin_site.admin_view(self.graficar_citas_data), name="cita_graph_data"),
+            # Shortcut to show only today's appointments
+            path("hoy/", self.admin_site.admin_view(self.citas_hoy_redirect), name="appointments_cita_changelist_hoy"),
         ]
         return custom + urls
 
     # ------------------------------------------------------------------
-    #   STATS 
+    #   STATS: APPOINTMENTS PER MONTH (Matplotlib + JSON)
     # ------------------------------------------------------------------
     def _contar_citas_por_mes(self, meses_atras: int = 12):
-        """Devuelve (labels, counts) desde *meses_atras* hasta hoy (incluye futuro)."""
-        inicio = timezone.now() - timezone.timedelta(days=30 * meses_atras)
+        """
+        Return (labels, counts) for the last *meses_atras* months up to now.
+        Labels are YYYY-MM, counts are total appointments in that month.
+        """
+        inicio = timezone.now() - timedelta(days=30 * meses_atras)
 
         fechas = (
             Cita.objects.filter(fecha__gte=inicio, fecha__isnull=False)
@@ -111,19 +145,19 @@ class CitaAdmin(admin.ModelAdmin):
         counts = [contador[l] for l in labels]
 
         if not labels:
-            labels, counts = ["Sin datos"], [0]
+            labels, counts = ["No data"], [0]
 
         return labels, counts
 
-    # -------- Gráfico PNG embebido (Matplotlib) --------
+    # -------- Embedded PNG chart (Matplotlib) --------
     def generar_grafico(self):
-        """Devuelve una cadena data‑URI PNG para incrustar en <img>."""
+        """Return a data-URI PNG to embed in <img>."""
         labels, counts = self._contar_citas_por_mes()
 
         plt.figure(figsize=(10, 5))
         plt.bar(labels, counts, color="skyblue")
         plt.xticks(rotation=45)
-        plt.title("Citas por mes")
+        plt.title("Appointments per month")
         plt.tight_layout()
 
         buf = io.BytesIO()
@@ -134,18 +168,18 @@ class CitaAdmin(admin.ModelAdmin):
 
         return f"data:image/png;base64,{img_b64}"
 
-    # -------- Vistas admin --------
+    # -------- Admin views (HTML + JSON) --------
     def graficar_citas(self, request):
-        """Renderiza el template con la imagen en base64."""
-        contexto = {"grafico": self.generar_grafico()}
-        return render(request, "admin/grafico_citas.html", contexto)
+        """Render a template with the base64-embedded chart."""
+        context = {"grafico": self.generar_grafico()}
+        return render(request, "admin/grafico_citas.html", context)
 
     def graficar_citas_data(self, request):
-        """Retorna JSON labels/counts para Chart.js."""
+        """Return JSON with labels/counts for Chart.js."""
         labels, counts = self._contar_citas_por_mes()
         return JsonResponse({"labels": labels, "counts": counts})
 
-    # -------- Media extra --------
+    # -------- Extra media (CSS) --------
     class Media:
         css = {"all": ("admin/css/adminCSS.css",)}
 
@@ -155,24 +189,26 @@ class CitaAdmin(admin.ModelAdmin):
 # ────────────────────────────────────────────────────────────────────────────────
 @admin.register(FechaBloqueada)
 class FechaBloqueadaAdmin(admin.ModelAdmin):
+    """Block whole dates (no appointments allowed)."""
+
     list_display = ("fecha", "razon", "tiene_bloqueos", "ver_bloqueos_link")
     search_fields = ("fecha", "razon")
     list_filter = ("fecha",)
 
     def tiene_bloqueos(self, obj):
+        """True if the date has hour-range blocks registered."""
         return BloqueoHora.objects.filter(fecha=obj.fecha).exists()
-
     tiene_bloqueos.boolean = True
-    tiene_bloqueos.short_description = "Tiene bloqueos"
+    tiene_bloqueos.short_description = "Has blocks"
 
     def ver_bloqueos_link(self, obj):
+        """Link to the hour blocks filtered by the same date."""
         url = (
             reverse("admin:appointments_bloqueohora_changelist")
             + f"?fecha__exact={obj.fecha.isoformat()}"
         )
-        return format_html('<a href="{}">Ver franjas</a>', url)
-
-    ver_bloqueos_link.short_description = "Franjas"
+        return format_html('<a href="{}">View time ranges</a>', url)
+    ver_bloqueos_link.short_description = "Time ranges"
 
     class Media:
         css = {"all": ("admin/css/adminCSS.css",)}
@@ -183,6 +219,8 @@ class FechaBloqueadaAdmin(admin.ModelAdmin):
 # ────────────────────────────────────────────────────────────────────────────────
 @admin.register(BloqueoHora)
 class BloqueoHoraAdmin(admin.ModelAdmin):
+    """Block hour ranges within a specific date."""
+
     list_display = ("fecha", "hora_inicio", "hora_fin", "razon")
     list_filter = ("fecha",)
     search_fields = ("fecha", "razon")

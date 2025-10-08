@@ -39,8 +39,8 @@
   </div>
 
   <div class="button-row">
-    <a href="{% url 'admin:descargar_reporte' %}" class="button btn-admin-action">📥 Informe</a>
-    <a href="{% url 'admin:appointments_cita_changelist' %}" class="button btn-admin-action">👁️ Citas</a>
+    <a href="{% url 'admin:descargar_reporte' %}?force=1" class="button btn-admin-action">📥 Informe</a>
+    <a href="{% url 'admin:appointments_cita_changelist_hoy' %}" class="button btn-admin-action">👁️ Citas de hoy</a>
     <a href="{% url 'admin:auth_user_changelist' %}" class="button btn-admin-action">👤 Usuarios</a>
   </div>
 
