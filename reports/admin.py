@@ -20,7 +20,7 @@ class ReporteMensualForm(forms.ModelForm):
     """
     class Meta:
         model = ReporteMensual
-        fields = ['mes']  # Solo permitimos al usuario seleccionar el mes
+        fields = ['mes']  
 
 # ------------------------------------------------------------------------------
 # Admin para ReporteMensual
