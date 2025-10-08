@@ -21,9 +21,10 @@ from django.urls import path, reverse
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.utils import timezone
+from datetime import timedelta
 from django.utils.html import format_html
 from django.utils.timezone import localtime
-
+from django.shortcuts import redirect
 from .models import Cita, FechaBloqueada, BloqueoHora
 
 
@@ -51,11 +52,9 @@ class CitaAdmin(admin.ModelAdmin):
 
     # -------- ACTIONS --------
     actions = ["marcar_como_vistas"]
-
     def marcar_como_vistas(self, request, queryset):
         actualizado = queryset.update(vista=True)
         self.message_user(request, f"{actualizado} cita(s) marcadas como vista(s).")
-
     marcar_como_vistas.short_description = "Marcar como vistas"
 
     # -------- HELPERS --------
@@ -64,7 +63,6 @@ class CitaAdmin(admin.ModelAdmin):
         if len(texto) > 50:
             return format_html('<span title="{}">{}…</span>', texto, texto[:50])
         return texto
-
     comentario_corto.short_description = "Comentario"
 
     def vista_icon(self, obj):
@@ -73,7 +71,6 @@ class CitaAdmin(admin.ModelAdmin):
     def ver_grafico_link(self, obj):
         url = reverse("admin:cita_graph")
         return format_html('<a class="button btn-admin-action" href="{}">📊 Ver Gráfico</a>', url)
-
     ver_grafico_link.short_description = "Gráfico"
 
     # -------- URLs extra --------
@@ -81,16 +78,23 @@ class CitaAdmin(admin.ModelAdmin):
         urls = super().get_urls()
         custom = [
             path("graficar/", self.admin_site.admin_view(self.graficar_citas), name="cita_graph"),
-            path(
-                "graficar/data/",
-                self.admin_site.admin_view(self.graficar_citas_data),
-                name="cita_graph_data",
-            ),
+            path("graficar/data/", self.admin_site.admin_view(self.graficar_citas_data), name="cita_graph_data"),
+            path("hoy/", self.admin_site.admin_view(self.citas_hoy_redirect), name="appointments_cita_changelist_hoy"),
         ]
         return custom + urls
 
+    def citas_hoy_redirect(self, request):
+        """[hoy 00:00, mañana 00:00) en zona local."""
+        now = timezone.localtime()
+        start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        end = start + timedelta(days=1)
+        changelist_url = reverse("admin:appointments_cita_changelist")
+        qs = f"?fecha__gte={start.isoformat()}&fecha__lt={end.isoformat()}"
+        return redirect(changelist_url + qs)
+
+
     # ------------------------------------------------------------------
-    #   STATS 
+    #   STATS: GRAFICOS DE CITAS POR MES (Matplotlib y JSON) 
     # ------------------------------------------------------------------
     def _contar_citas_por_mes(self, meses_atras: int = 12):
         """Devuelve (labels, counts) desde *meses_atras* hasta hoy (incluye futuro)."""

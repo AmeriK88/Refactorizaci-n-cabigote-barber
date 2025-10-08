@@ -1,13 +1,13 @@
 from django.urls import path, reverse
 from django.template.response import TemplateResponse
-from django.contrib import admin, messages
+from django.contrib import admin
 from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import now
 from django.utils.html import format_html
 from django import forms
 from .models import ReporteMensual, ReporteDiario
-from .utils import calcular_reporte, limpiar_reportes_admin, calcular_reporte_diario
+from .utils import calcular_reporte, calcular_reporte_diario
 
 # ------------------------------------------------------------------------------
 # Formulario personalizado para ReporteMensual
@@ -43,8 +43,6 @@ class ReporteMensualAdmin(admin.ModelAdmin):
         'descargar_reporte_link'
     )
 
-    # 'mes' ya NO se define como readonly, porque queremos que el usuario lo seleccione.
-    # Los demás campos calculados sí se mantienen en solo lectura.
     readonly_fields = (
         'total_citas',
         'ingresos_totales',
@@ -53,11 +51,9 @@ class ReporteMensualAdmin(admin.ModelAdmin):
     )
 
     def descargar_reporte_link(self, obj):
-        url = reverse('admin:descargar_reporte')
+        url = reverse('admin:descargar_reporte') + '?force=1'
         return format_html(
-            '<a class="button btn-admin-action" href="{}" download>'
-            '  📥 Descargar'
-            '</a>',
+            '<a class="button btn-admin-action" href="{}" download>📥 Descargar</a>',
             url
         )
     descargar_reporte_link.short_description = _("Descargar")
@@ -95,18 +91,62 @@ class ReporteMensualAdmin(admin.ModelAdmin):
 
     def descargar_reporte(self, request):
         """
-        Genera un archivo de texto con la información de todos los ReporteMensual ordenados por fecha.
+        Genera/actualiza reportes antes de descargar.
+        - ?force=1  -> recalcula TODOS los meses existentes + mes actual
+        - ?months=N -> recalcula N meses desde el mes actual (incluido)
+        - sin params -> asegura el mes actual (crea si no existe)
         """
-        reports = ReporteMensual.objects.all().order_by('mes')
-        response = HttpResponse(content_type='text/plain')
-        response['Content-Disposition'] = 'attachment; filename="reporte_mensual.txt"'
+        force = request.GET.get("force") == "1"
+        months_param = request.GET.get("months")
+        hoy = now().date()
+        mes_actual = hoy.replace(day=1)
+
+        def add_month(d, n):
+            y, m = d.year, d.month + n
+            y += (m - 1) // 12
+            m = ((m - 1) % 12) + 1
+            return d.replace(year=y, month=m, day=1)
+
+        qs = ReporteMensual.objects.all().order_by("mes")
+        existe_algo = qs.exists()
+
+        if months_param:
+            # Recalcula un rango explícito N meses desde el actual
+            try:
+                n = max(1, int(months_param))
+            except ValueError:
+                n = 1
+            calcular_reporte(mes_actual, meses_ahead=n)
+
+        elif force and existe_algo:
+            # Recalcula cada mes ya presente en BD y garantiza el actual
+            meses_db = list(qs.values_list("mes", flat=True))
+            for m in meses_db:
+                calcular_reporte(m.replace(day=1), meses_ahead=1)
+            if mes_actual not in meses_db:
+                calcular_reporte(mes_actual, meses_ahead=1)
+
+        else:
+            # Modo normal: asegura el mes actual; si no hay nada en BD, crea al menos éste
+            if not qs.filter(mes=mes_actual).exists():
+                calcular_reporte(mes_actual, meses_ahead=1)
+
+        # Refresca y compone el TXT
+        reports = ReporteMensual.objects.all().order_by("mes")
+        resp = HttpResponse(content_type="text/plain; charset=utf-8")
+        resp["Content-Disposition"] = f'attachment; filename="reporte_mensual_{now().date():%Y_%m_%d}.txt"'
+        if not reports.exists():
+            resp.write("Sin datos de ReporteMensual.\n")
+            return resp
+
         for report in reports:
-            response.write(f"Mes: {report.mes.strftime('%B %Y')}\n")
-            response.write(f"Total de Citas: {report.total_citas}\n")
-            response.write(f"Ingresos Totales: {report.ingresos_totales}\n")
-            response.write(f"Ingresos Proyectados: {report.ingresos_proyectados}\n")
-            response.write("-" * 40 + "\n")
-        return response
+            resp.write(f"Mes: {report.mes.strftime('%B %Y')}\n")
+            resp.write(f"Total de Citas: {report.total_citas}\n")
+            resp.write(f"Ingresos Totales: {report.ingresos_totales}\n")
+            resp.write(f"Ingresos Proyectados: {report.ingresos_proyectados}\n")
+            resp.write("-" * 40 + "\n")
+        return resp
+
 
     def has_add_permission(self, request):
         """
