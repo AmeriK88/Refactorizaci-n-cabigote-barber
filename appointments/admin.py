@@ -65,7 +65,7 @@ class CitaAdmin(admin.ModelAdmin):
         "fecha",
         "hora",
         "comentario_corto",
-        "vista_icon",
+        "vista_icono",
         "ver_grafico_link",
     )
     search_fields = ("usuario__username", "servicio__nombre", "fecha")
@@ -79,7 +79,7 @@ class CitaAdmin(admin.ModelAdmin):
     def marcar_como_vistas(self, request, queryset):
         updated = queryset.update(vista=True)
         self.message_user(request, f"{updated} appointment(s) marked as viewed.")
-    marcar_como_vistas.short_description = "Mark as viewed"
+    marcar_como_vistas.short_description = "Marcar como vistas"
 
     # -------- HELPERS (list_display) --------
     def comentario_corto(self, obj):
@@ -88,17 +88,17 @@ class CitaAdmin(admin.ModelAdmin):
         if len(text) > 50:
             return format_html('<span title="{}">{}…</span>', text, text[:50])
         return text
-    comentario_corto.short_description = "Comment"
+    comentario_corto.short_description = "Comentario"
 
-    def vista_icon(self, obj):
+    def vista_icono(self, obj):
         """Visual boolean for 'vista'."""
         return "✔️" if obj.vista else "❌"
 
     def ver_grafico_link(self, obj):
         """Per-row link to the chart page (convenience)."""
         url = reverse("admin:cita_graph")
-        return format_html('<a class="button btn-admin-action" href="{}">📊 Chart</a>', url)
-    ver_grafico_link.short_description = "Chart"
+        return format_html('<a class="button btn-admin-action" href="{}">📊 Gráfico</a>', url)
+    ver_grafico_link.short_description = "Gráfico"
 
     # -------- SHORTCUT: "Today" redirect --------
     def citas_hoy_redirect(self, request):
@@ -157,7 +157,7 @@ class CitaAdmin(admin.ModelAdmin):
         plt.figure(figsize=(10, 5))
         plt.bar(labels, counts, color="skyblue")
         plt.xticks(rotation=45)
-        plt.title("Appointments per month")
+        plt.title("Citas por mes (últimos 12 meses)")
         plt.tight_layout()
 
         buf = io.BytesIO()
@@ -199,7 +199,7 @@ class FechaBloqueadaAdmin(admin.ModelAdmin):
         """True if the date has hour-range blocks registered."""
         return BloqueoHora.objects.filter(fecha=obj.fecha).exists()
     tiene_bloqueos.boolean = True
-    tiene_bloqueos.short_description = "Has blocks"
+    tiene_bloqueos.short_description = "Tiene bloqueos"
 
     def ver_bloqueos_link(self, obj):
         """Link to the hour blocks filtered by the same date."""
@@ -207,8 +207,8 @@ class FechaBloqueadaAdmin(admin.ModelAdmin):
             reverse("admin:appointments_bloqueohora_changelist")
             + f"?fecha__exact={obj.fecha.isoformat()}"
         )
-        return format_html('<a href="{}">View time ranges</a>', url)
-    ver_bloqueos_link.short_description = "Time ranges"
+        return format_html('<a href="{}">Ver franjas horarias</a>', url)
+    ver_bloqueos_link.short_description = "Franjas horarias"
 
     class Media:
         css = {"all": ("admin/css/adminCSS.css",)}
