@@ -6,7 +6,7 @@
 <div class="container py-5">
 
   <!-- Header -->
-  <div class="card card-glass shadow-sm mb-4">
+  <div class="card card-glass shadow-sm mb-4 animate-on-load" style="--a-delay:0ms">
     <div class="card-header gradiente-header text-center">
       <h1 class="h4 fw-bold mb-0 text-ink">
         <i class="fas fa-shopping-bag me-2 text-gold" aria-hidden="true"></i>
@@ -15,22 +15,29 @@
     </div>
   </div>
 
-  <div class="row g-4 align-items-start animate-on-load">
+  <div class="row g-4 align-items-start animate-on-load" style="--a-delay:80ms">
     <!-- Galería -->
-    <div class="col-12 col-lg-6">
+    <div class="col-12 col-lg-6 animate-on-load" style="--a-delay:120ms">
       <div class="card card-glass product-hero overflow-hidden">
         <div class="product-media">
-          <img
-            src="{{ producto.imagen.url }}"
-            alt="{{ producto.titulo }}"
-            class="w-100 h-100 product-img"
-            loading="lazy">
+          {% if producto.imagen %}
+            <img
+              src="{{ producto.imagen.url }}"
+              alt="{{ producto.titulo }}"
+              class="w-100 h-100 product-img"
+              loading="lazy">
+          {% else %}
+            <div class="d-flex align-items-center justify-content-center product-img"
+                 style="aspect-ratio: 4/3;">
+              <span class="text-ink-muted">Sin imagen disponible</span>
+            </div>
+          {% endif %}
         </div>
       </div>
     </div>
 
     <!-- Info -->
-    <div class="col-12 col-lg-6">
+    <div class="col-12 col-lg-6 animate-on-load" style="--a-delay:200ms">
       <div class="card card-glass h-100">
         <div class="card-body">
           <h2 class="h5 text-ink mb-3">{{ producto.titulo }}</h2>
@@ -56,7 +63,8 @@
 
           <div class="d-flex flex-wrap gap-2">
             <a href="https://wa.me/+34659809165?text=Hola%20Ca'Bigote%2C%20quiero%20información%20sobre%20{{ producto.titulo|urlencode }}"
-               class="btn btn-gold">
+               class="btn btn-gold"
+               aria-label="Preguntar por WhatsApp sobre {{ producto.titulo }}">
               <i class="fab fa-whatsapp me-2" aria-hidden="true"></i> Preguntar por WhatsApp
             </a>
             <a href="{% url 'products:ver_imagenes' %}" class="btn btn-outline-gold">
@@ -64,7 +72,7 @@
             </a>
           </div>
 
-          <!-- Info secundaria (opcional/ejemplo) -->
+          <!-- Info secundaria -->
           <hr class="footer-sep my-4">
           <ul class="list-unstyled small text-ink-muted m-0">
             <li class="mb-1"><i class="bi bi-shield-check me-2"></i> Calidad profesional de barbería</li>
@@ -80,19 +88,29 @@
   <!-- Relacionados (opcional si pasas contexto relacionados) -->
   {% if relacionados %}
   <div class="mt-5">
-    <div class="card card-glass shadow-sm mb-3">
+    <div class="card card-glass shadow-sm mb-3 animate-on-load" style="--a-delay:240ms">
       <div class="card-header gradiente-header text-center">
         <h3 class="h6 fw-bold m-0 text-ink">
-          <i class="bi bi-stars me-2"></i> También te puede interesar
+          <i class="bi bi-stars me-2" aria-hidden="true"></i> También te puede interesar
         </h3>
       </div>
     </div>
-    <div class="row g-4">
+
+    <div class="row g-4 animate-on-load" style="--a-delay:280ms">
       {% for item in relacionados %}
-      <div class="col-12 col-sm-6 col-lg-4">
+      <div class="col-12 col-sm-6 col-lg-4 animate-on-load"
+           style="--a-delay:{% widthratio forloop.counter0 1 80 %}ms">
         <div class="card card-glass product-card h-100">
-          <a href="{% url 'products:detalle_producto' producto_id=item.id %}" class="product-thumb d-block">
-            <img src="{{ item.imagen.url }}" alt="{{ item.titulo }}" class="w-100 h-100" loading="lazy">
+          <a href="{% url 'products:detalle_producto' producto_id=item.id %}"
+             class="product-thumb d-block"
+             aria-label="Ver {{ item.titulo }}">
+            {% if item.imagen %}
+              <img src="{{ item.imagen.url }}" alt="{{ item.titulo }}" class="w-100 h-100" loading="lazy">
+            {% else %}
+              <div class="d-flex align-items-center justify-content-center" style="aspect-ratio: 4/3;">
+                <span class="text-ink-muted small">Sin imagen</span>
+              </div>
+            {% endif %}
           </a>
           <div class="card-body text-center">
             <p class="m-0 text-ink"><strong>{{ item.titulo }}</strong></p>
@@ -106,10 +124,4 @@
   {% endif %}
 
 </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.animate-on-load').forEach(el => el.classList.add('loaded'));
-  });
-</script>
 {% endblock %}

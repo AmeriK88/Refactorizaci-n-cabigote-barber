@@ -6,7 +6,7 @@
 <div class="container py-5">
 
   <!-- Header -->
-  <div class="card card-glass shadow-sm mb-4">
+  <div class="card card-glass shadow-sm mb-4 animate-on-load" style="--a-delay:0ms">
     <div class="card-header gradiente-header text-center">
       <h2 class="h4 fw-bold mb-0 text-ink">
         <i class="fas fa-box-open me-2 text-gold" aria-hidden="true"></i>
@@ -16,11 +16,14 @@
   </div>
 
   {% if imagenes %}
-    <div class="row g-4 animate-on-load">
+    <div class="row g-4 animate-on-load" style="--a-delay:80ms">
       {% for imagen in imagenes %}
-      <div class="col-12 {% if imagenes|length > 1 %}col-md-6{% else %}col-md-10 col-lg-8 mx-auto{% endif %}">
+      <div class="col-12 {% if imagenes|length > 1 %}col-md-6{% else %}col-md-10 col-lg-8 mx-auto{% endif %} animate-on-load"
+           style="--a-delay:{% widthratio forloop.counter0 1 80 %}ms">
         <div class="card card-glass product-card h-100">
-          <a href="{% url 'products:detalle_producto' producto_id=imagen.id %}" class="product-thumb d-block">
+          <a href="{% url 'products:detalle_producto' producto_id=imagen.id %}"
+             class="product-thumb d-block"
+             aria-label="Ver {{ imagen.titulo }}">
             <img
               src="{{ imagen.imagen.url }}"
               alt="{{ imagen.titulo }}"
@@ -35,7 +38,7 @@
       {% endfor %}
     </div>
   {% else %}
-    <div class="card card-glass text-center">
+    <div class="card card-glass text-center animate-on-load" style="--a-delay:80ms">
       <div class="card-body">
         <h5 class="card-title text-ink">No hay productos disponibles</h5>
         <p class="text-ink-muted mb-3">Vuelve pronto para descubrir nuestras novedades.</p>
@@ -45,10 +48,4 @@
   {% endif %}
 
 </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.animate-on-load').forEach(el => el.classList.add('loaded'));
-  });
-</script>
 {% endblock %}
