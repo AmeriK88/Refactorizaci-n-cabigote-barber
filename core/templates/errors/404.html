@@ -1,11 +1,34 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% block title %}404 · No encontrado{% endblock %}
 
-{% block title %}404 - Página no encontrada{% endblock %}
+{% block extra_head %}
+<meta name="robots" content="noindex,nofollow">
+{% endblock %}
 
 {% block content %}
-<div class="container text-center mt-5">
-    <h1 class="display-4 text-warning">404 - Página no encontrada</h1>
-    <p class="lead">Lo sentimos, la página que buscas no existe.</p>
-    <a href="{% url 'home' %}" class="btn btn-primary mt-3">Volver a la página de inicio</a>
+<div class="container py-5">
+  <div class="card card-glass shadow-sm">
+    <div class="card-header gradiente-header text-center">
+      <h1 class="h5 fw-bold mb-0 text-ink">
+        <i class="bi bi-compass me-2 text-gold" aria-hidden="true"></i>
+        No hemos encontrado lo que buscas
+      </h1>
+    </div>
+
+    <div class="card-body text-center">
+      <p class="text-ink-muted mb-4">
+        La página puede haber sido movida o el enlace es incorrecto.
+      </p>
+
+      <div class="d-flex gap-2 flex-wrap justify-content-center">
+        <a class="btn btn-gold" href="{% url 'home' %}">
+          <i class="bi bi-house me-1"></i> Volver al inicio
+        </a>
+        <a class="btn btn-outline-gold" href="{% url 'services:ver_servicios' %}">
+          <i class="bi bi-scissors me-1"></i> Ver servicios
+        </a>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

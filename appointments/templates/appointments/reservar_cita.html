@@ -7,80 +7,85 @@
 {% localtime on %}
 <div class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-12 col-md-12 col-lg-12">
+    <div class="col-12 col-lg-8">
 
-        {% if form.errors %}
-          <p class="alert alert-error">
-            ¡Aguita papá! Ha ocurrido un error. Por favor revisa los datos e inténtalo de nuevo.
-          </p>
-        {% endif %}
+      {% if form.errors %}
+        <div class="alert alert-danger mb-4 animate-on-load" style="--a-delay:0ms" role="alert">
+          ¡Aguita papá! Ha ocurrido un error. Revisa los campos e inténtalo de nuevo.
+        </div>
+      {% endif %}
 
       <!-- MAIN CARD -->
-      <div class="card shadow-sm">
+      <div class="card card-glass shadow-sm animate-on-load" style="--a-delay:80ms">
         <div class="card-header gradiente-header text-center">
-          <h4 class="mb-0">
-            <i class="fas fa-calendar-check me-2 text-primary"></i> Reserva tu Cita
+          <h4 class="mb-0 text-ink">
+            <i class="fas fa-calendar-check me-2 text-gold" aria-hidden="true"></i>
+            Reserva tu Cita
           </h4>
         </div>
-          <form method="post" class="needs-validation animate-on-load" novalidate>
-            {% csrf_token %}
 
-            {# ------- SERVICE ------- #}
-            <div class="mb-3">
-              <label class="form-label" for="id_servicio">💈 Servicio</label>
-              {{ form.servicio|add_class:"form-select form-select-lg" }}
-              {% for error in form.servicio.errors %}
-                <div class="invalid-feedback d-block">{{ error }}</div>
-              {% endfor %}
-            </div>
+        <form method="post" class="form-dark needs-validation p-3 p-md-4" novalidate>
+          {% csrf_token %}
 
-            {# ------- PRODUCT ------- #}
-            <div class="mb-3">
-              <label class="form-label" for="id_producto">🛍️ Producto (opcional)</label>
-              {{ form.producto|add_class:"form-select form-select-lg" }}
-              {% for error in form.producto.errors %}
-                <div class="invalid-feedback d-block">{{ error }}</div>
-              {% endfor %}
-            </div>
+          <!-- SERVICIO -->
+          <div class="mb-3 animate-on-load" style="--a-delay:140ms">
+            <label class="form-label fw-semibold" for="id_servicio">💈 Servicio</label>
+            {% render_field form.servicio class+="form-select form-select-lg form-select-dark" %}
+            {% for error in form.servicio.errors %}
+              <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+          </div>
 
-            {# ------- DATE ------- #}
-            <div class="mb-3">
-              <label class="form-label" for="id_fecha">📆 Fecha</label>
+          <!-- PRODUCTO (opcional) -->
+          <div class="mb-3 animate-on-load" style="--a-delay:200ms">
+            <label class="form-label fw-semibold" for="id_producto">🛍️ Producto (opcional)</label>
+            {% render_field form.producto class+="form-select form-select-lg form-select-dark" %}
+            {% for error in form.producto.errors %}
+              <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- FECHA + HORA -->
+          <div class="row g-3">
+            <div class="col-md-6 animate-on-load" style="--a-delay:260ms">
+              <label class="form-label fw-semibold" for="id_fecha">📆 Fecha</label>
               <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
-                {{ form.fecha|add_class:"form-control form-control-lg" }}
+                <span class="input-group-text input-group-text-dark"><i class="bi bi-calendar-event"></i></span>
+                {% render_field form.fecha class+="form-control form-control-lg form-control-dark" %}
               </div>
               {% for error in form.fecha.errors %}
                 <div class="invalid-feedback d-block">{{ error }}</div>
               {% endfor %}
+              <small class="text-ink-muted d-block mt-1">Las fechas bloqueadas no estarán disponibles.</small>
             </div>
 
-            {# ------- TIME ------- #}
-            <div class="mb-3">
-              <label class="form-label" for="id_hora">⏰ Hora</label>
+            <div class="col-md-6 animate-on-load" style="--a-delay:320ms">
+              <label class="form-label fw-semibold" for="id_hora">⏰ Hora</label>
               <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-clock"></i></span>
-                {{ form.hora|add_class:"form-select form-select-lg" }}
+                <span class="input-group-text input-group-text-dark"><i class="bi bi-clock"></i></span>
+                {% render_field form.hora class+="form-select form-select-lg form-select-dark" %}
               </div>
               {% for error in form.hora.errors %}
                 <div class="invalid-feedback d-block">{{ error }}</div>
               {% endfor %}
             </div>
+          </div>
 
-            {# ------- MESSAGE ------- #}
-            <div class="mb-3">
-              <label class="form-label" for="id_comentario">📝 Comentario</label>
-              {{ form.comentario|add_class:"form-control form-control-lg" }}
-              {% for error in form.comentario.errors %}
-                <div class="invalid-feedback d-block">{{ error }}</div>
-              {% endfor %}
-            </div>
+          <!-- COMENTARIO -->
+          <div class="mb-3 mt-3 animate-on-load" style="--a-delay:380ms">
+            <label class="form-label fw-semibold" for="id_comentario">📝 Comentario</label>
+            {% render_field form.comentario class+="form-control form-control-lg form-control-dark" rows="3" %}
+            {% for error in form.comentario.errors %}
+              <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+          </div>
 
-            <button type="submit" class="btn btn-primary btn-lg w-100">
+          <button type="submit" class="btn btn-gold btn-lg w-100 mt-2 animate-on-load" style="--a-delay:440ms">
             ✨ Reservar Ahora
-            </button>
-          </form>
+          </button>
+        </form>
       </div>
+
     </div>
   </div>
 </div>

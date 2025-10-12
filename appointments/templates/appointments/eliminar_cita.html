@@ -1,40 +1,71 @@
 {% extends "base.html" %}
 
+{% block title %}Cancelar Cita · Ca’Bigote{% endblock %}
+
 {% block content %}
-  <div class="card shadow-sm bg-light text-center p-4 mb-4">
-    <h2 class="mb-0 text-danger">
-      <i class="bi bi-x-circle-fill me-2"></i> Cancelar Cita
-    </h2>
-  </div>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-7">
 
-  {% if error_message %}
-    <div class="alert alert-error text-center" role="alert">
-      {{ error_message }}
-    </div>
-  {% endif %}
-  <p class="text-center lead">¿Estás seguro de que quieres cancelar la cita para 
-    <strong>{{ cita.servicio.nombre }}</strong> el 
-    <strong>{{ cita.fecha|date:"d M Y" }}</strong> a las 
-    <strong>{{ cita.fecha|time:"H:i" }}</strong>?
-  </p>
-
-  {% if messages %}
-  <div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} text-center">
-                    {{ message }}
-                </div>
-            {% endfor %}
+      <!-- Header -->
+      <div class="card card-glass shadow-sm mb-4">
+        <div class="card-header gradiente-header text-center">
+          <h2 class="h4 mb-0 text-ink">
+            <i class="bi bi-x-circle-fill me-2 text-danger" aria-hidden="true"></i>
+            Cancelar Cita
+          </h2>
         </div>
+
+        <div class="p-3 p-md-4">
+          {% if error_message %}
+            <div class="alert alert-danger text-center mb-4" role="alert">
+              {{ error_message }}
+            </div>
+          {% endif %}
+
+          <p class="lead text-center text-ink">
+            ¿Seguro que deseas cancelar la cita de
+            <strong>{{ cita.servicio.nombre }}</strong> el
+            <strong>{{ cita.fecha|date:"d M Y" }}</strong> a las
+            <strong>{{ cita.fecha|time:"H:i" }}</strong>?
+          </p>
+
+          <!-- Resumen de la cita (ayuda a evitar errores) -->
+          <div class="card bg-section border-0 mt-3 mb-4">
+            <div class="card-body">
+              <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 text-ink-muted">
+                <span><i class="bi bi-scissors me-1"></i> Servicio: <strong class="text-ink">{{ cita.servicio.nombre }}</strong></span>
+                <span><i class="bi bi-calendar-event me-1"></i> Fecha: <strong class="text-ink">{{ cita.fecha|date:"d M Y" }}</strong></span>
+                <span><i class="bi bi-clock me-1"></i> Hora: <strong class="text-ink">{{ cita.fecha|time:"H:i" }}</strong></span>
+              </div>
+            </div>
+          </div>
+
+          {% if messages %}
+            <div class="mb-3">
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} text-center mb-2" role="alert">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <form method="post" class="text-center">
+            {% csrf_token %}
+            <div class="d-grid d-sm-flex justify-content-center gap-2">
+              <button type="submit" class="btn btn-danger btn-lg px-4">
+                Confirmar Cancelación
+              </button>
+              <a href="{% url 'appointments:ver_citas' %}" class="btn btn-outline-gold btn-lg px-4">
+                Volver
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+
     </div>
   </div>
-  {% endif %}
-
-  <form method="post" class="text-center mt-4">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-outline-danger btn-lg px-4 mx-1 mb-2">Confirmar Cancelación</button>
-    <a href="{% url 'appointments:ver_citas' %}" class="btn btn-primary btn-lg px-4 mx-1 mb-2">Volver</a>
-  </form>
+</div>
 {% endblock %}

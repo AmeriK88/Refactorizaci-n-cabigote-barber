@@ -1,52 +1,56 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load crispy_forms_tags %}  
+{% load crispy_forms_tags %}
 
 {% block title %}Inicio · CaʼBigote Barber Shop{% endblock %}
 
 {% block content %}
 <div class="container py-5">
 
-  <!-- ◉ 1. HERO --------------------------------------------------- -->
+  <!-- HERO -->
   <div class="row align-items-center mb-5 flex-column flex-lg-row">
     <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
-      <h2 class="display-4 fw-bold animate-on-load">Bienvenido a CaʼBigote</h2>
-      <p class="lead mb-4">
+      <h2 class="display-4 fw-bold text-ink animate-on-load">Bienvenido a CaʼBigote</h2>
+      <p class="lead mb-4 text-ink-muted">
         Donde el estilo se encuentra con la tradición. Ubicados en el corazón de Arrecife,
         ofrecemos cortes de cabello y arreglos de barba con la máxima calidad.
       </p>
+      <div class="d-flex gap-3 justify-content-center justify-content-lg-start">
+        <a href="{% url 'appointments:reservar_cita' %}" class="btn btn-gold btn-lg">Reservar cita</a>
+        <a href="{% url 'services:ver_servicios' %}" class="btn btn-outline-gold btn-lg">Ver servicios</a>
+      </div>
     </div>
 
     <div class="col-lg-6 text-center">
-      <img src="{% static 'imagenes/cabigote.webp' %}"
-           alt="Logo CaʼBigote"
-           class="hero-image img-fluid mx-auto animate-on-load rounded" loading="lazy">
+      <img
+        src="{% static 'imagenes/cabigote.webp' %}"
+        alt="Logo CaʼBigote"
+        class="hero-image img-fluid mx-auto animate-on-load rounded-4 shadow-none border-0"
+        loading="lazy">
     </div>
   </div>
 
-  <!-- ◉ 2. FLYER PRICES ------------------------------------ -->
-  <section class="my-5">
-    <div class="mb-5 card-header gradiente-header shadow-sm bg-light text-center p-3 border-0">
-      <h2 class="h4 fw-bold mb-0">
-        <i class="fas fa-concierge-bell text-primary me-2"></i> Tarifa de Servicios
+  <!-- TARIFA -->
+  <section class="my-5" aria-labelledby="tarifa-title">
+    <div class="mb-4 card-header gradiente-header shadow-0 bg-transparent text-center p-2 border-0">
+      <h2 id="tarifa-title" class="h4 fw-bold mb-0 text-ink">
+        <i class="fas fa-scissors me-2 text-gold" aria-hidden="true"></i>
+        Tarifa de Servicios
       </h2>
     </div>
 
     <div class="row justify-content-center">
       <div class="col-md-8">
-        <div class="card shadow-sm overflow-hidden">
-          <div class="price-card-head text-center py-2">
-            <i class="fas fa-scissors me-2"></i> Lista de Precios
-          </div>
-
-          <ul class="list-unstyled m-0">
+        <div class="card card-glass overflow-hidden">
+          <div class="price-card-head text-center py-2 text-ink-muted small">Lista de Precios</div>
+          <ul class="list-unstyled m-0 price-list">
             {% for servicio in servicios|slice:":10" %}
-              <li class="price-item">
+              <li class="price-item d-flex align-items-center justify-content-between">
                 <span class="service-name">{{ servicio.nombre }}</span>
-                <span class="service-price">{{ servicio.precio }} €</span>
+                <span class="service-price">{{ servicio.precio }} €</span>
               </li>
             {% empty %}
-              <li class="text-center py-4">Todavía no hay servicios cargados.</li>
+              <li class="text-center py-4 text-ink-muted">Todavía no hay servicios cargados.</li>
             {% endfor %}
           </ul>
         </div>
@@ -54,37 +58,38 @@
     </div>
 
     <div class="text-center mt-4">
-      <a href="{% url 'services:ver_servicios' %}" class="btn btn-primary btn-lg">
+      <a href="{% url 'services:ver_servicios' %}" class="btn btn-gold btn-lg">
         Descubre Nuestros Servicios
       </a>
     </div>
   </section>
 
-  <section class="py-5 bg-light">
+  <!-- PWA -->
+  <section class="py-5 bg-section" aria-labelledby="pwa-title">
     <div class="container">
-      <div class="card border-0 shadow-sm p-4">
+      <div class="card card-glass p-4 animate-on-load">
         <div class="row g-4 align-items-center flex-column flex-md-row">
 
           <div class="col-12 col-md-6 d-flex justify-content-center gap-3">
-            <img src="{% static 'imagenes/mockup-laptop.webp' %}"
-                 alt="Versión escritorio"
-                 class="mockup-laptop rounded shadow-sm">
-
-            <img src="{% static 'imagenes/mockup-phone.webp' %}"
-                 alt="Versión móvil"
-                 class="mockup-phone rounded shadow-sm">
+            <img
+              src="{% static 'imagenes/mockup-laptop.webp' %}"
+              alt="Vista en portátil"
+              class="mockup-laptop rounded-3 shadow-sm border-0"
+              loading="lazy">
+            <img
+              src="{% static 'imagenes/mockup-phone.webp' %}"
+              alt="Vista en móvil"
+              class="mockup-phone rounded-3 shadow-sm border-0"
+              loading="lazy">
           </div>
 
-          <!-- PWA INSTALL -->
-          <div class="col-12 col-md-6 text-center text-md-start">
-            <h3 class="fw-bold mb-3">¡Ya disponible nuestra App!</h3>
-            <p class="text-muted mb-4">
+          <div class="col-12 col-md-6 text-center text-md-start animate-on-load">
+            <h3 id="pwa-title" class="fw-bold mb-3 text-ink">¡Ya disponible nuestra App!</h3>
+            <p class="text-ink-muted mb-4">
               Reserva citas, recibe recordatorios y gestiona tu perfil desde cualquier dispositivo.
             </p>
-
-            <button id="btn-instalar"
-                    class="btn btn-success btn-lg d-none">
-              <i class="bi bi-download me-1"></i> Instalar Cabigote
+            <button id="btn-instalar" class="btn btn-outline-gold btn-lg d-none">
+              <i class="bi bi-download me-1" aria-hidden="true"></i> Instalar Cabigote
             </button>
           </div>
 
@@ -93,19 +98,20 @@
     </div>
   </section>
 
-  <!-- ◉ 4. SOCIAL POSTS --------------------------- -->
-  <section class="my-5">
-    <div class="mb-5 card-header gradiente-header shadow-sm bg-light text-center p-3 border-0">
-      <h2 class="h4 fw-bold mb-0">
-        <i class="fas fa-globe text-primary me-2"></i></i> Publicaciones
+  <!-- SOCIAL -->
+  <section class="my-5 animate-on-load" aria-labelledby="social-title">
+    <div class="mb-4 card-header gradiente-header bg-transparent text-center p-2 border-0">
+      <h2 id="social-title" class="h4 fw-bold mb-0 text-ink">
+        <i class="fas fa-globe me-2 text-gold" aria-hidden="true"></i>
+        Publicaciones
       </h2>
     </div>
     <div class="row g-4 justify-content-center">
       <div class="col-12 col-md-6">
-        <div class="instagram-embed rounded shadow-sm mb-4">
+        <div class="instagram-embed rounded-4 shadow-sm mb-4 bg-section border-0">
           <iframe
             src="https://www.instagram.com/p/C9ecZGftT6b/embed"
-            title="Instagram post by Ca’Bigote"
+            title="Publicación de Instagram de Ca’Bigote"
             allowtransparency="true"
             allowfullscreen
             loading="lazy">
@@ -115,17 +121,15 @@
     </div>
   </section>
 
-  <!-- ◉ 5. ABOUT --------------------------------------------------- -->
-  <section class="my-5">
-    <div class="card shadow bg-light text-center p-4">
-      <h3 class="fw-bold mb-3">¿Por qué elegirnos?</h3>
-      <p class="lead">
+  <!-- ABOUT -->
+  <section class="my-5" aria-labelledby="about-title">
+    <div class="card card-glass text-center p-4">
+      <h3 id="about-title" class="fw-bold mb-3 text-ink">¿Por qué elegirnos?</h3>
+      <p class="lead text-ink-muted">
         En CaʼBigote cada visita es una experiencia personalizada. Nuestros barberos están
         dedicados a brindarte el mejor servicio en un ambiente acogedor y moderno.
       </p>
-      <a href="{% url 'appointments:reservar_cita' %}" class="btn btn-primary btn-lg">
-        Agenda tu Cita
-      </a>
+      <a href="{% url 'appointments:reservar_cita' %}" class="btn btn-gold btn-lg">Agenda tu Cita</a>
     </div>
   </section>
 

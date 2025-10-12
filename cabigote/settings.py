@@ -29,6 +29,7 @@ ALLOWED_HOSTS = [
     'refactorizaci-n-cabigote-barber-production.up.railway.app', 
     'cabigotebarbershop.com', 
     'www.cabigotebarbershop.com',
+    '1bfnw915-8000.uks1.devtunnels.ms'
 ]
 
 
@@ -451,33 +452,18 @@ CONTENT_SECURITY_POLICY = {
     }
 }
 
-
 X_FRAME_OPTIONS = 'SAMEORIGIN' 
-
-# REDIS RAILWAY CACHE CONFIG
-REDIS_URL = env('REDIS_URL', default=None)
-
-if REDIS_URL:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-            'LOCATION': REDIS_URL,
-            'KEY_PREFIX': 'cabigote',
-        }
-    }
-else:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-            'LOCATION': 'cabigote-local',
-        }
-    }
-
 
 # django-axes: 5 intentos -> bloqueo 1 hora
 AXES_FAILURE_LIMIT = 5
 AXES_COOLOFF_TIME = 1  # horas
 AXES_LOCKOUT_TEMPLATE = 'errors/locked_out.html'
+
+AXES_ENABLED = False
+if not DEBUG:
+    AXES_ENABLED = True
+
+
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_COOKIE_AGE = 7 * 24 * 60 * 60

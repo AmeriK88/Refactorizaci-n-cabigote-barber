@@ -1,11 +1,13 @@
 from django.utils import timezone
-from django.conf import settings     
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from .models import MensajeEspecial, ContadorVisitas
+
 
 def mensaje_especial_context(request):
     hoy = timezone.now().date()
 
-    # ACTIVE MESSAGE
+    # Mensaje activo (1º capa)
     mensaje = (
         MensajeEspecial.objects
         .filter(
@@ -17,15 +19,30 @@ def mensaje_especial_context(request):
         .first()
     )
 
-    # OBTAIN COUNTER FROM DB
+    # Contador global (con fallback seguro)
     try:
-        contador_obj = ContadorVisitas.objects.get(pk=1)
-        contador_global = contador_obj.total
+        contador_global = (
+            ContadorVisitas.objects
+            .only('total')
+            .get(pk=1)
+            .total
+        )
     except ContadorVisitas.DoesNotExist:
         contador_global = 0
 
+    # Usuarios totales (activos)
+    User = get_user_model()
+    try:
+        total_usuarios = User.objects.filter(is_active=True).count()
+    except Exception:
+        total_usuarios = 0
+
+    # APP_VERSION (fallback por si no existe en settings)
+    app_version = getattr(settings, 'APP_VERSION', 'dev')
+
     return {
-       'special_message': mensaje,
-       'contador_global': contador_global,
-       'APP_VERSION': settings.APP_VERSION,  
+        'special_message': mensaje,
+        'contador_global': contador_global,
+        'total_usuarios': total_usuarios,
+        'APP_VERSION': app_version,
     }

@@ -1,79 +1,132 @@
 {% extends "base.html" %}
 {% load static i18n %}
-{% block title %}Política de privacidad | Ca’Bigote{% endblock %}
+{% block title %}Política de privacidad · Ca’Bigote{% endblock %}
 
 {% block content %}
-<main class="container py-4" id="privacidad">
-  <h1 class="mb-3">Política de privacidad</h1>
-  <p><strong>Última actualización:</strong> 09/09/2025</p>
+<main class="container py-5" id="privacidad">
+  <div class="card card-glass shadow-sm">
+    <div class="card-header gradiente-header text-center">
+      <h1 class="h5 fw-bold mb-0 text-ink">
+        <i class="bi bi-shield-lock me-2 text-gold" aria-hidden="true"></i>
+        Política de privacidad
+      </h1>
+    </div>
 
-  <h2 class="h4 mt-4">1. Responsable del tratamiento</h2>
-  <p>
-    <strong>Nombre comercial:</strong> Ca’Bigote Barbershop<br>
-    <strong>Razón social / </strong> <em>Barbería Cabigote</em>
-    <strong>Domicilio:</strong> C. el Rafael, 43, 35500 Arrecife, Las Palmas (España)<br>
-    <strong>Correo de contacto:</strong> <a href="mailto:RELLENAR_EMAIL">cabigotebarbershop@gmail.com</a><br>
-    <strong>Web:</strong> cabigotebarbershop.com
-  </p>
+    <div class="card-body">
+      <p class="text-ink-muted mb-3">
+        <strong class="text-ink">Última actualización:</strong>
+        <time datetime="2025-09-09">09/09/2025</time>
+      </p>
 
-  <h2 class="h4 mt-4">2. Datos, finalidades y bases jurídicas</h2>
-  <ul>
-    <li><strong>Reservas de cita / cuenta de usuario:</strong> identificación y contacto (nombre, email, teléfono), credenciales si te registras.
-      <br><em>Finalidad:</em> gestionar citas y tu cuenta.<br>
-      <em>Base legal:</em> ejecución de contrato/medidas precontractuales (art. 6.1.b RGPD).</li>
-    <li><strong>Consultas generales (formularios/email):</strong> datos de contacto y el contenido de tu consulta.
-      <br><em>Finalidad:</em> atender la solicitud y hacer seguimiento.<br>
-      <em>Base legal:</em> consentimiento (art. 6.1.a) y/o interés legítimo (art. 6.1.f) según el caso.</li>
-    <li><strong>Atención por WhatsApp (opcional):</strong> identificación y comunicaciones.
-      <br><em>Finalidad:</em> soporte/comunicación por WhatsApp a petición del usuario.<br>
-      <em>Base legal:</em> consentimiento (art. 6.1.a). Puede implicar transferencias por parte de Meta.</li>
-    <li><strong>Seguridad del sitio:</strong> datos técnicos (IP, logs, user-agent).
-      <br><em>Finalidad:</em> mantener la seguridad y prevenir abusos.<br>
-      <em>Base legal:</em> interés legítimo (art. 6.1.f).</li>
-    <!-- Si más adelante añades newsletter/ads, añade aquí Marketing con base 6.1.a -->
-  </ul>
+      <!-- 1. Responsable -->
+      <h2 class="footer-heading mt-3">1. Responsable del tratamiento</h2>
+      <address class="text-ink mb-3" style="line-height:1.9;">
+        <strong>Nombre comercial:</strong> Ca’Bigote Barbershop<br>
+        <strong>Razón social:</strong> Barbería Cabigote<br>
+        <strong>Domicilio:</strong> C. el Rafael, 43, 35500 Arrecife, Las Palmas (España)<br>
+        <strong>Correo de contacto:</strong>
+        <a href="mailto:cabigotebarbershop@gmail.com" class="footer-link">cabigotebarbershop@gmail.com</a><br>
+        <strong>Web:</strong> cabigotebarbershop.com
+      </address>
 
-  <h2 class="h4 mt-4">3. Conservación</h2>
-  <ul>
-    <li>Consultas: hasta <strong>12 meses</strong> desde la última interacción.</li>
-    <li>Reservas y relación con clientes: mientras dure el servicio y hasta <strong>24 meses</strong> tras su fin (o plazos legales).</li>
-    <li>Cuentas: mientras permanezcan activas (y según obligaciones legales).</li>
-    <li>Datos técnicos/logs: hasta <strong>12 meses</strong>.</li>
-  </ul>
+      <!-- 2. Datos, finalidades y bases -->
+      <h2 class="footer-heading mt-4">2. Datos, finalidades y bases jurídicas</h2>
+      <ul class="text-ink-muted">
+        <li>
+          <strong class="text-ink">Reservas de cita / cuenta de usuario:</strong>
+          identificación y contacto (nombre, email, teléfono), credenciales si te registras.
+          <br><em>Finalidad:</em> gestionar citas y tu cuenta.
+          <br><em>Base legal:</em> ejecución de contrato/medidas precontractuales (art. 6.1.b RGPD).
+        </li>
+        <li>
+          <strong class="text-ink">Consultas generales (formularios/email):</strong>
+          datos de contacto y contenido de la consulta.
+          <br><em>Finalidad:</em> atender y hacer seguimiento.
+          <br><em>Base legal:</em> consentimiento (art. 6.1.a) y/o interés legítimo (art. 6.1.f), según el caso.
+        </li>
+        <li>
+          <strong class="text-ink">Atención por WhatsApp (opcional):</strong>
+          identificación y comunicaciones.
+          <br><em>Finalidad:</em> soporte/comunicación a petición del usuario.
+          <br><em>Base legal:</em> consentimiento (art. 6.1.a). Puede implicar transferencias por parte de Meta.
+        </li>
+        <li>
+          <strong class="text-ink">Seguridad del sitio:</strong>
+          datos técnicos (IP, logs, user-agent).
+          <br><em>Finalidad:</em> mantener la seguridad y prevenir abusos.
+          <br><em>Base legal:</em> interés legítimo (art. 6.1.f).
+        </li>
+        {# Añade Marketing (newsletter/ads) si lo incorporas más adelante, con base 6.1.a #}
+      </ul>
 
-  <h2 class="h4 mt-4">4. Destinatarios</h2>
-  <p>
-    Podrán acceder proveedores que nos prestan servicios (alojamiento web, soporte TI, mensajería), bajo contrato de encargo de tratamiento.
-    El uso de <strong>Google Maps</strong>/Instagram (si lo aceptas) conlleva que dichos terceros puedan tratar datos conforme a sus políticas.
-  </p>
+      <!-- 3. Conservación -->
+      <h2 class="footer-heading mt-4">3. Conservación</h2>
+      <ul class="text-ink-muted">
+        <li>Consultas: hasta <strong class="text-ink">12 meses</strong> desde la última interacción.</li>
+        <li>Reservas/relación clientes: durante el servicio y hasta <strong class="text-ink">24 meses</strong> tras su fin (o plazos legales).</li>
+        <li>Cuentas: mientras permanezcan activas (y según obligaciones legales).</li>
+        <li>Datos técnicos/logs: hasta <strong class="text-ink">12 meses</strong>.</li>
+      </ul>
 
-  <h2 class="h4 mt-4">5. Transferencias internacionales</h2>
-  <p>
-    Algunos proveedores pueden estar ubicados fuera del EEE (p. ej., Google/Meta). Se usarán garantías adecuadas (p. ej., cláusulas contractuales tipo) cuando aplique.
-    Más información en sus políticas: Google, Meta/Instagram/WhatsApp.
-  </p>
+      <!-- 4. Destinatarios -->
+      <h2 class="footer-heading mt-4">4. Destinatarios</h2>
+      <p class="text-ink-muted">
+        Podrán acceder proveedores que nos prestan servicios (alojamiento web, soporte TI, mensajería),
+        bajo contratos de encargo de tratamiento. El uso de <strong class="text-ink">Google Maps</strong>/Instagram
+        (si lo aceptas) implica que dichos terceros traten datos conforme a sus políticas.
+      </p>
 
-  <h2 class="h4 mt-4">6. Derechos de las personas</h2>
-  <p>
-    Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad enviando un correo a
-    <a href="mailto:RELLENAR_EMAIL">RELLENAR_EMAIL</a> con el asunto “Protección de datos” y acreditando tu identidad.
-    Si consideras que no se han atendido correctamente tus derechos, puedes reclamar ante la Agencia Española de Protección de Datos (AEPD).
-  </p>
+      <!-- 5. Transferencias -->
+      <h2 class="footer-heading mt-4">5. Transferencias internacionales</h2>
+      <p class="text-ink-muted">
+        Algunos proveedores pueden estar fuera del EEE (p. ej., Google/Meta). Se aplicarán garantías adecuadas
+        (p. ej., cláusulas contractuales tipo) cuando corresponda. Más información en sus políticas.
+      </p>
 
-  <h2 class="h4 mt-4">7. Menores</h2>
-  <p>Los servicios no están dirigidos específicamente a menores. Si detectamos datos de menores sin autorización, procederemos a su eliminación.</p>
+      <!-- 6. Derechos -->
+      <h2 class="footer-heading mt-4">6. Derechos de las personas</h2>
+      <p class="text-ink-muted">
+        Puedes ejercer acceso, rectificación, supresión, oposición, limitación y portabilidad enviando un correo a
+        <a href="mailto:cabigotebarbershop@gmail.com" class="footer-link">cabigotebarbershop@gmail.com</a>
+        con el asunto “Protección de datos” y acreditando tu identidad. Si no se atienden correctamente tus derechos,
+        puedes reclamar ante la AEPD.
+      </p>
 
-  <h2 class="h4 mt-4">8. Seguridad</h2>
-  <p>Aplicamos medidas técnicas y organizativas razonables para proteger los datos frente a accesos no autorizados, pérdida o alteración.</p>
+      <!-- 7. Menores -->
+      <h2 class="footer-heading mt-4">7. Menores</h2>
+      <p class="text-ink-muted">
+        Los servicios no están dirigidos específicamente a menores. Si detectamos datos sin autorización, procederemos a su eliminación.
+      </p>
 
-  <h2 class="h4 mt-4">9. Cookies y terceros</h2>
-  <p>
-    Para conocer el uso de cookies y cómo configurarlas o revocar tu consentimiento, consulta la
-    <a href="{% url 'home' %}cookies">Política de cookies</a> o abre el
-    <a href="#" data-ck-open>panel de preferencias</a>.
-  </p>
+      <!-- 8. Seguridad -->
+      <h2 class="footer-heading mt-4">8. Seguridad</h2>
+      <p class="text-ink-muted">
+        Aplicamos medidas técnicas y organizativas razonables para proteger los datos frente a accesos no autorizados, pérdida o alteración.
+      </p>
 
-  <h2 class="h4 mt-4">10. Cambios en la política</h2>
-  <p>Podemos actualizar esta política para reflejar cambios legales o técnicos. Publicaremos la nueva versión con su fecha de actualización.</p>
+      <!-- 9. Cookies -->
+      <h2 class="footer-heading mt-4">9. Cookies y terceros</h2>
+      <p class="text-ink-muted">
+        Para conocer el uso de cookies y cómo configurarlas o revocar tu consentimiento, visita la
+        <a href="{% url 'home' %}cookies" class="footer-link">Política de cookies</a> o abre el
+        <a href="#" class="footer-link" data-ck-open>panel de preferencias</a>.
+      </p>
+
+      <!-- 10. Cambios -->
+      <h2 class="footer-heading mt-4">10. Cambios en la política</h2>
+      <p class="text-ink-muted">
+        Podemos actualizar esta política para reflejar cambios legales o técnicos. Publicaremos la nueva versión con su fecha.
+      </p>
+
+      <div class="mt-4 d-flex gap-2 flex-wrap">
+        <a href="#" class="btn btn-gold" data-ck-open>
+          <i class="bi bi-sliders me-1" aria-hidden="true"></i> Abrir preferencias
+        </a>
+        <a href="{% url 'home' %}" class="btn btn-outline-gold">
+          <i class="bi bi-house me-1" aria-hidden="true"></i> Volver al inicio
+        </a>
+      </div>
+    </div>
+  </div>
 </main>
 {% endblock %}

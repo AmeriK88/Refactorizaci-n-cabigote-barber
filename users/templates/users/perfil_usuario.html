@@ -3,146 +3,116 @@
 {% block title %}Perfil de Usuario{% endblock %}
 
 {% block content %}
+<div class="container py-5">
 
-<div class="container mt-3">
-  <a href="{% url 'users:editar_perfil_usuario' %}"
-     class="btn btn-primary btn-sm rounded-pill ms-2 mt-3 d-inline-flex align-items-center">
-    <i class="fas fa-user-edit m-1"></i> 
-    Editar Perfil
-  </a>
-  <a href="{% url 'appointments:ver_citas' %}"
-     class="btn btn-outline-secondary btn-sm rounded-pill ms-2 mt-3 d-inline-flex align-items-center">
-    <i class="fas fa-calendar-check m-1"></i>
-    Mis Citas
-  </a>
-</div>
+  {# ───────── Acciones rápidas ───────── #}
+  <div class="d-flex flex-wrap gap-2 justify-content-start mb-3 animate-on-load">
+    <a href="{% url 'users:editar_perfil_usuario' %}" class="btn btn-gold btn-sm d-inline-flex align-items-center">
+      <i class="fas fa-user-edit me-2"></i> Editar Perfil
+    </a>
+    <a href="{% url 'appointments:ver_citas' %}" class="btn btn-outline-gold btn-sm d-inline-flex align-items-center">
+      <i class="fas fa-calendar-check me-2"></i> Mis Citas
+    </a>
+  </div>
 
-<div class="container mt-5">
-    <div class="mb-5 card-header gradiente-header shadow-sm bg-light text-center p-3 border-0">
-        <h2 class="h4 fw-bold mb-0">
-            <i class="fas fa-user-circle me-2 text-primary"></i> Perfil de Usuario
-        </h2>
-    </div>        
+  {# ───────── Header perfil ───────── #}
+  <div class="card card-glass shadow-sm mb-4 animate-on-load">
+    <div class="card-header gradiente-header text-center">
+      <h2 class="h4 fw-bold mb-0 text-ink">
+        <i class="fas fa-user-circle me-2 text-gold" aria-hidden="true"></i>
+        Perfil de Usuario
+      </h2>
+    </div>
+  </div>
 
-    <!-- STATS SECTION -->
-<div class="container mb-5 animate-on-load">
-  <div class="row align-items-stretch">
-    <div class="col-md-4 mb-3">
-      <div class="card h-100 shadow-sm border-primary">
-        <div class="card-body text-center">
-          <i class="fas fa-calendar-alt fa-3x text-primary"></i>
-          <h5 class="card-title mt-2">Nº Total Citas</h5>
-          <p class="card-text display-6  text-center mt-auto">
-            {{ total_citas }}
-          </p>
+  {# ───────── Stats ───────── #}
+  <div class="row g-3 mb-5">
+    <div class="col-md-4">
+      <div class="card card-glass h-100 text-center animate-on-load">
+        <div class="card-body">
+          <i class="fas fa-calendar-alt fa-2x text-ink-muted"></i>
+          <h5 class="card-title mt-2 text-ink">Nº Total Citas</h5>
+          <p class="display-6 m-0 text-ink">{{ total_citas }}</p>
         </div>
       </div>
     </div>
-
-    <div class="col-md-4 mb-3">
-      <div class="card h-100 shadow-sm border-success">
-        <div class="card-body text-center">
-          <i class="fas fa-euro-sign fa-3x text-success"></i>
-          <h5 class="card-title mt-2">Total Gastado</h5>
-          <p class="card-text display-6 text-center mt-auto">
-            {{ total_gastado }} €
-          </p>
+    <div class="col-md-4">
+      <div class="card card-glass h-100 text-center animate-on-load">
+        <div class="card-body">
+          <i class="fas fa-euro-sign fa-2x text-ink-muted"></i>
+          <h5 class="card-title mt-2 text-ink">Total Gastado</h5>
+          <p class="display-6 m-0 text-ink">{{ total_gastado }} €</p>
         </div>
       </div>
     </div>
-
-    <div class="col-md-4 mb-3">
-      <div class="card h-100 shadow-sm border-warning">
-        <div class="card-body text-center">
-          <i class="fas fa-star fa-3x text-warning"></i>
-          <h5 class="card-title mt-2">Servicio Favorito</h5>
-          <p class="card-text display-6  text-center mt-auto">
-            {{ favorite_service }}
-          </p>
+    <div class="col-md-4">
+      <div class="card card-glass h-100 text-center animate-on-load">
+        <div class="card-body">
+          <i class="fas fa-star fa-2x text-ink-muted"></i>
+          <h5 class="card-title mt-2 text-ink">Servicio Favorito</h5>
+          <p class="display-6 m-0 text-ink">{{ favorite_service }}</p>
         </div>
       </div>
     </div>
   </div>
-</div>
 
 
+  {# ───────── Citas activas ───────── #}
+  {% if citas %}
+    <div class="card card-glass shadow-sm mb-4 animate-on-load">
+      <div class="card-header gradiente-header text-center">
+        <h2 class="h4 fw-bold mb-0 text-ink">
+          <i class="fas fa-user-circle me-2 text-gold" aria-hidden="true"></i>
+          Citas Activas
+        </h2>
+      </div>
+    </div>
 
-    {% if citas %}
-        <div class="row g-4 animate-on-load">
-            <!-- ACTIVE APPOINTMENTS LOGIC -->
-            {% if citas|length == 1 %}
-                <div class="col-12">
-                    <div class="card h-100 shadow-sm">
-                        {% if citas.0.servicio.imagen %}
-                        <div class="card-img-top-container">
-                            <img src="{{ citas.0.servicio.imagen.url }}" alt="{{ citas.0.servicio.nombre }}" class="card-img-top banner-img">
-                        </div>
-                        {% endif %}
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">{{ citas.0.servicio.nombre }}</h5>
-                            <p class="card-text d-flex align-items-center">
-                                <i class="m-3 bi bi-calendar-event me-2 text-primary"></i>
-                                <span><strong>Fecha:</strong> {{ citas.0.fecha }}</span>
-                            </p>
-                            <p class="card-text d-flex align-items-center">
-                                <i class="m-3 bi bi-clock me-2 text-success"></i>
-                                <span><strong>Hora:</strong> {{ citas.0.hora }}</span>
-                            </p>
-                            <p class="card-text d-flex align-items-center">
-                                <i class="m-3 bi bi-chat-left-dots me-2 text-secondary"></i>
-                                <span><strong>Comentario:</strong> {{ citas.0.comentario }}</span>
-                            </p>
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <a href="{% url 'appointments:editar_cita' citas.0.id %}" class="btn btn-primary">Editar</a>
-                                <a href="{% url 'appointments:eliminar_cita' citas.0.id %}" class="btn btn-outline-danger">Eliminar</a>
-                            </div>                           
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                {% for cita in citas %}
-                <div class="col-12 col-md-6 col-lg-4 mt-5 animate-on-load">
-                    <div class="card h-100 shadow-sm">
-                        {% if cita.servicio.imagen %}
-                        <div class="card-img-top-container">
-                            <img src="{{ cita.servicio.imagen.url }}" alt="{{ cita.servicio.nombre }}" class="card-img-top banner-img">
-                        </div>
-                        {% endif %}
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">{{ cita.servicio.nombre }}</h5>
-                            <p class="card-text d-flex align-items-center">
-                                <i class="m-3 bi bi-calendar-event me-2 text-primary"></i>
-                                <span><strong>Fecha:</strong> {{ cita.fecha }}</span>
-                            </p>
-                            <p class="card-text d-flex align-items-center">
-                                <i class="m-3 bi bi-clock me-2 text-success"></i>
-                                <span><strong>Hora:</strong> {{ cita.hora }}</span>
-                            </p>
-                            <p class="card-text d-flex align-items-center">
-                                <i class="m-3 bi bi-chat-left-dots me-2 text-secondary"></i>
-                                <span><strong>Comentario:</strong> {{ cita.comentario }}</span>
-                            </p>
-                            <div class="mt-auto d-flex justify-content-between">
-                                <a href="{% url 'appointments:editar_cita' cita.id %}" class="btn btn-primary">Editar</a>
-                                <a href="{% url 'appointments:eliminar_cita' cita.id %}" class="btn btn-outline-danger">Eliminar</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
+    <div class="row g-4">
+      {% for cita in citas %}
+      <div class="col-12 {% if citas|length > 1 %}col-md-6 col-lg-4{% endif %}">
+        <div class="card card-glass h-100 shadow-sm animate-on-load">
+          {% if cita.servicio.imagen %}
+          <div class="card-img-top-container">
+            <img src="{{ cita.servicio.imagen.url }}" alt="{{ cita.servicio.nombre }}" class="card-img-top banner-img border-0">
+          </div>
+          {% endif %}
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title text-ink">{{ cita.servicio.nombre }}</h5>
+
+            <p class="card-text d-flex align-items-center">
+              <i class="bi bi-calendar-event me-2 text-ink-muted"></i>
+              <span class="text-ink-muted"><strong class="text-ink">Fecha:</strong> {{ cita.fecha }}</span>
+            </p>
+            <p class="card-text d-flex align-items-center">
+              <i class="bi bi-clock me-2 text-ink-muted"></i>
+              <span class="text-ink-muted"><strong class="text-ink">Hora:</strong> {{ cita.hora }}</span>
+            </p>
+            {% if cita.comentario %}
+            <p class="card-text d-flex align-items-start">
+              <i class="bi bi-chat-left-dots me-2 text-ink-muted"></i>
+              <span class="text-ink-muted"><strong class="text-ink">Comentario:</strong> {{ cita.comentario }}</span>
+            </p>
             {% endif %}
-        </div>
-    {% else %}
-        <div class="container mt-5 animate-on-load">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">No tienes citas activas</h5>
-                    <p class="card-text">Pero no te preocupes, puedes reservar una cita para disfrutar de nuestros servicios.</p>
-                    <a href="{% url 'appointments:reservar_cita' %}" class="btn btn-primary">Reservar cita</a>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-</div>
 
+            <div class="mt-auto d-flex gap-2">
+              <a href="{% url 'appointments:editar_cita' cita.id %}" class="btn btn-outline-gold w-50">Editar</a>
+              <a href="{% url 'appointments:eliminar_cita' cita.id %}" class="btn btn-danger w-50">Eliminar</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  {% else %}
+    <div class="card card-glass text-center mt-4 animate-on-load">
+      <div class="card-body">
+        <h5 class="card-title text-ink">No tienes citas activas</h5>
+        <p class="text-ink-muted mb-3">Puedes reservar una cita y disfrutar de nuestros servicios.</p>
+        <a href="{% url 'appointments:reservar_cita' %}" class="btn btn-gold">Reservar cita</a>
+      </div>
+    </div>
+  {% endif %}
+</div>
 {% endblock %}

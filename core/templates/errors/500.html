@@ -1,11 +1,46 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% block title %}500 · Error del servidor{% endblock %}
 
-{% block title %}500 - Error del Servidor{% endblock %}
+{% block extra_head %}
+<meta name="robots" content="noindex,nofollow">
+{% endblock %}
 
 {% block content %}
-<div class="container text-center mt-5">
-    <h1 class="display-4 text-danger">500 - Error del Servidor</h1>
-    <p class="lead">Ha ocurrido un error interno en el servidor. Por favor, inténtalo de nuevo más tarde.</p>
-    <a href="{% url 'home' %}" class="btn btn-primary mt-3">Volver a la página de inicio</a>
+<div class="container py-5">
+  <div class="card card-glass shadow-sm">
+    <div class="card-header gradiente-header text-center">
+      <h1 class="h5 fw-bold mb-0 text-ink">
+        <i class="bi bi-cpu-fill me-2 text-danger" aria-hidden="true"></i>
+        Algo se nos ha ido de las manos
+      </h1>
+    </div>
+
+    <div class="card-body text-center">
+      <p class="text-ink-muted mb-3">
+        Ha ocurrido un error interno en el servidor. Estamos trabajando para solucionarlo.
+      </p>
+
+      {% if incident_id %}
+        <p class="small text-ink-muted mb-4">
+          ID de incidente: <code>{{ incident_id }}</code>
+        </p>
+      {% endif %}
+
+      <div class="d-flex gap-2 flex-wrap justify-content-center">
+        <a class="btn btn-gold" href="{% url 'home' %}">
+          <i class="bi bi-house me-1"></i> Volver al inicio
+        </a>
+        <button class="btn btn-outline-gold" onclick="location.reload()">
+          <i class="bi bi-arrow-clockwise me-1"></i> Reintentar
+        </button>
+      </div>
+
+      <hr class="my-4">
+      <p class="small text-ink-muted mb-0">
+        Si el problema persiste, contáctanos en
+        <a class="footer-link" href="mailto:{{ EMAIL_HOST_USER|default:'cabigotebarbershop@gmail.com' }}">soporte</a>.
+      </p>
+    </div>
+  </div>
 </div>
 {% endblock %}

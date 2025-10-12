@@ -1,39 +1,115 @@
 {% extends 'base.html' %}
 
-{% block title %}Detalle del Producto - {{ producto.titulo }}{% endblock %}
+{% block title %}{{ producto.titulo }} · Productos · Ca’Bigote{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <!-- Título del Producto -->
-    <div class="card-header gradiente-header shadow-sm bg-light text-center p-3 border-0">
-        <h1 class="h3 fw-bold mb-0">
-            <i class="fas fa-shopping-bag me-2 text-primary"></i> {{ producto.titulo }}
-        </h1>
-    </div>    
+<div class="container py-5">
 
-    <div class="row justify-content-center animate-on-load">
-        <!-- Imagen del Producto y Detalles -->
-        <div class="col-md-12"> 
-            <div class="card shadow-lg">
-                <img src="{{ producto.imagen.url }}" alt="{{ producto.titulo }}" class="img-fluid rounded-top">
-                <div class="card-body">
-                    <!-- Descripción del Producto -->
-                    <h5 class="card-title text-center">{{ producto.titulo }}</h5>
-                    <p class="card-text text-center">{{ producto.descripcion }}</p>
-
-                    <!-- Precio del Producto (si aplica) -->
-                    {% if producto.precio %}
-                    <div class="text-center">
-                        <span class="badge bg-success fs-4 text-light">€{{ producto.precio }}</span>
-                    </div>
-                    {% endif %}
-                   
-                    <div class="text-center mt-4">
-                        <a href="#" class="btn btn-primary">Disponible</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- Header -->
+  <div class="card card-glass shadow-sm mb-4">
+    <div class="card-header gradiente-header text-center">
+      <h1 class="h4 fw-bold mb-0 text-ink">
+        <i class="fas fa-shopping-bag me-2 text-gold" aria-hidden="true"></i>
+        {{ producto.titulo }}
+      </h1>
     </div>
+  </div>
+
+  <div class="row g-4 align-items-start animate-on-load">
+    <!-- Galería -->
+    <div class="col-12 col-lg-6">
+      <div class="card card-glass product-hero overflow-hidden">
+        <div class="product-media">
+          <img
+            src="{{ producto.imagen.url }}"
+            alt="{{ producto.titulo }}"
+            class="w-100 h-100 product-img"
+            loading="lazy">
+        </div>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="col-12 col-lg-6">
+      <div class="card card-glass h-100">
+        <div class="card-body">
+          <h2 class="h5 text-ink mb-3">{{ producto.titulo }}</h2>
+
+          {% if producto.precio %}
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="price-badge">€{{ producto.precio }}</span>
+            <span class="availability-pill available">
+              <i class="bi bi-check2-circle me-1"></i> Disponible
+            </span>
+          </div>
+          {% else %}
+          <div class="mb-3">
+            <span class="availability-pill neutral">
+              <i class="bi bi-info-circle me-1"></i> Consulta en tienda
+            </span>
+          </div>
+          {% endif %}
+
+          {% if producto.descripcion %}
+            <p class="text-ink-muted mb-4">{{ producto.descripcion }}</p>
+          {% endif %}
+
+          <div class="d-flex flex-wrap gap-2">
+            <a href="https://wa.me/+34659809165?text=Hola%20Ca'Bigote%2C%20quiero%20información%20sobre%20{{ producto.titulo|urlencode }}"
+               class="btn btn-gold">
+              <i class="fab fa-whatsapp me-2" aria-hidden="true"></i> Preguntar por WhatsApp
+            </a>
+            <a href="{% url 'products:ver_imagenes' %}" class="btn btn-outline-gold">
+              Volver a productos
+            </a>
+          </div>
+
+          <!-- Info secundaria (opcional/ejemplo) -->
+          <hr class="footer-sep my-4">
+          <ul class="list-unstyled small text-ink-muted m-0">
+            <li class="mb-1"><i class="bi bi-shield-check me-2"></i> Calidad profesional de barbería</li>
+            <li class="mb-1"><i class="bi bi-box-seam me-2"></i> Recogida en tienda</li>
+            <li class="mb-1"><i class="bi bi-geo-alt me-2"></i> C. el Rafael, 43 · Arrecife</li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Relacionados (opcional si pasas contexto relacionados) -->
+  {% if relacionados %}
+  <div class="mt-5">
+    <div class="card card-glass shadow-sm mb-3">
+      <div class="card-header gradiente-header text-center">
+        <h3 class="h6 fw-bold m-0 text-ink">
+          <i class="bi bi-stars me-2"></i> También te puede interesar
+        </h3>
+      </div>
+    </div>
+    <div class="row g-4">
+      {% for item in relacionados %}
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="card card-glass product-card h-100">
+          <a href="{% url 'products:detalle_producto' producto_id=item.id %}" class="product-thumb d-block">
+            <img src="{{ item.imagen.url }}" alt="{{ item.titulo }}" class="w-100 h-100" loading="lazy">
+          </a>
+          <div class="card-body text-center">
+            <p class="m-0 text-ink"><strong>{{ item.titulo }}</strong></p>
+            {% if item.precio %}<small class="text-ink-muted">€{{ item.precio }}</small>{% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.animate-on-load').forEach(el => el.classList.add('loaded'));
+  });
+</script>
 {% endblock %}

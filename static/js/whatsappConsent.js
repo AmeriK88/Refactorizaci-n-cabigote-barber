@@ -1,4 +1,3 @@
-/* whatsappConsent.js — Ca'Bigote */
 (function () {
   const waBtn = document.getElementById('whatsapp-btn');
   const modalEl = document.getElementById('wa-modal');

@@ -1,4 +1,3 @@
-// static/js/special_message.js
 
 document.addEventListener('DOMContentLoaded', () => {
   const modalElement = document.getElementById('specialMessageModal');
