@@ -7,7 +7,7 @@
 <div class="container py-5">
 
   {# ───────── Header ───────── #}
-  <div class="card card-glass shadow-sm mb-4">
+  <div class="card card-glass shadow-sm mb-4 animate-on-load">
     <div class="card-header gradiente-header text-center">
       <h2 class="h4 fw-bold mb-0 text-ink">
         <i class="fas fa-star me-2 text-gold" aria-hidden="true"></i>
@@ -17,14 +17,18 @@
   </div>
 
   {# ───────── Reseñas existentes ───────── #}
-  <div class="mb-5 animate-on-load">
+  <div class="mb-5" role="list" aria-label="Listado de reseñas">
     {% if resenas %}
       {% for resena in resenas %}
-        <article class="card card-glass mb-3">
+        <article
+          class="card card-glass mb-3 animate-on-load"
+          role="article"
+          aria-label="Reseña de {% if resena.usuario and resena.usuario.is_active %}{{ resena.usuario }}{% else %}Usuario eliminado{% endif %}"
+          style="--a-delay:{% widthratio forloop.counter0 1 80 %}ms">
           <div class="card-body">
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
               <div class="d-flex align-items-center gap-2 text-ink">
-                <i class="fas fa-user-circle text-ink-muted"></i>
+                <i class="fas fa-user-circle text-ink-muted" aria-hidden="true"></i>
                 <strong>
                   {% if resena.usuario and resena.usuario.is_active %}
                     {{ resena.usuario }}
@@ -33,13 +37,14 @@
                   {% endif %}
                 </strong>
               </div>
+
               <div class="d-flex align-items-center gap-2">
                 <span class="stars" aria-label="{{ resena.puntuacion }} de 5">
                   {% for i in "12345" %}
                     {% if forloop.counter <= resena.puntuacion %}
-                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star" aria-hidden="true"></i>
                     {% else %}
-                      <i class="far fa-star"></i>
+                      <i class="far fa-star" aria-hidden="true"></i>
                     {% endif %}
                   {% endfor %}
                 </span>
@@ -47,17 +52,23 @@
               </div>
             </div>
 
-            <p class="fs-5 text-ink mb-3">{{ resena.texto }}</p>
+            {% if resena.texto %}
+              <p class="fs-5 text-ink mb-3">{{ resena.texto }}</p>
+            {% endif %}
 
             <div class="metadata small text-ink-muted d-flex flex-wrap gap-3">
-              <span><i class="fas fa-cut me-1"></i>{{ resena.servicio.nombre }}</span>
-              <span><i class="fas fa-calendar-alt me-1"></i>{{ resena.fecha|date:"d/m/Y H:i" }}</span>
+              {% if resena.servicio %}
+                <span><i class="fas fa-cut me-1" aria-hidden="true"></i>{{ resena.servicio.nombre }}</span>
+              {% endif %}
+              {% if resena.fecha %}
+                <span><i class="fas fa-calendar-alt me-1" aria-hidden="true"></i>{{ resena.fecha|date:"d/m/Y H:i" }}</span>
+              {% endif %}
             </div>
           </div>
         </article>
       {% endfor %}
     {% else %}
-      <div class="card card-glass text-center">
+      <div class="card card-glass text-center animate-on-load">
         <div class="card-body">
           <h5 class="text-ink-muted mb-1">¡Vaya! Aún no hay reseñas.</h5>
           <p class="text-ink-muted">Sé el primero en comentar.</p>
@@ -70,7 +81,7 @@
   {% if user.is_authenticated %}
     <div class="row justify-content-center">
       <div class="col-12 col-lg-8">
-        <div class="card card-glass shadow-sm">
+        <div class="card card-glass shadow-sm animate-on-load" style="--a-delay:80ms">
           <div class="card-header gradiente-header text-center">
             <h4 class="mb-0 text-ink">
               <i class="bi bi-star-fill me-2 text-gold" aria-hidden="true"></i>
@@ -78,7 +89,7 @@
             </h4>
           </div>
 
-          <form method="post" class="form-dark needs-validation p-3 p-md-4 animate-on-load" novalidate>
+          <form method="post" class="form-dark needs-validation p-3 p-md-4" novalidate>
             {% csrf_token %}
 
             {# Servicio #}
@@ -95,20 +106,24 @@
               {% for error in form.texto.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
 
-            {# Puntuación como estrella interactiva (radios) #}
+            {# Puntuación como estrellas (radios accesibles) #}
             <div class="mb-4">
               <label class="form-label d-block fw-semibold">⭐ Puntuación</label>
               <div class="rating-stars" role="radiogroup" aria-label="Elige una puntuación de 1 a 5">
-                {# Reemplazamos los radios por un set con labels en forma de estrella #}
                 {% for radio in form.puntuacion %}
-                  <input type="radio"
-                         id="rating-{{ forloop.counter }}"
-                         name="{{ form.puntuacion.name }}"
-                         value="{{ forloop.counter }}"
-                         class="rating-input"
-                         {% if radio.choice_value == form.puntuacion.value %}checked{% endif %}>
-                  <label for="rating-{{ forloop.counter }}" class="rating-label" title="{{ forloop.counter }} de 5" aria-label="{{ forloop.counter }} de 5">
-                    <i class="fa-star"></i>
+                  <input
+                    type="radio"
+                    id="rating-{{ forloop.counter }}"
+                    name="{{ form.puntuacion.name }}"
+                    value="{{ forloop.counter }}"
+                    class="rating-input"
+                    {% if radio.choice_value == form.puntuacion.value %}checked{% endif %}>
+                  <label
+                    for="rating-{{ forloop.counter }}"
+                    class="rating-label"
+                    title="{{ forloop.counter }} de 5"
+                    aria-label="{{ forloop.counter }} de 5">
+                    <i aria-hidden="true"></i>
                   </label>
                 {% endfor %}
               </div>
@@ -121,7 +136,7 @@
       </div>
     </div>
   {% else %}
-    <div class="card card-glass mt-4">
+    <div class="card card-glass mt-4 animate-on-load" style="--a-delay:80ms">
       <div class="card-body text-center">
         <p class="mb-0 text-ink">
           <a class="footer-link" href="{% url 'users:login' %}">Inicia sesión</a> para agregar una reseña.
@@ -131,23 +146,4 @@
   {% endif %}
 
 </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.rating-stars').forEach(group => {
-      const labels = Array.from(group.querySelectorAll('.rating-label'));
-      labels.forEach((label, idx) => {
-        label.addEventListener('mouseenter', () => {
-          group.classList.add('is-hovering');
-          labels.forEach((l, i) => l.classList.toggle('is-active', i <= idx));
-        });
-      });
-      group.addEventListener('mouseleave', () => {
-        group.classList.remove('is-hovering');
-        labels.forEach(l => l.classList.remove('is-active'));
-      });
-    });
-  });
-</script>
-
 {% endblock %}

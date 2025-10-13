@@ -2,6 +2,7 @@
 :root {
     --font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
     --title-font-family: 'Great Vibes', cursive;
+    --title-font-family-alt: 'Fjalla One', sans-serif;
     /* Dark barber */
     --bg-900:#0F1115; /* page background */
     --surface-800:#161A22; /* cards/nav/footer */
@@ -28,7 +29,17 @@ html,body{ height:100%; }
 body{ display:flex; flex-direction:column; margin:0;background:var(--bg-900); color:var(--ink-50); font-family:var(--font-family); line-height:1.65;}
 
 /* Typography */
-h1,h2,h3,.gradiente-header{ font-family:'Fjalla One', sans-serif; letter-spacing:.2px; }
+.card-header :is(h1,h2,h3,h4,h5,h6,.h1,.h2,.h3,.h4,.h5,.h6){
+  letter-spacing: .02em; font-family:var(--title-font-family-alt);/* ~0.32px a 16px; ajusta a .015em o .03em al gusto */
+}
+
+/* No espaciar iconos */
+.card-header i,
+.card-header .bi,
+.card-header .fas,
+.card-header .far {
+  letter-spacing: 0;
+}
 .site-title .title-font{ font-family:var(--title-font-family); font-size: clamp(2.25rem, 2vw + 2rem, 3rem); color:var(--ink-50); }
 .text-ink{ color:var(--ink-50)!important; }
 .text-ink-muted{ color:var(--ink-300)!important; }
@@ -45,7 +56,7 @@ main{ padding-block: 24px; margin-bottom:60px; flex:1; }
 .bg-surface{ background: var(--surface-800)!important; border:1px solid var(--border-soft); }
 .navbar{ border-radius: var(--radius); padding-block:.35rem; }
 .brand-avatar{ height: 52px; width: 52px; object-fit: cover; border-radius:50%; border:1px solid var(--border-soft); }
-.brand-wordmark{ font-weight:700; letter-spacing:.3px; }
+.brand-wordmark{ font-weight:700; letter-spacing:.3px; font-family: var(--title-font-family);}
 .navbar-dark .navbar-nav .nav-link{ color:var(--ink-50); opacity:.9; position:relative; }
 .navbar-dark .navbar-nav .nav-link:hover{ opacity:1; }
 .nav-underline::after{ content:""; position:absolute; left:0; right:0; bottom:-6px; height:2px; background:linear-gradient(90deg,var(--gold-400),var(--red-400)); transform:scaleX(0); transform-origin:left; transition:transform .25s ease; }
@@ -65,8 +76,8 @@ main{ padding-block: 24px; margin-bottom:60px; flex:1; }
 .card { border:none; border-radius:var(--radius); background:var(--surface-800); color:var(--ink-50); box-shadow:var(--shadow-2); }
 .card .card-text{ background: transparent !important; box-shadow: none !important; padding: 0 !important; margin-bottom: .5rem; color: var(--ink-300);}
 .card-glass{ background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02)); backdrop-filter:saturate(120%) blur(4px); border:1px solid var(--border-soft); }
-.card-header{ position:relative; padding-left:1.25rem; background:transparent; }
-.card-header::before{ content:""; position:absolute; left:0; top:50%; transform:translateY(-50%); width:4px; height:60%; background: linear-gradient(180deg, var(--gold-400), var(--red-400)); border-radius:4px; }
+.card-header{ position:relative; padding-left:1.25rem; background:transparent;}
+.card-header::before{ content:""; position:absolute; left:0; top:50%; transform:translateY(-50%); width:4px; height:60%; background: linear-gradient(180deg, var(--gold-400), var(--red-400)); border-radius:4px;}
 
 
 /* Hero logo */
@@ -120,12 +131,6 @@ main{ padding-block: 24px; margin-bottom:60px; flex:1; }
 .map-container{ position:relative; overflow:hidden; border-radius:12px; box-shadow:var(--shadow-2); width:100%; padding-bottom:56.25%; background: var(--surface-700); margin-top:1rem; border:1px solid var(--border-soft); }
 #gmaps-placeholder{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:1rem; border-radius:12px; color:var(--ink-50); text-align:center; }
 #gmaps-placeholder .btn{ margin-top:.5rem; }
-
-
-/* WhatsApp FAB */
-.whatsapp-float{ position:fixed; width:60px; height:60px; bottom:20px; right:20px; background:#25d366; color:white; border-radius:50%; text-align:center; font-size:30px; z-index:1000; box-shadow:var(--shadow-2); transition: transform .2s ease, box-shadow .2s ease; }
-.whatsapp-float:hover{ transform: translateY(-2px); box-shadow:var(--shadow-1); }
-.whatsapp-icon{ margin-top:15px; }
 
 
 /* Alerts (mantén tu lógica de mensajes) */
@@ -251,7 +256,7 @@ main{ padding-block: 24px; margin-bottom:60px; flex:1; }
 
 .card img, .card-user-profile img { height: 200px; object-fit: cover; width: 100%; transition: transform 0.3s ease;}
 
-.card img:hover, .card-user-profile img:hover { transform: scale(1.05);}
+.card img:hover, .card-user-profile img:hover { transform: scale(1.03);}
 
 .card-body, .card-user-profile  { padding: 1.5rem; flex: 1; text-align: center;}
 
@@ -330,6 +335,9 @@ img{ box-sizing:border-box; max-width:100%; height:auto; }
 .service-thumb img{ display:block; object-fit:cover; border:0; aspect-ratio: 4 / 3; transition: transform .35s ease;}
 .service-thumb:hover img{ transform: scale(1.03); }
 
+/* Imagenes general*/
+img{ box-sizing:border-box; }
+
 /* Tabla de política en dark: bordes suaves + alto contraste */
 .policy-table { background: var(--surface-800); color: var(--ink-50); border-color: var(--border-soft);}
 .policy-table thead th { background: var(--surface-700); color: var(--ink-50); border-color: var(--border-soft);}
@@ -361,24 +369,6 @@ img{ box-sizing:border-box; max-width:100%; height:auto; }
 }
 
 
-/* Accesibilidad: reduce animaciones si el usuario lo prefiere */
-@media (prefers-reduced-motion: reduce){
-  .dot{ animation:none; opacity:.9; }
-}
-
-/* ========================
-   Tablas responsive 
-   ======================== */
-
-/* Tables */
-@media (max-width: 575.98px){
-.table-responsive table{ border:0; }
-.table-responsive thead{ display:none; }
-.table-responsive tr{ display:block; margin-bottom:1rem; border:1px solid var(--border-soft); border-radius:.75rem; padding:.75rem .5rem; background:var(--surface-800); }
-.table-responsive td{ display:block; text-align:right; padding:.4rem 0; position:relative; }
-.table-responsive td::before{ content: attr(data-label); position:absolute; left:.75rem; width:50%; text-align:left; font-weight:600; color:var(--ink-50); }
-.dot{ --dot-size: 14px; }
-}
 
 /* si mantienes el id, que sea dark */
 #specialMessageModal .modal-content{ background: var(--surface-800); color: var(--ink-50); border:1px solid var(--border-soft);}
@@ -410,7 +400,15 @@ img{ box-sizing:border-box; max-width:100%; height:auto; }
   to   { transform: translateY(-10px); }
 }
 
+/* WhatsApp FAB */
+.whatsapp-float{ position:fixed; width:60px; height:60px; bottom:20px; right:20px; background:#25d366; color:white; border-radius:50%; text-align:center; font-size:30px; z-index:1000; box-shadow:var(--shadow-2); transition: transform .2s ease, box-shadow .2s ease; }
+.whatsapp-float:hover{ transform: translateY(-2px); box-shadow:var(--shadow-1); }
+.whatsapp-icon{ margin-top:15px; }
 
+
+/* =========================
+   Responsive (optimized)
+   ========================= */
   /* ---------- Home specific tweaks ---------- */
 @media (max-width:575.98px){ .hero-image{ max-width:220px; } }
 
@@ -420,7 +418,131 @@ img{ box-sizing:border-box; max-width:100%; height:auto; }
 @media (max-width:575.98px){
   .mockup-laptop{ max-width:180px; }
   .mockup-phone { max-width:100px; }
+
+  /* Base fluid */
+  body{ font-size: clamp(.95rem, .2vw + .9rem, 1rem); }
+  .container{ padding-inline: 16px; }
+
+/* Safe areas (iOS) */
+.whatsapp-float{ right: calc(20px + env(safe-area-inset-right)); bottom: calc(20px + env(safe-area-inset-bottom));}
 }
 
-/* Asegúrate de no desbordar por borde + padding */
-img{ box-sizing:border-box; }
+/* Accesibilidad: reduce animaciones si el usuario lo prefiere */
+@media (prefers-reduced-motion: reduce){
+  .dot{ animation:none; opacity:.7; }
+}
+
+/* ========================
+   Tablas responsive 
+   ======================== */
+
+/* Tables */
+@media (max-width: 575.98px){
+.table-responsive table{ border:0; }
+.table-responsive thead{ display:none; }
+.table-responsive tr{ display:block; margin-bottom:1rem; border:1px solid var(--border-soft); border-radius:.75rem; padding:.75rem .5rem; background:var(--surface-800); }
+.table-responsive td{ display:block; text-align:right; padding:.4rem 0; position:relative; }
+.table-responsive td::before{ content: attr(data-label); position:absolute; left:.75rem; width:50%; text-align:left; font-weight:600; color:var(--ink-50); }
+.dot{ --dot-size: 14px; }
+}
+
+
+/* XS: ≤ 575.98px */
+@media (max-width: 575.98px){
+
+  /* Tablas responsive */
+  .table-responsive table{ border:0; }
+  .table-responsive thead{ display:none; }
+  .table-responsive tr{
+    display:block; margin-bottom:1rem;
+    border:1px solid var(--border-soft); border-radius:.75rem;
+    padding:.75rem .5rem; background:var(--surface-800);
+  }
+  .table-responsive td{
+    display:block; text-align:right; padding:.4rem 0; position:relative;
+  }
+  .table-responsive td::before{
+    content: attr(data-label); position:absolute; left:.75rem; width:50%;
+    text-align:left; font-weight:600; color:var(--ink-50);
+  }
+
+  /* Tipografía header + densidad */
+  .card-header :is(h1,h2,h3,h4,h5,h6,.h1,.h2,.h3,.h4,.h5,.h6){ letter-spacing:.015em; }
+  .card-header{ padding:.75rem 1rem .75rem 1.25rem; }
+  .card-header::before{ height:54%; }
+
+  /* Navbar / branding */
+  .navbar{ padding-block:.25rem; }
+  .brand-avatar{ width:40px; height:40px; }
+  .brand-wordmark{ font-size:.95rem; }
+
+  /* Botones + controles */
+  .btn{ padding:.65rem .9rem; }
+  .btn-lg{ padding:.75rem 1rem; }
+  .form-control-lg, .form-select-lg{ padding:.65rem .9rem; font-size:1rem; }
+  .input-group-text-dark{ padding:.55rem .65rem; }
+  .form-hint{ font-size:.85rem; }
+
+  /* Cards */
+  .card{ border-radius:12px; }
+  .card-body{ padding:1rem; }
+
+  /* Imágenes / thumbs más panorámicas */
+  .product-thumb img,
+  .service-thumb img,
+  .product-img{ aspect-ratio:16/10; }
+
+  /* Price list */
+  .price-item{ padding:.75rem .9rem; }
+
+  /* Footer */
+  .visit-logo{ width:68px; height:68px; }
+  .footer-heading{ margin-bottom:.5rem; }
+  .visits-counter-card{ padding:.75rem; }
+
+  /* Mapa más panorámico */
+  .map-container{ padding-bottom:60%; }
+
+  /* Odometer */
+  .odometer{ font-size:1.5rem; }
+
+  /* Animaciones más suaves */
+  .animate-on-load{ transition-duration:.4s; transform: translateY(10px); }
+
+  /* Utilidades */
+  .hide-xs{ display:none !important; }
+}
+
+/* SM+: ≥ 576px */
+@media (min-width: 576px){
+  .show-xs{ display:none !important; }
+}
+
+/* MD+: ≥ 768px */
+@media (min-width: 768px){
+  .visit-card{ padding:1.25rem 1.5rem; }
+}
+
+/* LG+: ≥ 992px */
+@media (min-width: 992px){
+  /* Grids métricas más holgados */
+  .metrics{ grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); }
+
+  /* Imágenes / thumbs más “editorial” */
+  .product-thumb img,
+  .service-thumb img,
+  .product-img{ aspect-ratio:4/3; }
+}
+
+/* XL+: ≥ 1200px */
+@media (min-width: 1200px){
+  .card{ border-radius:16px; }
+  .odometer{ font-size:2.25rem; }
+}
+
+/* Accessibilidad: desactiva animaciones si el usuario lo pide */
+@media (prefers-reduced-motion: reduce){
+  .animate-on-load{ transition:none; transform:none !important; opacity:1 !important; }
+}
+
+

@@ -15,10 +15,10 @@
     </div>
   </div>
 
-  <div class="row g-4 align-items-start animate-on-load" style="--a-delay:80ms">
+  <div class="row g-4 align-items-start">
     <!-- Galería -->
-    <div class="col-12 col-lg-6 animate-on-load" style="--a-delay:120ms">
-      <div class="card card-glass product-hero overflow-hidden">
+    <div class="col-12 col-lg-6">
+      <div class="card card-glass product-hero overflow-hidden animate-on-load" style="--a-delay:80ms">
         <div class="product-media">
           {% if producto.imagen %}
             <img
@@ -37,8 +37,8 @@
     </div>
 
     <!-- Info -->
-    <div class="col-12 col-lg-6 animate-on-load" style="--a-delay:200ms">
-      <div class="card card-glass h-100">
+    <div class="col-12 col-lg-6">
+      <div class="card card-glass h-100 animate-on-load" style="--a-delay:160ms">
         <div class="card-body">
           <h2 class="h5 text-ink mb-3">{{ producto.titulo }}</h2>
 
@@ -96,11 +96,11 @@
       </div>
     </div>
 
-    <div class="row g-4 animate-on-load" style="--a-delay:280ms">
+    <div class="row g-4">
       {% for item in relacionados %}
-      <div class="col-12 col-sm-6 col-lg-4 animate-on-load"
-           style="--a-delay:{% widthratio forloop.counter0 1 80 %}ms">
-        <div class="card card-glass product-card h-100">
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="card card-glass product-card h-100 animate-on-load"
+             style="--a-delay:{% widthratio forloop.counter0 1 80 %}ms">
           <a href="{% url 'products:detalle_producto' producto_id=item.id %}"
              class="product-thumb d-block"
              aria-label="Ver {{ item.titulo }}">
