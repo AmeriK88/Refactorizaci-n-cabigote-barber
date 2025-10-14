@@ -24,13 +24,10 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="Barbería Ca'Bigote">
     <meta property="og:description" content="Barbería Ca'Bigote: Servicios de alta calidad para tu cuidado personal.">
-    <meta property="og:image" content="{% static 'imagenes/logo-cb.jpg' %}">
+    <meta property="og:image" content="{% static 'imagenes/logo-cb.webp' %}">
     <meta name="twitter:card" content="summary_large_image">
 
     <!-- PWA & Theme -->
-    
-    <!-- <meta name="theme-color" content="#1C8EDF" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#005f99" media="(prefers-color-scheme: dark)"> -->
 
     <meta name="theme-color" content="#161A22" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#0F1115" media="(prefers-color-scheme: dark)">
@@ -39,14 +36,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Ca'Bigote">
     <meta name="msapplication-TileColor" content="#1C8EDF">
-    <meta name="msapplication-TileImage" content="{% static 'imagenes/logo-cb.jpg' %}">
+    <meta name="msapplication-TileImage" content="{% static 'imagenes/logo-cb.webp' %}">
     <link rel="manifest" href="{% static 'manifest.json' %}">
 
     <title>{% block title %}Ca´Bigote{% endblock %}</title>
 
     <!-- Favicons & App Icons -->
     <link rel="icon" type="image/x-icon" href="{% static 'imagenes/favicon.ico' %}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'imagenes/logo-cb.jpg' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'imagenes/logo-cb.webp' %}">
 
     <!-- Bootstrap CSS (v5) -->
     <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
@@ -132,67 +129,79 @@
         </div>
         {% endif %}
 
-        <!-- TÍTULO -->
+        <!-- TÍTULO DESKTOP -->
         <div class="container py-4 d-none d-md-block">
-            <h1 class="site-title text-center">
-            <img src="{% static 'imagenes/barber-pole.webp' %}" alt="Barber pole" class="icon d-inline-block" />
+        <h1 class="site-title text-center">
+            <img src="{% static 'imagenes/barber-pole.webp' %}" alt="" class="icon d-inline-block" />
             <span class="title-font">CaʼBigote</span>
-            <img src="{% static 'imagenes/barber-pole.webp' %}" alt="Barber pole" class="icon d-inline-block" />
-            </h1>
+            <img src="{% static 'imagenes/barber-pole.webp' %}" alt="" class="icon d-inline-block" />
+        </h1>
         </div>
+
+        <!-- TÍTULO MÓVIL (compacto) -->
+        <div class="container py-2 d-block d-md-none">
+        <div class="d-flex justify-content-center align-items-center gap-2 site-title">
+            <img src="{% static 'imagenes/barber-pole.webp' %}" alt=""  class="icon d-inline-block">
+            <H1 class="site-title title-font">CaʼBigote</H1>
+            <img src="{% static 'imagenes/barber-pole.webp' %}" alt=""  class="icon d-inline-block">
+        </div>
+        </div>
+
 
         <!-- NAVBAR -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-surface shadow-sm rounded-3 sticky-top">
             <div class="container">
-            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
-                <img src="{% static 'imagenes/logo-cb.webp' %}" alt="Logo de Ca'Bigote" class="rounded-circle brand-avatar">
+                <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
+                <span class="brand-avatar-badge" aria-hidden="true">
+                    <img src="{% static 'imagenes/logo-cb-nav.png' %}" alt="Logo de Ca'Bigote" class="brand-avatar">
+                </span>
                 <span class="brand-wordmark">CaʼBigote</span>
-            </a>
+                </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav align-items-lg-center gap-lg-2">
-                <li class="nav-item">
-                    <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
-                    href="{% url 'home' %}">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'reservar_cita' %}active{% endif %}"
-                    href="{% url 'appointments:reservar_cita' %}">Citas</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'ver_servicios' %}active{% endif %}"
-                    href="{% url 'services:ver_servicios' %}">Servicios</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'ver_resenas' %}active{% endif %}"
-                    href="{% url 'reviews:ver_resenas' %}">Reseñas</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'ver_imagenes' %}active{% endif %}"
-                    href="{% url 'products:ver_imagenes' %}">Productos</a>
-                </li>
-
-                {% if user.is_authenticated %}
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav align-items-lg-center gap-lg-2">
                     <li class="nav-item">
-                    <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'perfil_usuario' %}active{% endif %}"
-                        href="{% url 'users:perfil_usuario' %}">Perfil</a>
+                        <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
+                        href="{% url 'home' %}">Inicio</a>
                     </li>
                     <li class="nav-item">
-                    <a class="btn btn-outline-gold ms-lg-2" href="{% url 'users:logout' %}">Salir</a>
+                        <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'reservar_cita' %}active{% endif %}"
+                        href="{% url 'appointments:reservar_cita' %}">Citas</a>
                     </li>
-                {% else %}
                     <li class="nav-item">
-                    <a class="btn btn-gold ms-lg-2" href="{% url 'users:login' %}">Acceder</a>
+                        <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'ver_servicios' %}active{% endif %}"
+                        href="{% url 'services:ver_servicios' %}">Servicios</a>
                     </li>
-                {% endif %}
-                </ul>
-            </div>
+                    <li class="nav-item">
+                        <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'ver_resenas' %}active{% endif %}"
+                        href="{% url 'reviews:ver_resenas' %}">Reseñas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'ver_imagenes' %}active{% endif %}"
+                        href="{% url 'products:ver_imagenes' %}">Productos</a>
+                    </li>
+
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                        <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'perfil_usuario' %}active{% endif %}"
+                            href="{% url 'users:perfil_usuario' %}">Perfil</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="btn btn-outline-gold ms-lg-2" href="{% url 'users:logout' %}">Salir</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                        <a class="btn btn-gold ms-lg-2" href="{% url 'users:login' %}">Acceder</a>
+                        </li>
+                    {% endif %}
+                    </ul>
+                </div>
             </div>
         </nav>
         </header>
@@ -225,11 +234,11 @@
             <!-- VISIT CARD -->
             <section class="visit-card card card-glass p-3 p-md-4 mb-4 animate-on-load" style="--a-delay:0ms">
             <div class="row g-3 align-items-center">
-                <div class="col-12 col-md-3 text-center animate-on-load" style="--a-delay:60ms">
+                <div class="col-12 col-md-3 text-center animate-on-load" style="--a-delay:40ms">
                 <img src="{% static 'imagenes/logo-cb.webp' %}" alt="Logo CaʼBigote" class="visit-logo rounded-circle">
                 </div>
-                <div class="col-12 col-md-6 text-center text-md-start animate-on-load" style="--a-delay:120ms">
-                <h4 class="mb-1 fw-bold">CaʼBigote Barber Shop</h4>
+                <div class="col-12 col-md-6 text-center text-md-start animate-on-load" style="--a-delay:40ms">
+                <h4 class="mb-1 fw-bold hero-title">CaʼBigote Barber Shop</h4>
                 <p class="mb-1 text-ink-muted">Estilo clásico con toque moderno</p>
                 <ul class="list-unstyled small m-0 text-ink-muted">
                     <li><i class="bi bi-geo-alt me-1"></i> C. el Rafael, 43 · 35500 Arrecife, Las Palmas</li>
@@ -237,7 +246,7 @@
                     <li><i class="bi bi-telephone me-1"></i> <a class="footer-link" href="tel:+34659809165">+34 659 809 165</a></li>
                 </ul>
                 </div>
-                <div class="col-12 col-md-3 d-flex justify-content-center justify-content-md-end gap-2 animate-on-load" style="--a-delay:180ms">
+                <div class="col-12 col-md-3 d-flex justify-content-center justify-content-md-end gap-2 animate-on-load" style="--a-delay:80ms">
                 <a href="{% url 'appointments:reservar_cita' %}" class="btn btn-gold">
                     <i class="bi bi-scissors me-1"></i> Reservar
                 </a>
@@ -251,7 +260,7 @@
             <!-- COLUMNS -->
             <div class="row gy-4">
             <!-- ABOUT -->
-            <div class="col-md-4 animate-on-load" style="--a-delay:0ms">
+            <div class="col-md-4 animate-on-load" style="--a-delay:20ms">
                 <h5 class="footer-heading">Sobre Nosotros</h5>
                 <p class="mb-0 text-ink-muted">
                 Ca'Bigote es una barbería moderna con un toque clásico. Ofrecemos cortes y afeitados
@@ -260,7 +269,7 @@
             </div>
 
             <!-- LINKS -->
-            <div class="col-md-4 animate-on-load" style="--a-delay:120ms">
+            <div class="col-md-4 animate-on-load" style="--a-delay:60ms">
                 <h5 class="footer-heading">Enlaces Rápidos</h5>
                 <ul class="list-unstyled m-0">
                 <li><a href="{% url 'home' %}" class="footer-link">Inicio</a></li>
@@ -272,9 +281,9 @@
             </div>
 
             <!-- LOCATION -->
-            <div class="col-md-4 animate-on-load" style="--a-delay:240ms">
+            <div class="col-md-4 animate-on-load" style="--a-delay:120ms">
                 <h5 class="footer-heading">Ubicación</h5>
-                <div class="map-container mb-2 animate-on-load" style="--a-delay:300ms">
+                <div class="map-container mb-2 animate-on-load" style="--a-delay:180ms">
                 <!-- Placeholder de mapa bloqueado por consentimiento -->
                 <div id="gmaps-placeholder"
                     data-embed-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3490.4957479491627!2d-13.558574623952396!3d28.972677268552072!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xc46276f9ab656d9%3A0x41c1eb89e4d41c84!2sC.%20el%20Rafael%2C%2043%2C%2035500%20Arrecife%2C%20Las%20Palmas!5e0!3m2!1ses!2ses!4v1741366191645!5m2!1ses!2ses"
@@ -290,10 +299,10 @@
             </div>
 
             <!-- VISITOR / USERS COUNTER -->
-            <div class="visits-counter-card mt-4 animate-on-load" style="--a-delay:0ms" role="region" aria-label="Estadísticas del sitio">
+            <div class="visits-counter-card metrics--opposite mt-4 animate-on-load" style="--a-delay:0ms" role="region" aria-label="Estadísticas del sitio">
             <div class="metrics">
                 <!-- Visitas -->
-                <div class="metric animate-on-load" style="--a-delay:80ms">
+                <div class="metric animate-on-load" style="--a-delay:40ms">
                 <div class="metric-icon" aria-hidden="true">
                     <i class="fas fa-user-friends"></i>
                 </div>
@@ -308,7 +317,7 @@
                 </div>
 
                 <!-- Usuarios totales -->
-                <div class="metric animate-on-load" style="--a-delay:160ms">
+                <div class="metric animate-on-load" style="--a-delay:40ms">
                 <div class="metric-icon" aria-hidden="true">
                     <i class="fas fa-users-cog"></i>
                 </div>
@@ -318,16 +327,16 @@
                         data-odometer-format="(,ddd)">
                     {{ total_usuarios|default:"0" }}
                     </div>
-                    <div class="metric-label">Usuarios Totales</div>
+                    <div class="metric-label">Usuarios Activos</div>
                 </div>
                 </div>
             </div>
             </div>
 
-            <hr class="footer-sep my-4 animate-on-load" style="--a-delay:240ms">
+            <hr class="footer-sep my-4 animate-on-load" style="--a-delay:80ms">
 
             <!-- LEGAL / CREDIT -->
-            <div class="row align-items-center gy-2 animate-on-load" style="--a-delay:300ms">
+            <div class="row align-items-center gy-2 animate-on-load" style="--a-delay:120ms">
             <div class="col text-center small text-ink-muted">
                 <p class="mb-0">&copy; 2024–{{ now|date:"Y" }} CaʼBigote. Todos los derechos reservados.</p>
                 <p class="mb-0">

@@ -10,7 +10,7 @@
   <!-- HERO -->
   <div class="row align-items-center mb-5 flex-column flex-lg-row">
     <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
-      <h2 class="display-4 fw-bold text-ink animate-on-load">Bienvenido a CaʼBigote</h2>
+      <h2 class="display-4 fw-bold text-ink animate-on-load hero-title">Bienvenido a CaʼBigote</h2>
       <p class="lead mb-4 text-ink-muted">
         Donde el estilo se encuentra con la tradición. Ubicados en el corazón de Arrecife,
         ofrecemos cortes de cabello y arreglos de barba con la máxima calidad.
@@ -21,7 +21,7 @@
       </div>
     </div>
 
-    <div class="col-lg-6 text-center">
+    <div class="col-lg-6 text-center position-relative hero-glow">
       <img
         src="{% static 'imagenes/cabigote.webp' %}"
         alt="Logo CaʼBigote"
@@ -32,35 +32,37 @@
 
   <!-- TARIFA -->
   <section class="my-5" aria-labelledby="tarifa-title">
-    <div class="mb-4 card-header gradiente-header shadow-0 bg-transparent text-center p-2 border-0">
-      <h2 id="tarifa-title" class="h4 fw-bold mb-0 text-ink">
-        <i class="fas fa-scissors me-2 text-gold" aria-hidden="true"></i>
-        Tarifa de Servicios
-      </h2>
-    </div>
+    <div class="animete-on-load">
+      <div class="mb-4 card-header gradiente-header shadow-0 bg-transparent text-center p-2 border-0">
+        <h2 id="tarifa-title" class="h4 fw-bold mb-0 text-ink">
+          <i class="fas fa-scissors me-2 text-gold" aria-hidden="true"></i>
+          Tarifa de Servicios
+        </h2>
+      </div>
 
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card card-glass overflow-hidden">
-          <div class="price-card-head text-center py-2 text-ink-muted small">Lista de Precios</div>
-          <ul class="list-unstyled m-0 price-list">
-            {% for servicio in servicios|slice:":10" %}
-              <li class="price-item d-flex align-items-center justify-content-between">
-                <span class="service-name">{{ servicio.nombre }}</span>
-                <span class="service-price">{{ servicio.precio }} €</span>
-              </li>
-            {% empty %}
-              <li class="text-center py-4 text-ink-muted">Todavía no hay servicios cargados.</li>
-            {% endfor %}
-          </ul>
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card card-glass overflow-hidden">
+            <div class="price-card-head text-center py-2 text-ink-muted small">Lista de Precios</div>
+            <ul class="list-unstyled m-0 price-list">
+              {% for servicio in servicios|slice:":10" %}
+                <li class="price-item d-flex align-items-center justify-content-between">
+                  <span class="service-name">{{ servicio.nombre }}</span>
+                  <span class="service-price">{{ servicio.precio }} €</span>
+                </li>
+              {% empty %}
+                <li class="text-center py-4 text-ink-muted">Todavía no hay servicios cargados.</li>
+              {% endfor %}
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="text-center mt-4">
-      <a href="{% url 'services:ver_servicios' %}" class="btn btn-gold btn-lg">
-        Descubre Nuestros Servicios
-      </a>
+      <div class="text-center mt-4">
+        <a href="{% url 'services:ver_servicios' %}" class="btn btn-gold btn-lg">
+          Descubre Nuestros Servicios
+        </a>
+      </div>
     </div>
   </section>
 

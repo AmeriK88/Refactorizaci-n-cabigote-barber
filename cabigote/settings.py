@@ -2,12 +2,15 @@
 # Copyright (C) 2024 José Félix Gordo Castaño
 # Este archivo está licenciado para uso exclusivo con fines educativos y de aprendizaje. 
 # No se permite la venta ni el uso comercial sin autorización expresa del autor.
+
+from core.whitenoise_headers import add_custom_headers
+from django.core.exceptions import ImproperlyConfigured
 from pathlib import Path
 import environ
 import pymysql
 pymysql.install_as_MySQLdb()
 import os
-from core.whitenoise_headers import add_custom_headers
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,16 +24,13 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', default=False) # type: ignore[arg-type]
+DEBUG = env.bool('DEBUG', default=False)
 
 
-ALLOWED_HOSTS = [
-    '127.0.0.1','localhost', '0.0.0.0',
-    'refactorizaci-n-cabigote-barber-production.up.railway.app', 
-    'cabigotebarbershop.com', 
-    'www.cabigotebarbershop.com',
-    '1bfnw915-8000.uks1.devtunnels.ms'
-]
+ALLOWED_HOSTS = env.list(
+    "ALLOWED_HOSTS",
+    default=(["127.0.0.1", "localhost"] if DEBUG else []),
+)
 
 
 INSTALLED_APPS = [
@@ -356,12 +356,17 @@ LOGGING = {
 
 
 # CSRF CONFIGURATION
-CSRF_TRUSTED_ORIGINS = [
-    'https://*.up.railway.app',
-    'https://refactorizaci-n-cabigote-barber-production.up.railway.app',
-    'https://cabigotebarbershop.com',
-    'https://www.cabigotebarbershop.com',
-]
+CSRF_TRUSTED_ORIGINS = env.list(
+    "CSRF_TRUSTED_ORIGINS",
+    default=(["http://127.0.0.1", "http://localhost"] if DEBUG else []),
+)
+
+if not DEBUG:
+    if not ALLOWED_HOSTS:
+        raise ImproperlyConfigured("ALLOWED_HOSTS must be set in production.")
+    if not CSRF_TRUSTED_ORIGINS:
+        raise ImproperlyConfigured("CSRF_TRUSTED_ORIGINS must be set in production (include https://).")
+    
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
