@@ -6,73 +6,86 @@
 {% block content %}
 <div class="container py-5">
 
-  <h2 class="mb-4 text-center">
-    {% trans "Conexiones de cuenta" %}
-  </h2>
+  <!-- Header -->
+  <div class="card card-glass shadow-sm border-0 mb-4">
+    <div class="card-header gradiente-header text-center">
+      <h1 class="h5 fw-bold mb-0 text-ink">
+        <i class="fas fa-link text-gold me-2" aria-hidden="true"></i>
+        {% trans "Conexiones de cuenta" %}
+      </h1>
+    </div>
+    <div class="card-body text-center pt-3">
+      <p class="mb-0 text-ink-muted">
+        {% trans "Puedes iniciar sesión utilizando cualquiera de las siguientes cuentas enlazadas." %}
+      </p>
+    </div>
+  </div>
 
-  <p class="text-muted text-center mb-5">
-    {% trans "Puedes iniciar sesión utilizando cualquiera de las siguientes cuentas enlazadas:" %}
-  </p>
-
-  {# ───────── ERROR MESSAGE  ───────── #}
   {% if form.non_field_errors %}
-    <div class="alert alert-danger shadow-sm">
+    <div class="alert alert-danger shadow-sm" role="alert">
       {{ form.non_field_errors }}
     </div>
   {% endif %}
 
-  {# ───────── CONNECTIONS TABLE ───────── #}
-  <div class="table-responsive">
-    <table class="table table-striped shadow-sm mb-0">
-      <thead class="table-light">
-        <tr>
-          <th>{% trans "Proveedor" %}</th>
-          <th>{% trans "Cuenta" %}</th>
-          <th class="text-end">{% trans "Acciones" %}</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for account in form.accounts %}
-        <tr>
-          <td data-label="{% trans 'Proveedor' %}">
-            <i class="fab fa-{{ account.provider }} text-danger me-1"></i>
-            {{ account.get_provider_display }}
-          </td>
-          <td data-label="{% trans 'Cuenta' %}">
-            {{ account.extra_data.email }}
-          </td>
-          <td data-label="{% trans 'Acciones' %}" class="text-end">
-            <form method="post" action="{% url 'socialaccount_connections' %}">
-              {% csrf_token %}
-              <button type="submit"
-                      name="account"
-                      value="{{ account.id }}"
-                      class="btn btn-sm btn-outline-danger m-auto">
-                {% trans "Eliminar" %}
-              </button>
-            </form>
-          </td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="3" class="text-center text-muted">
-            {% trans "No hay conexiones activas." %}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  <!-- Tabla de conexiones -->
+  <div class="bg-section rounded-3 shadow-sm p-2">
+    <div class="table-responsive">
+      <table class="table table-hover  table-sm align-middle mb-0">
+        <thead class="table-dark">
+          <tr class="bg-dark">
+            <th class="bg-dark text-ink">{% trans "Proveedor" %}</th>
+            <th class="bg-dark text-ink">{% trans "Cuenta" %}</th>
+            <th class="bg-dark text-end text-ink">{% trans "Acciones" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for account in form.accounts %}
+          <tr  class="table-dark">
+            <td data-label="{% trans 'Proveedor' %}">
+              {# Icono del proveedor #}
+              <span class="d-inline-flex align-items-center gap-2">
+                <i class="fab fa-{{ account.provider }} text-gold"></i>
+                <span class="text-ink">{{ account.get_provider_display }}</span>
+              </span>
+            </td>
+            <td data-label="{% trans 'Cuenta' %}" class="text-ink-muted">
+              {{ account.extra_data.email|default:account.extra_data.name|default:"—" }}
+            </td>
+            <td data-label="{% trans 'Acciones' %}" class="text-end">
+              <form method="post"
+                    action="{% url 'socialaccount_connections' %}"
+                    onsubmit="return confirm('{% trans '¿Seguro que quieres desvincular esta cuenta?' %}');">
+                {% csrf_token %}
+                <button type="submit"
+                        name="account"
+                        value="{{ account.id }}"
+                        class="btn btn-sm btn-outline-danger">
+                  <i class="fas fa-unlink me-1" aria-hidden="true"></i>
+                  {% trans "Eliminar" %}
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="3" class="text-center text-ink-muted py-4">
+              {% trans "No hay conexiones activas." %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
 
-
+  <!-- Añadir nueva conexión -->
   <div class="text-center mt-4">
-    {#  BTN TO ADD NEW ACCOUTNS  #}
     {% include "socialaccount/snippets/provider_list.html" with process="connect" %}
   </div>
 
   <div class="mt-5 text-center">
-    <a href="{% url 'users:perfil_usuario' %}" class="btn btn-outline-primary">
-      ↩️ Volver al Perfil
+    <a href="{% url 'users:perfil_usuario' %}" class="btn btn-outline-gold">
+      <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> {% trans "Volver al Perfil" %}
     </a>
   </div>
 

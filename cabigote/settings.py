@@ -2,12 +2,15 @@
 # Copyright (C) 2024 José Félix Gordo Castaño
 # Este archivo está licenciado para uso exclusivo con fines educativos y de aprendizaje. 
 # No se permite la venta ni el uso comercial sin autorización expresa del autor.
+
+from core.whitenoise_headers import add_custom_headers
+from django.core.exceptions import ImproperlyConfigured
 from pathlib import Path
 import environ
 import pymysql
 pymysql.install_as_MySQLdb()
 import os
-from core.whitenoise_headers import add_custom_headers
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,15 +24,13 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', default=False) # type: ignore[arg-type]
+DEBUG = env.bool('DEBUG', default=False)
 
 
-ALLOWED_HOSTS = [
-    '127.0.0.1','localhost', '0.0.0.0',
-    'refactorizaci-n-cabigote-barber-production.up.railway.app', 
-    'cabigotebarbershop.com', 
-    'www.cabigotebarbershop.com',
-]
+ALLOWED_HOSTS = env.list(
+    "ALLOWED_HOSTS",
+    default=(["127.0.0.1", "localhost"] if DEBUG else []),
+)
 
 
 INSTALLED_APPS = [
@@ -355,12 +356,17 @@ LOGGING = {
 
 
 # CSRF CONFIGURATION
-CSRF_TRUSTED_ORIGINS = [
-    'https://*.up.railway.app',
-    'https://refactorizaci-n-cabigote-barber-production.up.railway.app',
-    'https://cabigotebarbershop.com',
-    'https://www.cabigotebarbershop.com',
-]
+CSRF_TRUSTED_ORIGINS = env.list(
+    "CSRF_TRUSTED_ORIGINS",
+    default=(["http://127.0.0.1", "http://localhost"] if DEBUG else []),
+)
+
+if not DEBUG:
+    if not ALLOWED_HOSTS:
+        raise ImproperlyConfigured("ALLOWED_HOSTS must be set in production.")
+    if not CSRF_TRUSTED_ORIGINS:
+        raise ImproperlyConfigured("CSRF_TRUSTED_ORIGINS must be set in production (include https://).")
+    
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
@@ -451,39 +457,24 @@ CONTENT_SECURITY_POLICY = {
     }
 }
 
-
 X_FRAME_OPTIONS = 'SAMEORIGIN' 
-
-# REDIS RAILWAY CACHE CONFIG
-REDIS_URL = env('REDIS_URL', default=None)
-
-if REDIS_URL:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-            'LOCATION': REDIS_URL,
-            'KEY_PREFIX': 'cabigote',
-        }
-    }
-else:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-            'LOCATION': 'cabigote-local',
-        }
-    }
-
 
 # django-axes: 5 intentos -> bloqueo 1 hora
 AXES_FAILURE_LIMIT = 5
 AXES_COOLOFF_TIME = 1  # horas
 AXES_LOCKOUT_TEMPLATE = 'errors/locked_out.html'
 
+AXES_ENABLED = False
+if not DEBUG:
+    AXES_ENABLED = True
+
+
+
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_COOKIE_AGE = 7 * 24 * 60 * 60
 
 
 # APP VERSION
-APP_VERSION = "2.7.3"
+APP_VERSION = env("APP_VERSION", default="2.0.0")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -1,19 +1,54 @@
 {% extends "base.html" %}
 {% load i18n %}
-
-{% block title %}Error de autenticación{% endblock %}
+{% block title %}Error de autenticación · Ca’Bigote{% endblock %}
 
 {% block content %}
 <div class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="alert alert-danger text-center shadow-sm">
-        <h4 class="alert-heading">{% trans "¡Ups!" %}</h4>
-        <p>{{ error_message }}</p>
-        <hr>
-        <a href="{% url 'users:login' %}" class="btn btn-primary">
-            {% trans "Volver a iniciar sesión" %}
-        </a>
+    <div class="col-12 col-md-10 col-lg-8">
+      <div class="card card-glass shadow-sm">
+        <div class="card-header gradiente-header text-center">
+          <h1 class="h5 fw-bold mb-0 text-ink">
+            <i class="bi bi-exclamation-octagon me-2 text-gold" aria-hidden="true"></i>
+            {% trans "Error de autenticación" %}
+          </h1>
+        </div>
+
+        <div class="card-body text-center">
+          <p class="lead text-ink mb-2">{% trans "¡Ups! Algo no ha ido bien al iniciar sesión." %}</p>
+
+          {% if error_message %}
+            <p class="text-ink-muted mb-4">{{ error_message }}</p>
+          {% else %}
+            <p class="text-ink-muted mb-4">
+              {% trans "No hemos podido validar tus credenciales con el proveedor externo." %}
+            </p>
+          {% endif %}
+
+          <div class="d-grid gap-3 mt-2">
+            <a href="{% url 'users:login' %}" class="btn btn-gold btn-lg w-100">
+              <i class="bi bi-box-arrow-in-right me-1" aria-hidden="true"></i>
+              {% trans "Volver a iniciar sesión" %}
+            </a>
+            <a href="{% url 'home' %}" class="btn btn-outline-gold btn-lg w-100">
+              <i class="bi bi-house me-1" aria-hidden="true"></i>
+              {% trans "Ir al inicio" %}
+            </a>
+          </div>
+
+          <details class="mt-4">
+            <summary class="text-ink-muted small">{% trans "Más información" %}</summary>
+            <ul class="text-ink-muted small mt-2 mb-0 text-start">
+              <li>{% trans "Puede que hayas cancelado el proceso en Google/otro proveedor." %}</li>
+              <li>{% trans "Tu cuenta no comparte email con una cuenta existente en Ca’Bigote." %}</li>
+              <li>{% trans "El enlace ha caducado o la sesión del proveedor expiró." %}</li>
+            </ul>
+          </details>
+
+          <p class="small text-ink-muted mt-4 mb-0">
+            {% trans "Si el problema persiste, prueba a cerrar sesión en el proveedor o usa el acceso con usuario y contraseña." %}
+          </p>
+        </div>
       </div>
     </div>
   </div>

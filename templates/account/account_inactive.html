@@ -4,23 +4,41 @@
 {% block title %}Cuenta desactivada · Ca’Bigote{% endblock %}
 
 {% block content %}
-<div class="container py-5 text-center">
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <h2 class="text-danger mb-3">
-        <i class="fas fa-user-slash me-2"></i> Cuenta desactivada
-      </h2>
-      <p class="mb-4">
-        Tu cuenta está inactiva. Si crees que es un error, <br>
-        <a href="mailto:cabigotebarbershop@gmail.com">contáctanos</a> o
-        crea una nueva cuenta.
-      </p>
-      <a href="{% url 'users:register' %}" class="btn btn-primary">
-        ✍️ Registrarme de nuevo
-      </a>
-      <a href="{% url 'home' %}" class="btn btn-outline-secondary ms-2">
-        🔙 Volver al inicio
-      </a>
+{# Opcional para SEO: evita indexado de esta pantalla #}
+<meta name="robots" content="noindex,nofollow">
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+      
+      <div class="card card-glass shadow-sm animate-on-load">
+        <div class="card-header gradiente-header text-center">
+          <h2 class="h5 fw-bold mb-0 text-ink">
+            <i class="fas fa-user-slash me-2 text-danger" aria-hidden="true"></i>
+            Cuenta desactivada
+          </h2>
+        </div>
+
+        <div class="card-body text-center">
+          <p class="lead text-ink-muted mb-4">
+            Tu cuenta está actualmente inactiva.
+            Si crees que es un error, 
+            <a href="mailto:cabigotebarbershop@gmail.com" class="footer-link">contáctanos</a>
+            o crea una nueva cuenta.
+          </p>
+
+          <div class="d-flex flex-wrap gap-2 justify-content-center">
+            <a href="{% url 'users:register' %}" class="btn btn-gold btn-lg">
+              ✍️ Registrarme de nuevo
+            </a>
+            <a href="{% url 'home' %}" class="btn btn-outline-gold btn-lg">
+              🔙 Volver al inicio
+            </a>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </div>
 </div>

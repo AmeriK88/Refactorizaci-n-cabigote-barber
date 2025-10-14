@@ -6,111 +6,144 @@
 {% block content %}
 <div class="container py-5">
 
-  <!-- ⭐ Cabecera -->
-  <div class="card shadow-sm text-center mb-5 border-0 gradiente-header">
-    <div class="card-header gradiente-header">
-      <h2 class="h4 fw-bold mb-0">
-        <i class="fas fa-star text-primary me-2"></i> Reseñas
+  {# ───────── Header ───────── #}
+  <div class="card card-glass shadow-sm mb-4 animate-on-load">
+    <div class="card-header gradiente-header text-center">
+      <h2 class="h4 fw-bold mb-0 text-ink">
+        <i class="fas fa-star me-2 text-gold" aria-hidden="true"></i>
+        Reseñas
       </h2>
     </div>
+  </div>
 
-
-  <!-- 📜 Reseñas existentes -->
-  <div class="mb-5 animate-on-load">
+  {# ───────── Reseñas existentes ───────── #}
+  <div class="mb-5" role="list" aria-label="Listado de reseñas">
     {% if resenas %}
       {% for resena in resenas %}
-        <div class="card mb-4 shadow-sm border-0">
+        <article
+          class="card card-glass mb-3 animate-on-load"
+          role="article"
+          aria-label="Reseña de {% if resena.usuario and resena.usuario.is_active %}{{ resena.usuario }}{% else %}Usuario eliminado{% endif %}"
+          style="--a-delay:{% widthratio forloop.counter0 1 80 %}ms">
           <div class="card-body">
-            <p class="card-text fs-5">{{ resena.texto }}</p>
-            <div class="metadata d-flex justify-content-between text-muted small">
-              <span><i class="fas fa-user m-2"></i>
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+              <div class="d-flex align-items-center gap-2 text-ink">
+                <i class="fas fa-user-circle text-ink-muted" aria-hidden="true"></i>
+                <strong>
                   {% if resena.usuario and resena.usuario.is_active %}
-                      {{ resena.usuario }}
+                    {{ resena.usuario }}
                   {% else %}
-                      Usuario eliminado
+                    Usuario eliminado
                   {% endif %}
-              </span>
-              <span><i class="fas fa-star text-warning m-2"></i>{{ resena.puntuacion }} / 5</span>
-              <span><i class="fas fa-cut m-2"></i>{{ resena.servicio.nombre }}</span>
-              <span><i class="fas fa-calendar-alt m-2"></i>{{ resena.fecha|date:"d/m/Y H:i" }}</span>
+                </strong>
+              </div>
+
+              <div class="d-flex align-items-center gap-2">
+                <span class="stars" aria-label="{{ resena.puntuacion }} de 5">
+                  {% for i in "12345" %}
+                    {% if forloop.counter <= resena.puntuacion %}
+                      <i class="fas fa-star" aria-hidden="true"></i>
+                    {% else %}
+                      <i class="far fa-star" aria-hidden="true"></i>
+                    {% endif %}
+                  {% endfor %}
+                </span>
+                <small class="text-ink-muted">{{ resena.puntuacion }} / 5</small>
+              </div>
+            </div>
+
+            {% if resena.texto %}
+              <p class="fs-5 text-ink mb-3">{{ resena.texto }}</p>
+            {% endif %}
+
+            <div class="metadata small text-ink-muted d-flex flex-wrap gap-3">
+              {% if resena.servicio %}
+                <span><i class="fas fa-cut me-1" aria-hidden="true"></i>{{ resena.servicio.nombre }}</span>
+              {% endif %}
+              {% if resena.fecha %}
+                <span><i class="fas fa-calendar-alt me-1" aria-hidden="true"></i>{{ resena.fecha|date:"d/m/Y H:i" }}</span>
+              {% endif %}
             </div>
           </div>
-        </div>
+        </article>
       {% endfor %}
     {% else %}
-      <div class="card text-center shadow-sm">
+      <div class="card card-glass text-center animate-on-load">
         <div class="card-body">
-          <h5 class="text-muted">¡Vaya! Aún no hay reseñas.</h5>
-          <p class="text-secondary">Sé el primero en comentar.</p>
+          <h5 class="text-ink-muted mb-1">¡Vaya! Aún no hay reseñas.</h5>
+          <p class="text-ink-muted">Sé el primero en comentar.</p>
         </div>
       </div>
     {% endif %}
   </div>
 
-  <!-- ✍️ Formulario para usuarios logueados -->
+  {# ───────── Formulario (usuarios logueados) ───────── #}
   {% if user.is_authenticated %}
-  <div class="row justify-content-center">
-    <div class="col-md-12 col-lg-12 col-xl-12">
-      <div class="card shadow-sm">
-        <h4 class="card-header text-center gradiente-header">
-          <i class="bi bi-star-fill text-primary me-2"></i>
-          Añadir Reseña
-        </h4>
-          <form method="post" class="needs-validation animate-on-load" novalidate>
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-8">
+        <div class="card card-glass shadow-sm animate-on-load" style="--a-delay:80ms">
+          <div class="card-header gradiente-header text-center">
+            <h4 class="mb-0 text-ink">
+              <i class="bi bi-star-fill me-2 text-gold" aria-hidden="true"></i>
+              Añadir Reseña
+            </h4>
+          </div>
+
+          <form method="post" class="form-dark needs-validation p-3 p-md-4" novalidate>
             {% csrf_token %}
 
-            <!-- Servicio -->
+            {# Servicio #}
             <div class="mb-3">
-              <label class="form-label" for="id_servicio">💈 Servicio</label>
-              {{ form.servicio|add_class:"form-select form-select-lg" }}
-              {% for error in form.servicio.errors %}
-                <div class="invalid-feedback d-block">{{ error }}</div>
-              {% endfor %}
+              <label class="form-label fw-semibold" for="id_servicio">💈 Servicio</label>
+              {% render_field form.servicio class+="form-select form-control-dark" %}
+              {% for error in form.servicio.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
 
-            <!-- Texto -->
+            {# Texto #}
             <div class="mb-3">
-              <label class="form-label" for="id_texto">📝 Tu reseña</label>
-              {{ form.texto|add_class:"form-control form-control-lg" }}
-              {% for error in form.texto.errors %}
-                <div class="invalid-feedback d-block">{{ error }}</div>
-              {% endfor %}
+              <label class="form-label fw-semibold" for="id_texto">📝 Tu reseña</label>
+              {% render_field form.texto class+="form-control form-control-dark" rows="4" %}
+              {% for error in form.texto.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
 
-            <!-- Puntuación -->
+            {# Puntuación como estrellas (radios accesibles) #}
             <div class="mb-4">
-              <label class="form-label d-block">⭐ Puntuación</label>
-              <div class="d-flex flex-nowrap gap-2 overflow-auto rating-group">
+              <label class="form-label d-block fw-semibold">⭐ Puntuación</label>
+              <div class="rating-stars" role="radiogroup" aria-label="Elige una puntuación de 1 a 5">
                 {% for radio in form.puntuacion %}
-                  <div class="form-check form-check-inline">
-                    {{ radio.tag }}
-                    <label class="form-check-label" for="{{ radio.id_for_label }}">
-                      {{ radio.choice_label }}
-                    </label>
-                  </div>
+                  <input
+                    type="radio"
+                    id="rating-{{ forloop.counter }}"
+                    name="{{ form.puntuacion.name }}"
+                    value="{{ forloop.counter }}"
+                    class="rating-input"
+                    {% if radio.choice_value == form.puntuacion.value %}checked{% endif %}>
+                  <label
+                    for="rating-{{ forloop.counter }}"
+                    class="rating-label"
+                    title="{{ forloop.counter }} de 5"
+                    aria-label="{{ forloop.counter }} de 5">
+                    <i aria-hidden="true"></i>
+                  </label>
                 {% endfor %}
               </div>
-              {% for error in form.puntuacion.errors %}
-                <div class="invalid-feedback d-block">{{ error }}</div>
-              {% endfor %}
+              {% for error in form.puntuacion.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
             </div>
 
-            <!-- Botón -->
-            <button type="submit" class="btn btn-primary btn-lg w-100">
-              🚀 Enviar
-            </button>
+            <button type="submit" class="btn btn-gold btn-lg w-100">🚀 Enviar</button>
           </form>
+        </div>
       </div>
     </div>
-  </div>
   {% else %}
-    <div class="card shadow-sm">
+    <div class="card card-glass mt-4 animate-on-load" style="--a-delay:80ms">
       <div class="card-body text-center">
-        <p class="mb-0 text-danger">
-          <a href="{% url 'users:login' %}">Inicia sesión</a> para agregar una reseña.
+        <p class="mb-0 text-ink">
+          <a class="footer-link" href="{% url 'users:login' %}">Inicia sesión</a> para agregar una reseña.
         </p>
       </div>
     </div>
   {% endif %}
+
 </div>
 {% endblock %}

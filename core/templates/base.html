@@ -24,25 +24,26 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="Barbería Ca'Bigote">
     <meta property="og:description" content="Barbería Ca'Bigote: Servicios de alta calidad para tu cuidado personal.">
-    <meta property="og:image" content="{% static 'imagenes/logo-cb.jpg' %}">
+    <meta property="og:image" content="{% static 'imagenes/logo-cb.webp' %}">
     <meta name="twitter:card" content="summary_large_image">
 
     <!-- PWA & Theme -->
-    <meta name="theme-color" content="#1C8EDF" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#005f99" media="(prefers-color-scheme: dark)">
+
+    <meta name="theme-color" content="#161A22" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F1115" media="(prefers-color-scheme: dark)">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Ca'Bigote">
     <meta name="msapplication-TileColor" content="#1C8EDF">
-    <meta name="msapplication-TileImage" content="{% static 'imagenes/logo-cb.jpg' %}">
+    <meta name="msapplication-TileImage" content="{% static 'imagenes/logo-cb.webp' %}">
     <link rel="manifest" href="{% static 'manifest.json' %}">
 
     <title>{% block title %}Ca´Bigote{% endblock %}</title>
 
     <!-- Favicons & App Icons -->
     <link rel="icon" type="image/x-icon" href="{% static 'imagenes/favicon.ico' %}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'imagenes/logo-cb.jpg' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'imagenes/logo-cb.webp' %}">
 
     <!-- Bootstrap CSS (v5) -->
     <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
@@ -53,6 +54,7 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Poppins:wght@300;400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
 
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -68,209 +70,289 @@
     <script src="{% static 'js/passive-touch.js' %}" defer></script>
 </head>
     <body >
-         <!-- OVERLAY -->
-        <div id="overlay" class="overlay"></div>
-        <!-- Loading spinner -->
-        <div id="loader" class="visible"></div>
+         <!-- Overlay -->
+        <div class="overlay" id="overlay" aria-hidden="true"></div>
+
+        <!-- Loader -->
+        <div id="loader" role="status" aria-live="polite" aria-label="Cargando contenido">
+        <div class="loader-dots">
+            <span class="dot" style="--i:0"></span>
+            <span class="dot" style="--i:1"></span>
+            <span class="dot" style="--i:2"></span>
+            <span class="dot" style="--i:3"></span>
+        </div>
+        <p class="loader-text">Cargando…</p>
+        </div>
 
         <div class="d-flex flex-column min-vh-100">  
-            <header>
-                <!-- SOCIAL ICONS -->
-                <div class="ml-auto d-flex align-items-center">
-                <a
-                    href="https://www.facebook.com/p/Barberia-CaBigote-100030635576349/?locale=es_LA"
-                    class="text-white mx-2 social-icon"
-                    target="_blank"
-                    aria-label="Barbería Ca’Bigote en Facebook"
-                    title="Facebook"
-                >
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                <a
-                    href="https://www.instagram.com/barberiacabigote/?hl=es"
-                    class="text-white mx-2 social-icon"
-                    target="_blank"
-                    aria-label="Barbería Ca’Bigote en Instagram"
-                    title="Instagram"
-                >
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a
-                    href="https://twitter.com"
-                    class="text-white mx-2 social-icon"
-                    target="_blank"
-                    aria-label="Barbería Ca’Bigote en Twitter"
-                    title="Twitter"
-                >
-                    <i class="fab fa-twitter"></i>
-                </a>
+
+        <!-- HEADER -->
+        <header class="site-header">
+        <!-- TOPBAR: redes -->
+        <div class="topbar bg-surface text-ink small">
+            <div class="container d-flex justify-content-end align-items-center gap-2 py-1">
+            <a href="https://www.facebook.com/p/Barberia-CaBigote-100030635576349/?locale=es_LA"
+                class="social-icon-link" target="_blank" aria-label="Facebook de Ca’Bigote" title="Facebook">
+                <i class="fab fa-facebook-f" aria-hidden="true"></i>
+            </a>
+            <a href="https://www.instagram.com/barberiacabigote/?hl=es"
+                class="social-icon-link" target="_blank" aria-label="Instagram de Ca’Bigote" title="Instagram">
+                <i class="fab fa-instagram" aria-hidden="true"></i>
+            </a>
+            <a href="https://twitter.com"
+                class="social-icon-link" target="_blank" aria-label="Twitter/X de Ca’Bigote" title="Twitter/X">
+                <i class="fab fa-twitter" aria-hidden="true"></i>
+            </a>
+            </div>
+        </div>
+
+        <!-- MODAL: mensaje especial (tu lógica) -->
+        {% if special_message %}
+        <div class="modal fade" id="specialMessageModal" tabindex="-1" aria-labelledby="specialMessageModalLabel"
+            aria-hidden="true" data-message-id="{{ special_message.id }}">
+            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-contrast">
+                <div class="modal-header">
+                <h5 class="modal-title" id="specialMessageModalLabel">
+                    {{ special_message.titulo|default:"¡Atención!" }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
-
-                <!--  Mensaje especial -->
-                {% if special_message %}
-                <div class="modal fade" id="specialMessageModal" tabindex="-1" aria-labelledby="specialMessageModalLabel" aria-hidden="true" data-message-id="{{ special_message.id }}">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="specialMessageModalLabel">
-                                    {{ special_message.titulo|default:"¡Atención!" }}
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                            </div>
-                            <div class="modal-body">
-                                {{ special_message.contenido|safe }}
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                    Cerrar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="modal-body">
+                {{ special_message.contenido|safe }}
                 </div>
-                {% endif %}
-
-                <!-- TITLE -->
-                <div class="container mt-5 mb-5">
-                    <h1 class="text-center">
-                        <img src="{% static 'imagenes/barber-pole.webp' %}" alt="Barber pole icon" class="icon">
-                        <span class="title-font">Ca´Bigote</span>
-                        <img src="{% static 'imagenes/barber-pole.webp' %}" alt="Barber pole icon" class="icon">
-                    </h1>  
-                </div>       
-                <!--  NAV -->
-                <nav class="navbar navbar-expand-lg navbar-dark rounded">
-                    <a class="navbar-brand" href="{% url 'home' %}">
-                        <img src="{% static 'imagenes/logo-cb.webp' %}" alt="Logo de Ca'Bigote" class="rounded-circle" style="height: 65px;">
-                    </a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                        <ul class="navbar-nav mt-3">
-                            <li class="nav-item">
-                                <a class="nav-link {% if request.path == '/es/' %}active{% endif %}" href="{% url 'home' %}">Inicio</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {% if request.path == '/es/appointments/reservar/' %}active{% endif %}" href="{% url 'appointments:reservar_cita' %}">Citas</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {% if request.path == '/es/services/' %}active{% endif %}" href="{% url 'services:ver_servicios' %}">Servicios</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {% if request.path == '/es/reviews/' %}active{% endif %}" href="{% url 'reviews:ver_resenas' %}">Reseñas</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {% if request.path == '/es/products/imagenes/' %}active{% endif %}" href="{% url 'products:ver_imagenes' %}">Productos</a>
-                            </li>
-                            {% if user.is_authenticated %}
-                                <li class="nav-item">
-                                    <a class="nav-link {% if request.path == '/es/users/perfil/' %}active{% endif %}" href="{% url 'users:perfil_usuario' %}">Perfil</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'users:logout' %}">Salir</a>
-                                </li>
-                            {% else %}
-                                <li class="nav-item">
-                                    <a class="nav-link {% if request.path == '/es/users/login/' %}active{% endif %}" href="{% url 'users:login' %}">Acceder</a>
-                                </li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                </nav>                
-            </header>
-
-            <main class="flex-fill">
-                <!-- MSG -->
-                {% if messages %}
-                <div class="container mt-3 animate-on-load">
-                    <div class="row justify-content-center">
-                        <div class="col-md-8 col-lg-12">
-                            {% for message in messages %}
-                                <div class="alert alert-{{ message.tags }} text-center">
-                                    {{ message }}
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-
-                {% block content %}
-                <!-- CONTENT TEMPLATES -->
-                {% endblock %}
-            </main>
-
-            <footer class="primary-color text-white-50 py-4">
-            <div class="container">
-                <div class="row">
-                <!-- ABOUT -->
-                <div class="col-md-4">
-                    <h5 class="text-white text-center">Sobre Nosotros</h5>
-                    <p>Ca'Bigote es una barbería moderna con un toque clásico. Nos dedicamos a ofrecer los mejores cortes y afeitados con la mejor atención al cliente.</p>
-                </div>
-
-                <!-- ACTIONS -->
-                <div class="col-md-4">
-                    <h5 class="text-white">Enlaces Rápidos</h5>
-                    <ul class="list-unstyled">
-                    <li><a href="{% url 'home' %}" class="text-white-50">Inicio</a></li>
-                    <li><a href="{% url 'services:ver_servicios' %}" class="text-white-50">Servicios</a></li>
-                    <li><a href="{% url 'appointments:reservar_cita' %}" class="text-white-50">Reservar Cita</a></li>
-                    <li><a href="{% url 'products:ver_imagenes' %}" class="text-white-50">Productos</a></li>
-                    <!-- Enlace permanente para abrir el panel de cookies -->
-                    <li><a href="#" class="text-white-50" data-ck-open>Preferencias de cookies</a></li>
-                    </ul>
-                </div>
-
-                <!-- LOCATION -->
-                <div class="col-md-4 text-center">
-                    <h5 class="text-white">Ubicación</h5>
-                    <div class="map-container mb-2">
-                    <!-- Placeholder de mapa bloqueado por consentimiento -->
-                    <div id="gmaps-placeholder"
-                        data-embed-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3490.4957479491627!2d-13.558574623952396!3d28.972677268552072!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xc46276f9ab656d9%3A0x41c1eb89e4d41c84!2sC.%20el%20Rafael%2C%2043%2C%2035500%20Arrecife%2C%20Las%20Palmas!5e0!3m2!1ses!2ses!4v1741366191645!5m2!1ses!2ses"
-                        class="w-100 rounded shadow-sm">
-                        <div>
-                        <p class="mb-2"><strong>Mapa bloqueado por preferencias de cookies.</strong></p>
-                        <p class="mb-3">Activa “Mapas y terceros” en el panel de configuración para cargar Google Maps.</p>
-                        <button type="button" class="btn btn-info btn-sm" id="enable-maps">Permitir y cargar mapa</button>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-                </div>
-
-                <!-- VISITOR COUNT -->
-                <div class="visits-counter-card">
-                <div class="counter-icon animate-icon">
-                    <i class="fas fa-user-friends"></i>
-                </div>
-                <div id="odometer" class="odometer animate-on-load">{{ contador_actualizado|default:contador_global }}</div>
-                <div class="counter-label">Visitas Totales</div>
-                </div>
-
-                <hr class="border-light">
-
-                <div class="row mt-3">
-                <div class="col text-center">
-                    <p class="mb-0">&copy; 2024 Ca´Bigote. Todos los derechos reservados.</p>
-                    <p class="mb-0">
-                    Desarrollado <i class="bi bi-code-slash text-info"></i> por
-                    <a href="https://web-production-jfgc.up.railway.app/" target="_blank" class="text-decoration-none fw-bold text-info">JFGC</a>
-                    </p>
-                </div>
-                </div>
-
-                <hr class="border-light">
-
-                <!-- VERSION -->
-                <div class="text-center mt-2">
-                <small>v{{ APP_VERSION }}</small>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-outline-gold" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- TÍTULO DESKTOP -->
+        <div class="container py-4 d-none d-md-block">
+        <h1 class="site-title text-center">
+            <img src="{% static 'imagenes/barber-pole.webp' %}" alt="" class="icon d-inline-block" />
+            <span class="title-font">CaʼBigote</span>
+            <img src="{% static 'imagenes/barber-pole.webp' %}" alt="" class="icon d-inline-block" />
+        </h1>
+        </div>
+
+        <!-- TÍTULO MÓVIL (compacto) -->
+        <div class="container py-2 d-block d-md-none">
+        <div class="d-flex justify-content-center align-items-center gap-2 site-title">
+            <img src="{% static 'imagenes/barber-pole.webp' %}" alt=""  class="icon d-inline-block">
+            <H1 class="site-title title-font">CaʼBigote</H1>
+            <img src="{% static 'imagenes/barber-pole.webp' %}" alt=""  class="icon d-inline-block">
+        </div>
+        </div>
+
+
+        <!-- NAVBAR -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-surface shadow-sm rounded-3 sticky-top">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
+                <span class="brand-avatar-badge" aria-hidden="true">
+                    <img src="{% static 'imagenes/logo-cb-nav.png' %}" alt="Logo de Ca'Bigote" class="brand-avatar">
+                </span>
+                <span class="brand-wordmark">CaʼBigote</span>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav align-items-lg-center gap-lg-2">
+                    <li class="nav-item">
+                        <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
+                        href="{% url 'home' %}">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'reservar_cita' %}active{% endif %}"
+                        href="{% url 'appointments:reservar_cita' %}">Citas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'ver_servicios' %}active{% endif %}"
+                        href="{% url 'services:ver_servicios' %}">Servicios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'ver_resenas' %}active{% endif %}"
+                        href="{% url 'reviews:ver_resenas' %}">Reseñas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'ver_imagenes' %}active{% endif %}"
+                        href="{% url 'products:ver_imagenes' %}">Productos</a>
+                    </li>
+
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                        <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'perfil_usuario' %}active{% endif %}"
+                            href="{% url 'users:perfil_usuario' %}">Perfil</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="btn btn-outline-gold ms-lg-2" href="{% url 'users:logout' %}">Salir</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                        <a class="btn btn-gold ms-lg-2" href="{% url 'users:login' %}">Acceder</a>
+                        </li>
+                    {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-fill">
+            <!-- MSG -->
+            {% if messages %}
+            <div class="container mt-3 animate-on-load">
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-lg-12">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} text-center">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% block content %}
+            <!-- CONTENT TEMPLATES -->
+            {% endblock %}
+        </main>
+
+        <footer class="footer bg-surface text-ink py-5 mt-auto">
+        <div class="container">
+
+            <!-- VISIT CARD -->
+            <section class="visit-card card card-glass p-3 p-md-4 mb-4 animate-on-load" style="--a-delay:0ms">
+            <div class="row g-3 align-items-center">
+                <div class="col-12 col-md-3 text-center animate-on-load" style="--a-delay:40ms">
+                <img src="{% static 'imagenes/logo-cb.webp' %}" alt="Logo CaʼBigote" class="visit-logo rounded-circle">
+                </div>
+                <div class="col-12 col-md-6 text-center text-md-start animate-on-load" style="--a-delay:40ms">
+                <h4 class="mb-1 fw-bold hero-title">CaʼBigote Barber Shop</h4>
+                <p class="mb-1 text-ink-muted">Estilo clásico con toque moderno</p>
+                <ul class="list-unstyled small m-0 text-ink-muted">
+                    <li><i class="bi bi-geo-alt me-1"></i> C. el Rafael, 43 · 35500 Arrecife, Las Palmas</li>
+                    <li><i class="bi bi-clock me-1"></i> Lun–Vie · 09:30–13:00 16:00-20:00<span class="opacity-75"></span></li>
+                    <li><i class="bi bi-telephone me-1"></i> <a class="footer-link" href="tel:+34659809165">+34 659 809 165</a></li>
+                </ul>
+                </div>
+                <div class="col-12 col-md-3 d-flex justify-content-center justify-content-md-end gap-2 animate-on-load" style="--a-delay:80ms">
+                <a href="{% url 'appointments:reservar_cita' %}" class="btn btn-gold">
+                    <i class="bi bi-scissors me-1"></i> Reservar
+                </a>
+                <a href="https://wa.me/+34659809165" target="_blank" class="btn btn-outline-gold" aria-label="WhatsApp">
+                    <i class="bi bi-whatsapp me-1"></i> WhatsApp
+                </a>
+                </div>
+            </div>
+            </section>
+
+            <!-- COLUMNS -->
+            <div class="row gy-4">
+            <!-- ABOUT -->
+            <div class="col-md-4 animate-on-load" style="--a-delay:20ms">
+                <h5 class="footer-heading">Sobre Nosotros</h5>
+                <p class="mb-0 text-ink-muted">
+                Ca'Bigote es una barbería moderna con un toque clásico. Ofrecemos cortes y afeitados
+                de calidad, con atención personalizada.
+                </p>
+            </div>
+
+            <!-- LINKS -->
+            <div class="col-md-4 animate-on-load" style="--a-delay:60ms">
+                <h5 class="footer-heading">Enlaces Rápidos</h5>
+                <ul class="list-unstyled m-0">
+                <li><a href="{% url 'home' %}" class="footer-link">Inicio</a></li>
+                <li><a href="{% url 'services:ver_servicios' %}" class="footer-link">Servicios</a></li>
+                <li><a href="{% url 'appointments:reservar_cita' %}" class="footer-link">Reservar Cita</a></li>
+                <li><a href="{% url 'products:ver_imagenes' %}" class="footer-link">Productos</a></li>
+                <li><a href="#" class="footer-link" data-ck-open>Preferencias de cookies</a></li>
+                </ul>
+            </div>
+
+            <!-- LOCATION -->
+            <div class="col-md-4 animate-on-load" style="--a-delay:120ms">
+                <h5 class="footer-heading">Ubicación</h5>
+                <div class="map-container mb-2 animate-on-load" style="--a-delay:180ms">
+                <!-- Placeholder de mapa bloqueado por consentimiento -->
+                <div id="gmaps-placeholder"
+                    data-embed-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3490.4957479491627!2d-13.558574623952396!3d28.972677268552072!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xc46276f9ab656d9%3A0x41c1eb89e4d41c84!2sC.%20el%20Rafael%2C%2043%2C%2035500%20Arrecife%2C%20Las%20Palmas!5e0!3m2!1ses!2ses!4v1741366191645!5m2!1ses!2ses"
+                    class="w-100 rounded shadow-sm">
+                    <div>
+                    <p class="mb-2"><strong>Mapa bloqueado por preferencias de cookies.</strong></p>
+                    <p class="mb-3">Activa “Mapas y terceros” en el panel de configuración para cargar Google Maps.</p>
+                    <button type="button" class="btn btn-outline-gold btn-sm" id="enable-maps">Permitir y cargar mapa</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- VISITOR / USERS COUNTER -->
+            <div class="visits-counter-card metrics--opposite mt-4 animate-on-load" style="--a-delay:0ms" role="region" aria-label="Estadísticas del sitio">
+            <div class="metrics">
+                <!-- Visitas -->
+                <div class="metric animate-on-load" style="--a-delay:40ms">
+                <div class="metric-icon" aria-hidden="true">
+                    <i class="fas fa-user-friends"></i>
+                </div>
+                <div class="metric-body">
+                    <div id="odometer-visitas"
+                        class="metric-value odometer"
+                        data-odometer-format="(,ddd)">
+                    {{ contador_actualizado|default:contador_global }}
+                    </div>
+                    <div class="metric-label">Visitas Totales</div>
+                </div>
+                </div>
+
+                <!-- Usuarios totales -->
+                <div class="metric animate-on-load" style="--a-delay:40ms">
+                <div class="metric-icon" aria-hidden="true">
+                    <i class="fas fa-users-cog"></i>
+                </div>
+                <div class="metric-body">
+                    <div id="odometer-usuarios"
+                        class="metric-value odometer"
+                        data-odometer-format="(,ddd)">
+                    {{ total_usuarios|default:"0" }}
+                    </div>
+                    <div class="metric-label">Usuarios Activos</div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <hr class="footer-sep my-4 animate-on-load" style="--a-delay:80ms">
+
+            <!-- LEGAL / CREDIT -->
+            <div class="row align-items-center gy-2 animate-on-load" style="--a-delay:120ms">
+            <div class="col text-center small text-ink-muted">
+                <p class="mb-0">&copy; 2024–{{ now|date:"Y" }} CaʼBigote. Todos los derechos reservados.</p>
+                <p class="mb-0">
+                Desarrollado <i class="bi bi-code-slash text-gold"></i> por
+                <a href="https://web-production-jfgc.up.railway.app/" target="_blank" class="footer-link fw-semibold">JFGC</a>
+                </p>
+            </div>
+            </div>
+
+            <div class="text-center mt-2">
+                <small class="opacity-75">v{{ APP_VERSION }}</small>
+            </div>
+
+        </div>
         </footer>
-      
+
             
         <!-- BTN WHATSAPP -->
         <a id="whatsapp-btn"
@@ -283,57 +365,61 @@
         </a>
 
 
-        <!-- Modal de cookies (1ª capa) -->
-        <div id="ck-modal" class="modal fade" tabindex="-1" aria-labelledby="ckm-title" aria-hidden="true">
+        {# ========= Modal de cookies (1ª capa) ========= #}
+        <div id="ck-modal"
+            class="modal fade"
+            tabindex="-1"
+            aria-labelledby="ckm-title"
+            aria-hidden="true"
+            data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content modal-content-contrast">
             <div class="modal-header">
-                <h5 id="ckm-title" class="modal-title">Tu privacidad es importante</h5>
-                <!-- Si quieres forzar decisión, quita este botón -->
+                <h5 id="ckm-title" class="modal-title text-ink">Tu privacidad es importante</h5>
+                <!-- Si quieres forzar decisión, elimina este botón -->
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
 
             <div class="modal-body">
-                <p class="mb-2">
+                <p class="mb-2 text-ink-muted">
                 Usamos cookies propias (necesarias) y de terceros para funciones como mapas integrados.
-                Puedes <a href="{% url 'home' %}cookies" target="_blank" rel="noopener">leer la política de cookies</a>
-                o <button class="btn btn-link p-0 align-baseline" data-ck-open type="button">configurar</button> tus preferencias.
+                Puedes <a href="{% url 'home' %}cookies" target="_blank" rel="noopener" class="footer-link">leer la política</a>
+                o <button class="btn btn-link p-0 align-baseline footer-link" data-ck-open type="button">configurar</button> tus preferencias.
                 </p>
-                <small class="text-muted">Solo las necesarias están activas por defecto.</small>
+                <small class="text-ink-muted">Solo las necesarias están activas por defecto.</small>
             </div>
 
             <div class="modal-footer">
                 <button id="ck-reject" class="btn btn-outline-secondary">Solo necesarias</button>
-                <button id="ck-accept" class="btn btn-primary">Aceptar todas</button>
-                <button class="btn btn-ghost" data-ck-open type="button">Configurar</button>
+                <button id="ck-accept" class="btn btn-gold">Aceptar todas</button>
+                <button class="btn btn-outline-gold" data-ck-open type="button">Configurar</button>
             </div>
             </div>
         </div>
         </div>
 
-
-        <!-- Panel de configuración (2ª capa) -->
+        {# ========= Panel de configuración (2ª capa) ========= #}
         <div class="modal fade" id="ck-panel" tabindex="-1" aria-labelledby="ck-title" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content ck-panel">
+            <div class="modal-content modal-content-contrast ck-panel">
             <div class="modal-header py-2">
-                <h5 id="ck-title" class="modal-title">Configuración de cookies</h5>
+                <h5 id="ck-title" class="modal-title text-ink">Configuración de cookies</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
 
             <div class="modal-body py-3">
-                <p class="mb-3 ck-note">Solo las <strong>necesarias</strong> están activas por defecto. Ajusta el resto por categorías.</p>
+                <p class="mb-3 text-ink-muted">Solo las <strong>necesarias</strong> están activas por defecto. Ajusta el resto por categorías.</p>
 
                 <ul class="list-group list-group-flush ck-list">
                 <!-- Necesarias -->
-                <li class="list-group-item py-2">
+                <li class="list-group-item bg-transparent border-0 py-2 ck-item">
                     <div class="row align-items-center g-2">
                     <div class="col">
                         <div class="d-flex align-items-center flex-wrap gap-2">
-                        <strong class="me-2">Necesarias</strong>
-                        <span class="badge text-bg-secondary ck-badge">Siempre activas</span>
+                        <strong class="me-2 text-ink">Necesarias</strong>
+                        <span class="badge rounded-pill text-bg-secondary ck-badge">Siempre activas</span>
                         </div>
-                        <div class="text-muted small">Funcionalidad básica del sitio.</div>
+                        <div class="small text-ink-muted">Funcionalidad básica del sitio.</div>
                     </div>
                     <div class="col-auto">
                         <div class="form-check form-switch m-0">
@@ -344,11 +430,11 @@
                 </li>
 
                 <!-- Preferencias -->
-                <li class="list-group-item py-2">
+                <li class="list-group-item bg-transparent border-0 py-2 ck-item">
                     <div class="row align-items-center g-2">
                     <div class="col">
-                        <strong class="me-2">Preferencias</strong>
-                        <div class="text-muted small">Recordar ajustes de interfaz.</div>
+                        <strong class="me-2 text-ink">Preferencias</strong>
+                        <div class="small text-ink-muted">Recordar ajustes de interfaz.</div>
                     </div>
                     <div class="col-auto">
                         <div class="form-check form-switch m-0">
@@ -359,11 +445,11 @@
                 </li>
 
                 <!-- Estadística -->
-                <li class="list-group-item py-2">
+                <li class="list-group-item bg-transparent border-0 py-2 ck-item">
                     <div class="row align-items-center g-2">
                     <div class="col">
-                        <strong class="me-2">Estadística</strong>
-                        <div class="text-muted small">Medición anónima del uso.</div>
+                        <strong class="me-2 text-ink">Estadística</strong>
+                        <div class="small text-ink-muted">Medición anónima del uso.</div>
                     </div>
                     <div class="col-auto">
                         <div class="form-check form-switch m-0">
@@ -374,11 +460,11 @@
                 </li>
 
                 <!-- Marketing -->
-                <li class="list-group-item py-2">
+                <li class="list-group-item bg-transparent border-0 py-2 ck-item">
                     <div class="row align-items-center g-2">
                     <div class="col">
-                        <strong class="me-2">Marketing</strong>
-                        <div class="text-muted small">Segmentación/seguimiento publicitario.</div>
+                        <strong class="me-2 text-ink">Marketing</strong>
+                        <div class="small text-ink-muted">Segmentación/seguimiento publicitario.</div>
                     </div>
                     <div class="col-auto">
                         <div class="form-check form-switch m-0">
@@ -389,11 +475,11 @@
                 </li>
 
                 <!-- Mapas y terceros -->
-                <li class="list-group-item py-2">
+                <li class="list-group-item bg-transparent border-0 py-2 ck-item">
                     <div class="row align-items-center g-2">
                     <div class="col">
-                        <strong class="me-2">Mapas y terceros</strong>
-                        <div class="text-muted small">Servicios embebidos (Google Maps, Instagram…).</div>
+                        <strong class="me-2 text-ink">Mapas y terceros</strong>
+                        <div class="small text-ink-muted">Servicios embebidos (Google Maps, Instagram…).</div>
                     </div>
                     <div class="col-auto">
                         <div class="form-check form-switch m-0">
@@ -405,17 +491,17 @@
                 </ul>
 
                 <details class="mt-3 ck-details">
-                <summary class="small">Ver detalle de cookies y tecnologías</summary>
-                <div class="mt-2 table-responsive ck-table-wrap">
-                    <table class="table table-sm table-bordered mb-0">
-                    <thead class="table-light">
-                        <tr>
+                <summary class="small text-ink-muted">Ver detalle de cookies y tecnologías</summary>
+                <div class="mt-2 table-responsive ck-table-wrap bg-section p-2 rounded-3">
+                    <table class="table table-sm table-borderless mb-0 text-ink">
+                    <thead>
+                        <tr class="text-ink-muted">
                         <th>Nombre</th><th>Tipo</th><th>Proveedor</th><th>Finalidad</th><th>Duración</th><th>Categoría</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                        <td>ck-consent-v1 (localStorage)</td><td>Propia</td><td>cabigotebarbershop.com</td>
+                        <td><code>ck-consent-v1</code> (localStorage)</td><td>Propia</td><td>cabigotebarbershop.com</td>
                         <td>Recordar preferencias de cookies.</td><td>Persistente</td><td>Necesarias</td>
                         </tr>
                         <tr>
@@ -430,30 +516,29 @@
 
             <div class="modal-footer py-2">
                 <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button id="ck-save" class="btn btn-primary">Guardar preferencias</button>
+                <button id="ck-save" class="btn btn-gold">Guardar preferencias</button>
             </div>
             </div>
         </div>
         </div>
 
-
-        <!-- Modal de consentimiento para WhatsApp -->
+        {# ========= Modal de consentimiento WhatsApp ========= #}
         <div id="wa-modal" class="modal fade" tabindex="-1" aria-labelledby="wa-title" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content modal-content-contrast">
             <div class="modal-header">
-                <h5 id="wa-title" class="modal-title">Atención por WhatsApp</h5>
+                <h5 id="wa-title" class="modal-title text-ink">Atención por WhatsApp</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <p>
-                Para usar el servicio de WhatsApp, acepta la
-                <a href="{% url 'home' %}privacidad" target="_blank" rel="noopener">Política de privacidad</a>
+                <p class="text-ink-muted">
+                Para usar WhatsApp, acepta la
+                <a href="{% url 'home' %}privacidad" target="_blank" rel="noopener" class="footer-link">Política de privacidad</a>
                 y las condiciones del servicio de WhatsApp.
                 </p>
                 <div class="form-check">
                 <input id="wa-accept" class="form-check-input" type="checkbox">
-                <label class="form-check-label" for="wa-accept">
+                <label class="form-check-label text-ink-muted" for="wa-accept">
                     Acepto la política y condiciones del servicio WhatsApp.
                 </label>
                 </div>
@@ -466,6 +551,7 @@
         </div>
         </div>
 
+
         <!-- SCRIPTS -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
@@ -477,14 +563,11 @@
 
         <!-- CUSTOM SCRIPTS-->
         <script src="{% static 'js/Loader.js' %}" defer></script>
-
         <script src="{% static 'js/cookiesConsent.js' %}" defer></script>
         <script src="{% static 'js/whatsappConsent.js' %}" defer></script>
-
         <script src="{% static 'js/Animations.js' %}" defer></script>
         <script src="{% static 'js/historial-citas.js' %}" defer></script>
         <script src="{% static 'js/special_message.js' %}" defer></script>
-
         <script async src="https://www.instagram.com/embed.js"></script>
          <!-- SERVICE WORKER INSTALL -->
         <script src="{% static 'js/pwa-install.js' %}" defer></script> 

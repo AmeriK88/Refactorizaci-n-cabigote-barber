@@ -3,134 +3,138 @@
 {% block title %}Mis Citas{% endblock %}
 
 {% block content %}
-    <div class="container mt-5 mb-5">
-        <div class="container mt-3"> 
-            <div class="card-header gradiente-header shadow-sm bg-light text-center p-3 border-0">
-                <h2 class="h4 fw-bold mb-0">
-                    <i class="fas fa-calendar-alt me-2 text-primary"></i> Citas de 
-                    <span class="text-danger">{{ user.username }}</span>
-                </h2>
-            </div>            
+<div class="container py-5">
 
-            <!-- ACTIVE -->
-            <h2 class="mt-5 text-center display-5 font-weight-bold">Citas Activas</h2>
-            {% if citas_activas %}
-                <div class="row g-4 animate-on-load">
-                    {% for cita in citas_activas %}
-                    <div class="col-12 {% if citas_activas|length > 1 %}col-md-6 col-lg-4{% endif %} mt-5">
-                        <div class="card h-100 shadow-sm">
-                            <!-- SERVICE BANNER IMG -->
-                            {% if cita.servicio.imagen %}
-                            <div class="card-img-top-container">
-                                <img src="{{ cita.servicio.imagen.url }}" alt="{{ cita.servicio.nombre }}" class="card-img-top banner-img">
-                            </div>
-                            {% endif %}
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">{{ cita.servicio.nombre }}</h5>
-                                
-                                <!-- DATE FIELD -->
-                                <p class="card-text d-flex align-items-center">
-                                    <i class="m-3 bi bi-calendar-event me-2 text-primary"></i>
-                                    <span><strong>Fecha:</strong> {{ cita.fecha }}</span>
-                                </p>
-                                
-                                <!-- TIME FIELD -->
-                                <p class="card-text d-flex align-items-center">
-                                    <i class="m-3 bi bi-clock me-2 text-success"></i>
-                                    <span><strong>Hora:</strong> {{ cita.hora }}</span>
-                                </p>
-                                
-                                <!-- MESSAGE FIELD -->
-                                <p class="card-text d-flex align-items-center">
-                                    <i class="m-3 bi bi-chat-left-dots me-2 text-secondary"></i>
-                                    <span><strong>Comentario:</strong> {{ cita.comentario }}</span>
-                                </p>
-                                
-                                <div class="mt-auto d-flex justify-content-between">
-                                    <a href="{% url 'appointments:editar_cita' cita.id %}" class="btn btn-primary">Editar</a>
-                                    <a href="{% url 'appointments:eliminar_cita' cita.id %}" class="btn btn-outline-danger">Eliminar</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="container mt-5 animate-on-load">
-                    <div class="card text-center">
-                        <div class="card-body">
-                            <h5 class="card-title">No tienes citas activas</h5>
-                            <p class="card-text">No esperes más y reserva tu cita.</p>
-                            <a href="{% url 'appointments:reservar_cita' %}" class="btn btn-primary">Reservar cita</a>
-                        </div>
-                    </div>
-                </div>
+  <!-- Título principal -->
+  <div class="card card-glass shadow-sm mb-4 animate-on-load">
+    <div class="card-header gradiente-header text-center">
+      <h2 class="h4 fw-bold mb-0 text-ink">
+        <i class="fas fa-calendar-alt me-2 text-gold" aria-hidden="true"></i>
+        Citas de <span class="text-gold">{{ user.username }}</span>
+      </h2>
+    </div>
+  </div>
+
+  <!-- Citas Activas -->
+  <div class="text-center">
+    <h3 class="h4 fw-bold text-ink mb-3">Citas Activas</h3>
+  </div>
+
+  {% if citas_activas %}
+    <div class="row g-4">
+      {% for cita in citas_activas %}
+      <div class="col-12 {% if citas_activas|length > 1 %}col-md-6 col-lg-4{% endif %}">
+        <div class="card card-glass h-100 shadow-sm animate-on-load">
+          {% if cita.servicio.imagen %}
+          <div class="card-img-top-container">
+            <img src="{{ cita.servicio.imagen.url }}" alt="{{ cita.servicio.nombre }}" class="card-img-top banner-img border-0" />
+          </div>
+          {% endif %}
+
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title text-ink">{{ cita.servicio.nombre }}</h5>
+
+            <p class="card-text d-flex align-items-center">
+              <i class="bi bi-calendar-event me-2 text-ink-muted"></i>
+              <span class="text-ink-muted"><strong class="text-ink">Fecha:</strong> {{ cita.fecha }}</span>
+            </p>
+
+            <p class="card-text d-flex align-items-center">
+              <i class="bi bi-clock me-2 text-ink-muted"></i>
+              <span class="text-ink-muted"><strong class="text-ink">Hora:</strong> {{ cita.hora }}</span>
+            </p>
+
+            {% if cita.comentario %}
+            <p class="card-text d-flex align-items-start">
+              <i class="bi bi-chat-left-dots me-2 text-ink-muted"></i>
+              <span class="text-ink-muted"><strong class="text-ink">Comentario:</strong> {{ cita.comentario }}</span>
+            </p>
             {% endif %}
 
-           <!-- APPOINTMENT HISTORY -->
-        <h2 class="mt-5 text-center display-5 font-weight-bold">Historial de Citas</h2>
-
-        {% if citas_pasadas %}
-        <p class="text-center text-muted">
-            Mostrando las 5 citas más recientes del historial.
-        </p>
-
-        {# Contenedor único con ID para el JS #}
-        <div id="historial-citas">
-            {% regroup citas_pasadas by fecha|date:"F Y" as citas_por_mes %}
-
-            {% for grupo in citas_por_mes %}
-            <h3 class="col-12 mt-5 text-center">
-                <i class="bi bi-folder2-open me-1 text-muted"></i> {{ grupo.grouper }}
-            </h3>
-
-            <div class="row g-3">
-                {% for cita in grupo.list %}
-                <div class="col-12 col-md-6 col-lg-4 mt-5 historial-item">
-                    <div class="card h-100 historial-card">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ cita.servicio.nombre }}</h5>
-
-                        <p class="card-text d-flex align-items-center">
-                        <i class="me-2 bi bi-calendar-event text-primary"></i>
-                        <span><strong>Fecha:</strong> {{ cita.fecha }}</span>
-                        </p>
-
-                        <p class="card-text d-flex align-items-center">
-                        <i class="me-2 bi bi-clock text-success"></i>
-                        <span><strong>Hora:</strong> {{ cita.hora }}</span>
-                        </p>
-
-                        <p class="card-text d-flex align-items-center">
-                        <i class="me-2 bi bi-chat-left-dots text-secondary"></i>
-                        <span><strong>Comentario:</strong> {{ cita.comentario }}</span>
-                        </p>
-                    </div>
-                    </div>
-                </div>
-                {% endfor %}
+            <div class="mt-auto d-flex gap-2">
+              <a href="{% url 'appointments:editar_cita' cita.id %}" class="btn btn-outline-gold w-50">Editar</a>
+              <a href="{% url 'appointments:eliminar_cita' cita.id %}" class="btn btn-danger w-50">Eliminar</a>
             </div>
-            {% endfor %}
+          </div>
         </div>
-
-        {% if citas_pasadas|length > 5 %}
-            <div class="text-center mt-3">
-            <button id="cargar-mas-btn" class="btn btn-primary">Cargar más</button>
-            </div>
-        {% endif %}
-
-        {% else %}
-        <div class="container mt-5 animate-on-load">
-            <div class="card text-center">
-            <div class="card-body">
-                <h5 class="card-title">No tienes citas pasadas</h5>
-                <p class="card-text">Pero no te preocupes, puedes ver nuestros servicios.</p>
-                <a href="{% url 'services:ver_servicios' %}" class="btn btn-primary">
-                Ver servicios
-                </a>
-            </div>
-            </div>
-        </div>
-        {% endif %}
+      </div>
+      {% endfor %}
     </div>
+  {% else %}
+    <div class="card card-glass text-center mt-4 animate-on-load">
+      <div class="card-body">
+        <h5 class="card-title text-ink">No tienes citas activas</h5>
+        <p class="text-ink-muted mb-3">No esperes más y reserva tu cita.</p>
+        <a href="{% url 'appointments:reservar_cita' %}" class="btn btn-gold">Reservar cita</a>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Historial -->
+  <div class="text-center mt-5">
+    <h3 class="h4 fw-bold text-ink mb-1">Historial de Citas</h3>
+    {% if citas_pasadas %}
+      <p class="text-ink-muted">Mostrando las 5 citas más recientes del historial.</p>
+    {% endif %}
+  </div>
+
+  {% if citas_pasadas %}
+    {# Group por mes #}
+    <div id="historial-citas" class="mt-3">
+      {% regroup citas_pasadas by fecha|date:"F Y" as citas_por_mes %}
+
+      {% for grupo in citas_por_mes %}
+        <div class="text-center mt-4 animate-on-load">
+          <h4 class="h6 text-ink-muted m-0">
+            <i class="bi bi-folder2-open me-1"></i> {{ grupo.grouper }}
+          </h4>
+        </div>
+
+        <div class="row g-3">
+          {% for cita in grupo.list %}
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="card card-glass h-100 animate-on-load">
+              <div class="card-body">
+                <h5 class="card-title text-ink">{{ cita.servicio.nombre }}</h5>
+
+                <p class="card-text d-flex align-items-center">
+                  <i class="bi bi-calendar-event me-2 text-ink-muted"></i>
+                  <span class="text-ink-muted"><strong class="text-ink">Fecha:</strong> {{ cita.fecha }}</span>
+                </p>
+
+                <p class="card-text d-flex align-items-center">
+                  <i class="bi bi-clock me-2 text-ink-muted"></i>
+                  <span class="text-ink-muted"><strong class="text-ink">Hora:</strong> {{ cita.hora }}</span>
+                </p>
+
+                {% if cita.comentario %}
+                <p class="card-text d-flex align-items-start">
+                  <i class="bi bi-chat-left-dots me-2 text-ink-muted"></i>
+                  <span class="text-ink-muted"><strong class="text-ink">Comentario:</strong> {{ cita.comentario }}</span>
+                </p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if citas_pasadas|length > 5 %}
+      <div class="text-center mt-3 animate-on-load">
+        <button id="cargar-mas-btn" class="btn btn-outline-gold">Cargar más</button>
+      </div>
+    {% endif %}
+
+  {% else %}
+    <div class="card card-glass text-center mt-4 animate-on-load">
+      <div class="card-body">
+        <h5 class="card-title text-ink">No tienes citas pasadas</h5>
+        <p class="text-ink-muted mb-3">Pero no te preocupes, puedes ver nuestros servicios.</p>
+        <a href="{% url 'services:ver_servicios' %}" class="btn btn-outline-gold">Ver servicios</a>
+      </div>
+    </div>
+  {% endif %}
+</div>
 {% endblock %}

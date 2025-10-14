@@ -1,36 +1,51 @@
 {% extends 'base.html' %}
 
-{% block title %}Productos - Cabigote Barber Shop{% endblock %}
+{% block title %}Productos · Ca’Bigote Barber Shop{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-  <!-- ⭐ Cabecera -->
-  <div class="card shadow-sm text-center mb-5 border-0 gradiente-header">
-    <div class="card-header gradiente-header">
-      <h2 class="h4 fw-bold mb-0">
-        <h2 class="h4 fw-bold mb-0">
-            <i class="fas fa-box-open me-2 text-primary"></i> Nuestros Productos
+<div class="container py-5">
+
+  <!-- Header -->
+  <div class="card card-glass shadow-sm mb-4 animate-on-load" style="--a-delay:0ms">
+    <div class="card-header gradiente-header text-center">
+      <h2 class="h4 fw-bold mb-0 text-ink">
+        <i class="fas fa-box-open me-2 text-gold" aria-hidden="true"></i>
+        Nuestros Productos
       </h2>
     </div>
-    
-    <div class="row animate-on-load">
-        {% if imagenes %}
-            {% for imagen in imagenes %}
-                <!-- Si la imagen del Producto es menos de uno ocupará todo el espacio -->
-                <div class="col-12 {% if imagenes|length > 1 %}col-md-6 col-lg-6{% else %}col-md-12{% endif %} mb-5 card-img-top">
-                    <div class="card">
-                        <a href="{% url 'products:detalle_producto' producto_id=imagen.id %}">
-                            <img src="{{ imagen.imagen.url }}" alt="{{ imagen.titulo }}" class="img-fluid" loading="lazy">
-                        </a>
-                        <div class="card-body">
-                            <p class="card-text text-center"><strong>{{ imagen.titulo }}</strong></p>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <p>No hay productos disponibles.</p>
-        {% endif %}
+  </div>
+
+  {% if imagenes %}
+    <div class="row g-4">
+      {% for imagen in imagenes %}
+      <div class="col-12 {% if imagenes|length > 1 %}col-md-6{% else %}col-md-10 col-lg-8 mx-auto{% endif %}">
+        <div class="card card-glass product-card h-100 animate-on-load"
+             style="--a-delay:{% widthratio forloop.counter0 1 80 %}ms">
+          <a href="{% url 'products:detalle_producto' producto_id=imagen.id %}"
+             class="product-thumb d-block"
+             aria-label="Ver {{ imagen.titulo }}">
+            <img
+              src="{{ imagen.imagen.url }}"
+              alt="{{ imagen.titulo }}"
+              class="w-100 h-100"
+              loading="lazy">
+          </a>
+          <div class="card-body text-center">
+            <p class="m-0 text-ink"><strong>{{ imagen.titulo }}</strong></p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
     </div>
+  {% else %}
+    <div class="card card-glass text-center animate-on-load" style="--a-delay:80ms">
+      <div class="card-body">
+        <h5 class="card-title text-ink">No hay productos disponibles</h5>
+        <p class="text-ink-muted mb-3">Vuelve pronto para descubrir nuestras novedades.</p>
+        <a href="{% url 'home' %}" class="btn btn-outline-gold">Volver al inicio</a>
+      </div>
+    </div>
+  {% endif %}
+
 </div>
 {% endblock %}

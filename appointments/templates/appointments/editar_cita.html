@@ -1,98 +1,103 @@
 {% extends "base.html" %}
 {% load static tz widget_tweaks %}
 
-{% block title %}Editar Cita · Ca’Bigote{% endblock %}
+{% block title %}Citas · Ca’Bigote{% endblock %}
 
 {% block content %}
 {% localtime on %}
 <div class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-md-12 col-lg-12 col-xl-12">
-      
-        {% if form.errors %}
-          <p class="alert alert-error">
-            ¡Aguita papá! Ha ocurrido un error. Por favor revisa los datos e inténtalo de nuevo.
-          </p>
-        {% endif %}
+    <div class="col-12 col-lg-8">
 
-      {# ────────── HEADER ──────────#}
-        <div class="card shadow-sm">
-          <div class="card-header gradiente-header text-center">
-            <h4 class="mb-0">
-              <i class="fas fa-edit me-2 text-primary"></i> Editar Cita
-            </h4>
+      {% if form.errors %}
+        <div class="alert alert-danger mb-4 animate-on-load"role="alert">
+          ¡Aguita papá! Ha ocurrido un error. Revisa los campos e inténtalo de nuevo.
+        </div>
+      {% endif %}
+
+      <!-- MAIN CARD -->
+      <div class="card card-glass shadow-sm animate-on-load">
+        <div class="card-header gradiente-header text-center">
+          <h4 class="mb-0 text-ink">
+            <i class="fas fa-calendar-check me-2 text-gold" aria-hidden="true"></i>
+            Editar Cita
+          </h4>
+        </div>
+
+        <form method="post" class="form-dark needs-validation p-3 p-md-4" novalidate>
+          {% csrf_token %}
+
+          <!-- SERVICIO -->
+          <div class="mb-3 animate-on-load">
+            <label class="form-label fw-semibold" for="id_servicio">💈 Servicio</label>
+            {% render_field form.servicio class+="form-select form-select-lg form-select-dark" %}
+            {% for error in form.servicio.errors %}
+              <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
           </div>
 
-          <form method="post" class="needs-validation animate-on-load" novalidate>
-            {% csrf_token %}
+          <!-- PRODUCTO (opcional) -->
+          <div class="mb-3 animate-on-load">
+            <label class="form-label fw-semibold" for="id_producto">🛍️ Producto (opcional)</label>
+            {% render_field form.producto class+="form-select form-select-lg form-select-dark" %}
+            {% for error in form.producto.errors %}
+              <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+          </div>
 
-            {# ------- SERVICE ------- #}
-            <div class="mb-3">
-              <label class="form-label" for="id_servicio">💈 Servicio</label>
-              {{ form.servicio|add_class:"form-select form-select-lg" }}
-              {% for error in form.servicio.errors %}
-                <div class="invalid-feedback d-block">{{ error }}</div>
-              {% endfor %}
-            </div>
-
-            {# ------- PRODUCT ------- #}
-            <div class="mb-3">
-              <label class="form-label" for="id_producto">🛍️ Producto (opcional)</label>
-              {{ form.producto|add_class:"form-select form-select-lg" }}
-              {% for error in form.producto.errors %}
-                <div class="invalid-feedback d-block">{{ error }}</div>
-              {% endfor %}
-            </div>
-
-            {# ------- DATE ------- #}
-            <div class="mb-3">
-              <label class="form-label" for="id_fecha">📆 Fecha</label>
+          <!-- FECHA + HORA -->
+          <div class="row g-3">
+            <div class="col-md-6 animate-on-load">
+              <label class="form-label fw-semibold" for="id_fecha">📆 Fecha</label>
               <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
-                {{ form.fecha|add_class:"form-control form-control-lg" }}
+                <span class="input-group-text input-group-text-dark"><i class="bi bi-calendar-event"></i></span>
+                {% render_field form.fecha class+="form-control form-control-lg form-control-dark" %}
               </div>
               {% for error in form.fecha.errors %}
                 <div class="invalid-feedback d-block">{{ error }}</div>
               {% endfor %}
+              <small class="text-ink-muted d-block mt-1">Las fechas bloqueadas no estarán disponibles.</small>
             </div>
 
-            {# ------- TIME ------- #}
-            <div class="mb-3">
-              <label class="form-label" for="id_hora">⏰ Hora</label>
+            <div class="col-md-6 animate-on-load">
+              <label class="form-label fw-semibold" for="id_hora">⏰ Hora</label>
               <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-clock"></i></span>
-                {{ form.hora|add_class:"form-select form-select-lg" }}
+                <span class="input-group-text input-group-text-dark"><i class="bi bi-clock"></i></span>
+                {% render_field form.hora class+="form-select form-select-lg form-select-dark" %}
               </div>
               {% for error in form.hora.errors %}
                 <div class="invalid-feedback d-block">{{ error }}</div>
               {% endfor %}
             </div>
+          </div>
 
-            {# ------- MSG ------- #}
-            <div class="mb-3">
-              <label class="form-label" for="id_comentario">📝 Comentario</label>
-              {{ form.comentario|add_class:"form-control form-control-lg" }}
-              {% for error in form.comentario.errors %}
-                <div class="invalid-feedback d-block">{{ error }}</div>
-              {% endfor %}
-            </div>
+          <!-- COMENTARIO -->
+          <div class="mb-3 mt-3 animate-on-load">
+            <label class="form-label fw-semibold" for="id_comentario">📝 Comentario</label>
+            {% render_field form.comentario class+="form-control form-control-lg form-control-dark" rows="3" %}
+            {% for error in form.comentario.errors %}
+              <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+          </div>
 
-            <button type="submit" class="btn btn-primary btn-lg w-100">
-              💾 Guardar Cambios
-            </button>
-          </form>
+          <button type="submit" class="btn btn-gold btn-lg w-100 mt-2 animate-on-load" style="--a-delay:440ms">
+            💾 Guardar cambios
+          </button>
+        </form>
       </div>
+
     </div>
   </div>
 </div>
 {% endlocaltime %}
+{% endblock %}
 
-{# ────────── DATA para tu JS de bloqueo de fechas #}
-<script>
-  const fechasOcupadas        = {{ fechas_ocupadas|safe }};
-  const fechasBloqueadas      = {{ fechas_bloqueadas|safe }};
-  const horasOcupadasPorFecha = {{ horas_ocupadas_por_fecha|safe }};
-  const bloqueos_por_fecha    = {{ bloqueos_por_fecha|safe }};
-</script>
-<script src="{% static 'js/disableDates.js' %}" defer></script>
+{% block extra_scripts %}
+  <script>
+    const fechasOcupadas        = {{ fechas_ocupadas|safe }};
+    const fechasBloqueadas      = {{ fechas_bloqueadas|safe }};
+    const horasOcupadasPorFecha = {{ horas_ocupadas_por_fecha|safe }};
+    const bloqueos_por_fecha    = {{ bloqueos_por_fecha|safe }};
+  </script>
+  <script src="{% static 'js/disableDates.js' %}" defer></script>
 {% endblock %}

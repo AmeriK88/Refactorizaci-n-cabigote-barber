@@ -1,26 +1,41 @@
 {% extends "base.html" %}
 {% load socialaccount %}
-{% block title %}Iniciar sesión con Google{% endblock %}
+{% block title %}Iniciar sesión con Google · Ca’Bigote{% endblock %}
 
-{# ──────────── LOGIN WITH GOOGLE ──────────── #}
 {% block content %}
 <div class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-12">
-      <div class="card shadow-sm">
+    <div class="col-12 col-md-10 col-lg-8">
+      <div class="card card-glass shadow-sm">
         <div class="card-header gradiente-header text-center">
-          <h4 class="mb-0">
-            <i class="fab fa-google me-2"></i> Inicio de sesión con Google
-          </h4>
+          <h1 class="h5 fw-bold mb-0 text-ink">
+            <i class="fab fa-google me-2 text-gold" aria-hidden="true"></i>
+            Inicio de sesión con Google
+          </h1>
         </div>
+
         <div class="card-body text-center">
-          <p>Vas a iniciar sesión usando tu cuenta de Google.</p>
-          <form method="post">
+          <p class="text-ink-muted mb-4">
+            Vas a autenticarte usando tu cuenta de Google.
+            No compartiremos tu contraseña con Ca’Bigote; Google solo nos envía los datos básicos de tu perfil.
+          </p>
+
+          <form method="post" class="d-grid gap-3">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger btn-lg">
-              <i class="fab fa-google me-2"></i> Continuar
+            <button type="submit" class="btn btn-google btn-lg w-100" aria-label="Continuar con Google">
+              <i class="fab fa-google me-2" aria-hidden="true"></i> Continuar con Google
             </button>
+
+            <a href="{% url 'users:login' %}" class="btn btn-outline-gold btn-lg w-100" aria-label="Cancelar e ir al inicio de sesión">
+              <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Cancelar y volver
+            </a>
           </form>
+
+          <p class="small text-ink-muted mt-4 mb-0">
+            Al continuar aceptas nuestra
+            <a href="{% url 'home' %}privacidad" class="footer-link">Política de privacidad</a>
+            y la <a href="https://policies.google.com/privacy?hl=es" target="_blank" rel="noopener" class="footer-link">Política de Google</a>.
+          </p>
         </div>
       </div>
     </div>

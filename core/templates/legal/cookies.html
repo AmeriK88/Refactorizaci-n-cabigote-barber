@@ -1,106 +1,133 @@
 {% extends "base.html" %}
 {% load static i18n %}
-{% block title %}Política de cookies | Ca’Bigote{% endblock %}
+{% block title %}Política de cookies · Ca’Bigote{% endblock %}
 
 {% block content %}
-<main class="container py-4" id="cookies">
-  <h1 class="mb-3">Política de cookies</h1>
-  <p><strong>Última actualización:</strong> 09/09/2025</p>
+<main class="container py-5" id="cookies">
+  <div class="card card-glass shadow-sm">
+    <div class="card-header gradiente-header text-center">
+      <h1 class="h5 fw-bold mb-0 text-ink">
+        <i class="bi bi-cookie me-2 text-gold" aria-hidden="true"></i>
+        Política de cookies
+      </h1>
+    </div>
 
-  <p>
-    En este sitio (“<strong>Ca’Bigote</strong>”) utilizamos cookies y tecnologías similares para
-    hacer que la web funcione, recordar tus preferencias y, si lo aceptas, habilitar servicios de terceros
-    como mapas integrados. Solo las cookies <strong>necesarias</strong> están activas por defecto.
-  </p>
+    <div class="card-body">
+      <p class="text-ink-muted mb-3">
+        <strong class="text-ink">Última actualización:</strong>
+        <time datetime="2025-09-09">09/09/2025</time>
+      </p>
 
-  <h2 class="h4 mt-4">1. ¿Qué son las cookies?</h2>
-  <p>Son pequeños archivos que el navegador almacena para recordar información técnica, de preferencia o de sesión.</p>
+      <p class="text-ink">
+        En <strong>Ca’Bigote</strong> usamos cookies y tecnologías similares para que el sitio funcione,
+        recordar tus preferencias y, si lo aceptas, habilitar servicios de terceros como mapas integrados.
+        Por defecto, solo las <strong>necesarias</strong> están activas.
+      </p>
 
-  <h2 class="h4 mt-4">2. ¿Qué tipos usamos?</h2>
-  <ul>
-    <li><strong>Necesarias (propias):</strong> operativa básica del sitio (seguridad, sesión, navegación).</li>
-    <li><strong>Preferencias:</strong> recuerdan ajustes de la interfaz.</li>
-    <li><strong>Estadística:</strong> medición anónima y agregada del uso (solo si la activas).</li>
-    <li><strong>Marketing:</strong> seguimiento/segmentación publicitaria (si se llegara a usar).</li>
-    <li><strong>Mapas y terceros:</strong> servicios embebidos (p. ej., Google Maps, Instagram) que pueden instalar cookies.</li>
-  </ul>
+      <h2 class="footer-heading mt-4">1. ¿Qué son las cookies?</h2>
+      <p class="text-ink-muted">
+        Son pequeños archivos que el navegador almacena para recordar información técnica, de preferencia o de sesión.
+      </p>
 
-  <h2 class="h4 mt-4">3. Panel de configuración</h2>
-  <p>
-    Puedes cambiar tu elección en cualquier momento desde el
-    <a href="#" data-ck-open>panel de preferencias de cookies</a>.
-  </p>
+      <h2 class="footer-heading mt-4">2. ¿Qué tipos usamos?</h2>
+      <ul class="text-ink-muted">
+        <li><strong class="text-ink">Necesarias (propias):</strong> operativa básica del sitio (seguridad, sesión, navegación).</li>
+        <li><strong class="text-ink">Preferencias:</strong> recuerdan ajustes de la interfaz.</li>
+        <li><strong class="text-ink">Estadística:</strong> medición anónima y agregada del uso (solo si la activas).</li>
+        <li><strong class="text-ink">Marketing:</strong> seguimiento/segmentación publicitaria (si se llegara a usar).</li>
+        <li><strong class="text-ink">Mapas y terceros:</strong> servicios embebidos (p. ej., Google Maps, Instagram) que pueden instalar cookies.</li>
+      </ul>
 
-  <h2 class="h4 mt-4">4. Detalle de cookies concretas</h2>
+      <h2 class="footer-heading mt-4">3. Panel de configuración</h2>
+      <p class="text-ink-muted">
+        Puedes cambiar tu elección en cualquier momento desde el
+        <a href="#" class="footer-link" data-ck-open>panel de preferencias de cookies</a>.
+      </p>
 
-  <div class="table-responsive">
-    <table class="table table-sm table-bordered">
-      <thead class="thead-light">
-        <tr>
-          <th scope="col">Nombre</th>
-          <th scope="col">Proveedor</th>
-          <th scope="col">Finalidad</th>
-          <th scope="col">Duración</th>
-          <th scope="col">Tipo</th>
-          <th scope="col">Categoría</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Necesarias (Django) -->
-        <tr>
-          <td><code>csrftoken</code></td>
-          <td>Propia (cabigotebarbershop.com)</td>
-          <td>Seguridad CSRF en formularios.</td>
-          <td>~12 meses</td>
-          <td>HTTP</td>
-          <td>Necesarias</td>
-        </tr>
-        <tr>
-          <td><code>sessionid</code></td>
-          <td>Propia (cabigotebarbershop.com)</td>
-          <td>Mantener sesión de usuario autenticado.</td>
-          <td>Sesión</td>
-          <td>HTTP</td>
-          <td>Necesarias</td>
-        </tr>
-        <!-- Preferencias (localStorage, a título informativo) -->
-        <tr>
-          <td><code>ck-consent-v1</code> (localStorage)</td>
-          <td>Propia</td>
-          <td>Recordar tus preferencias de cookies.</td>
-          <td>Persistente</td>
-          <td>LocalStorage</td>
-          <td>Necesarias</td>
-        </tr>
-        <!-- Terceros: Google Maps (solo si activas “Mapas y terceros”) -->
-        <tr>
-          <td>NID / 1P_JAR / CONSENT (ejemplos)</td>
-          <td>Google</td>
-          <td>Operar y mostrar el mapa embebido.</td>
-          <td>Sesión / 6–24 meses</td>
-          <td>HTTP</td>
-          <td>Mapas y terceros</td>
-        </tr>
-        <!-- Añade aquí analytics/ads si los incorporas más adelante -->
-      </tbody>
-    </table>
+      <h2 class="footer-heading mt-4">4. Detalle de cookies concretas</h2>
+
+      <div class="table-responsive">
+        <table class="table table-sm table-bordered policy-table mb-3" aria-describedby="cookies-table-desc">
+          <caption id="cookies-table-desc" class="visually-hidden">Listado de cookies y tecnologías utilizadas en el sitio.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Nombre</th>
+              <th scope="col">Proveedor</th>
+              <th scope="col">Finalidad</th>
+              <th scope="col">Duración</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Categoría</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Necesarias (Django) -->
+            <tr>
+              <td><code>csrftoken</code></td>
+              <td>Propia (cabigotebarbershop.com)</td>
+              <td>Seguridad CSRF en formularios.</td>
+              <td>~12 meses</td>
+              <td>HTTP</td>
+              <td>Necesarias</td>
+            </tr>
+            <tr>
+              <td><code>sessionid</code></td>
+              <td>Propia (cabigotebarbershop.com)</td>
+              <td>Mantener sesión de usuario autenticado.</td>
+              <td>Sesión</td>
+              <td>HTTP</td>
+              <td>Necesarias</td>
+            </tr>
+            <!-- Preferencias (localStorage, informativo) -->
+            <tr>
+              <td><code>ck-consent-v1</code> (localStorage)</td>
+              <td>Propia</td>
+              <td>Recordar preferencias de cookies.</td>
+              <td>Persistente</td>
+              <td>LocalStorage</td>
+              <td>Necesarias</td>
+            </tr>
+            <!-- Terceros: Google Maps (si activas “Mapas y terceros”) -->
+            <tr>
+              <td>NID / 1P_JAR / CONSENT</td>
+              <td>Google</td>
+              <td>Operar y mostrar el mapa embebido.</td>
+              <td>Sesión / 6–24 meses</td>
+              <td>HTTP</td>
+              <td>Mapas y terceros</td>
+            </tr>
+            {# Añade analytics/ads si los incorporas más adelante #}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="footer-heading mt-4">5. ¿Cómo cambiar o retirar el consentimiento?</h2>
+      <ul class="text-ink-muted">
+        <li>Desde el <a href="#" class="footer-link" data-ck-open>panel de preferencias</a>.</li>
+        <li>Desde tu navegador (eliminando o bloqueando cookies). Consulta la ayuda de tu navegador.</li>
+      </ul>
+
+      <h2 class="footer-heading mt-4">6. Terceros y transferencias</h2>
+      <p class="text-ink-muted">
+        El uso de servicios de terceros (p. ej., Google Maps, Instagram) puede implicar transferencias internacionales.
+        Revisa sus políticas:
+        <a href="https://policies.google.com/technologies/cookies?hl=es" target="_blank" rel="noopener" class="footer-link">Google</a>,
+        <a href="https://privacycenter.instagram.com/policy/?entry_point=ig_help_center_data_policy_redirect" target="_blank" rel="noopener" class="footer-link">Instagram</a>.
+      </p>
+
+      <h2 class="footer-heading mt-4">7. Actualizaciones</h2>
+      <p class="text-ink-muted">
+        Podemos actualizar esta política por cambios legales o técnicos. Te recomendamos revisarla periódicamente.
+      </p>
+
+      <div class="mt-4 d-flex gap-2 flex-wrap">
+        <a href="#" class="btn btn-gold" data-ck-open>
+          <i class="bi bi-sliders me-1" aria-hidden="true"></i> Abrir preferencias
+        </a>
+        <a href="{% url 'home' %}" class="btn btn-outline-gold">
+          <i class="bi bi-house me-1" aria-hidden="true"></i> Volver al inicio
+        </a>
+      </div>
+    </div>
   </div>
-
-  <h2 class="h4 mt-4">5. ¿Cómo cambiar o retirar el consentimiento?</h2>
-  <ul>
-    <li>Desde el <a href="#" data-ck-open>panel de preferencias</a>.</li>
-    <li>Desde tu navegador (eliminando cookies o bloqueándolas). Consulta la ayuda de tu navegador.</li>
-  </ul>
-
-  <h2 class="h4 mt-4">6. Terceros y transferencias</h2>
-  <p>
-    El uso de servicios de terceros (p. ej., Google Maps o Instagram) puede implicar transferencias internacionales.
-    Revisa sus políticas para más información:
-    <a href="https://policies.google.com/technologies/cookies?hl=es" target="_blank" rel="noopener">Google</a>,
-    <a href="https://privacycenter.instagram.com/policy/?entry_point=ig_help_center_data_policy_redirect" target="_blank" rel="noopener">Instagram</a>.
-  </p>
-
-  <h2 class="h4 mt-4">7. Actualizaciones</h2>
-  <p>Podemos actualizar esta política para reflejar cambios legales o técnicos. Te recomendamos revisarla periódicamente.</p>
 </main>
 {% endblock %}

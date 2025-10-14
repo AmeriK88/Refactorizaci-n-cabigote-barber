@@ -1,11 +1,68 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% block title %}403 · Acceso denegado{% endblock %}
 
-{% block title %}403 - Prohibido{% endblock %}
+{% block extra_head %}
+<meta name="robots" content="noindex,nofollow">
+{% endblock %}
 
 {% block content %}
-<div class="container text-center mt-5">
-    <h1 class="display-4 text-danger">403 - Prohibido</h1>
-    <p class="lead">No tienes permiso para acceder a esta página.</p>
-    <a href="{% url 'home' %}" class="btn btn-primary mt-3">Volver a la página de inicio</a>
+<div class="container py-5">
+  <div class="card card-glass shadow-sm">
+    <div class="card-header gradiente-header text-center">
+      <h1 class="h5 fw-bold mb-0 text-ink">
+        <i class="bi bi-shield-exclamation me-2 text-warning" aria-hidden="true"></i>
+        No tienes permisos para ver esto
+      </h1>
+    </div>
+
+    <div class="card-body text-center">
+      <p class="text-ink-muted mb-4">
+        Si crees que es un error, inicia sesión con una cuenta autorizada.
+      </p>
+
+      <div class="d-flex gap-2 flex-wrap justify-content-center">
+        <a class="btn btn-gold" href="{% url 'users:login' %}">
+          <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar sesión
+        </a>
+        <a class="btn btn-outline-gold" href="{% url 'home' %}">
+          <i class="bi bi-house me-1"></i> Volver al inicio
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% extends "base.html" %}
+{% block title %}403 · Acceso denegado{% endblock %}
+
+{% block extra_head %}
+<meta name="robots" content="noindex,nofollow">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="card card-glass shadow-sm">
+    <div class="card-header gradiente-header text-center">
+      <h1 class="h5 fw-bold mb-0 text-ink">
+        <i class="bi bi-shield-exclamation me-2 text-warning" aria-hidden="true"></i>
+        No tienes permisos para ver esto
+      </h1>
+    </div>
+
+    <div class="card-body text-center">
+      <p class="text-ink-muted mb-4">
+        Si crees que es un error, inicia sesión con una cuenta autorizada.
+      </p>
+
+      <div class="d-flex gap-2 flex-wrap justify-content-center">
+        <a class="btn btn-gold" href="{% url 'users:login' %}">
+          <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar sesión
+        </a>
+        <a class="btn btn-outline-gold" href="{% url 'home' %}">
+          <i class="bi bi-house me-1"></i> Volver al inicio
+        </a>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

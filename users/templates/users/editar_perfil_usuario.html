@@ -8,131 +8,135 @@
   <div class="row justify-content-center">
     <div class="col-12">
 
-      <!-- ───────── MAIN CARD ───────── -->
-      <div class="card shadow-sm animate-on-load">
+      <!-- MAIN CARD -->
+      <div class="card card-glass shadow-sm animate-on-load" style="--a-delay:0ms">
+        <!-- Header -->
         <div class="card-header gradiente-header text-center">
-          <h4 class="mb-0">
-            <i class="fas fa-user-edit text-primary me-2"></i> Edita tu Perfil
-          </h4>
+          <h1 class="h5 fw-bold mb-0 text-ink">
+            <i class="fas fa-user-edit text-gold me-2" aria-hidden="true"></i>
+            Edita tu Perfil
+          </h1>
         </div>
 
         <div class="card-body">
-
-          <p class="text-muted mb-4 text-center">
+          <p class="text-ink-muted mb-4 text-center">
             Todos los campos son opcionales, pero te recomendamos mantener tu información al día.
           </p>
 
-          <!-- ───────── CUENTA DE GOOGLE ───────── -->
-          <div class="card mb-5 shadow-sm">
-            <div class="card-header text-center main-title">
-              Acceso con Google
-            </div>
-
+          <!-- Acceso con Google -->
+          <div class="card card-glass mb-5 shadow-sm animate-on-load" style="--a-delay:80ms">
+            <div class="card-header text-center footer-heading">Acceso con Google</div>
             <div class="card-body text-center">
               {% if has_google %}
                 <p class="text-success fw-semibold mb-3">
-                  <i class="fab fa-google me-1"></i>
-                  ¡Tu cuenta ya está vinculada!
+                  <i class="fab fa-google me-1"></i> ¡Tu cuenta ya está vinculada!
                 </p>
-                <a href="{% url 'socialaccount_connections' %}"
-                  class="btn btn-outline-secondary">
+                <a href="{% url 'socialaccount_connections' %}" class="btn btn-outline-gold">
                   Gestionar vínculos
                 </a>
               {% else %}
-                <p class="mb-3">
+                <p class="mb-3 text-ink-muted">
                   Vincula tu cuenta para iniciar sesión con Google en un clic.
                 </p>
-                <a href="{% provider_login_url 'google' process='connect' %}"
-                  class="btn btn-outline-danger">
+                <a href="{% provider_login_url 'google' process='connect' %}" class="btn btn-gold">
                   <i class="fab fa-google me-2"></i> Vincular con Google
                 </a>
               {% endif %}
             </div>
           </div>
 
-          <!-- CURRENT INFO -->
-          <div class="card mb-5 shadow-sm">
-            <div class="card-header text-center main-title">Información del Usuario</div>
+          <!-- Información actual -->
+          <div class="card card-glass mb-5 shadow-sm animate-on-load" style="--a-delay:160ms">
+            <div class="card-header text-center footer-heading">Información del Usuario</div>
             <div class="card-body">
-              <p class="mb-2"><strong>Nombre de Usuario:</strong> {{ username }}</p>
-              <p class="mb-2"><strong>Correo Electrónico:</strong> {{ current_email }}</p>
-              <p class="mb-0"><strong>Teléfono Actual:</strong> {{ current_phone }}</p>
+              <p class="mb-2"><strong>Nombre de usuario:</strong> <span class="text-ink">{{ username }}</span></p>
+              <p class="mb-2"><strong>Correo electrónico:</strong> <span class="text-ink">{{ current_email }}</span></p>
+              <p class="mb-0"><strong>Teléfono actual:</strong> <span class="text-ink">{{ current_phone|default:"—" }}</span></p>
             </div>
           </div>
 
-          <!-- FORMS -->
-          <form method="post" class="needs-validation" novalidate>
+          <!-- FORMULARIOS -->
+          <form method="post" class="needs-validation form-dark animate-on-load" style="--a-delay:240ms" novalidate>
             {% csrf_token %}
 
-            <!-- EMAIL -->
-            <h5 class="mb-3">Correo Electrónico</h5>
+            <!-- Email / cuenta (UserForm) -->
+            <h2 class="h6 footer-heading mb-3">Correo electrónico</h2>
             {{ user_form.non_field_errors }}
             {% for field in user_form %}
               <div class="mb-3">
                 <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field|add_class:"form-control form-control-lg" }}
-                {% for error in field.errors %}
-                  <div class="invalid-feedback d-block">{{ error }}</div>
-                {% endfor %}
+                {{ field|add_class:"form-control-dark form-control form-control-lg" }}
+                {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
               </div>
             {% endfor %}
 
-            <!-- PROFILE -->
-            <h5 class="mt-4 mb-3">Actualizar información</h5>
+            <!-- Perfil (ProfileForm) -->
+            <h2 class="h6 footer-heading mt-4 mb-3">Actualizar información</h2>
             {{ profile_form.non_field_errors }}
             {% for field in profile_form %}
               <div class="mb-3">
                 <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field|add_class:"form-control form-control-lg" }}
-                {% for error in field.errors %}
-                  <div class="invalid-feedback d-block">{{ error }}</div>
-                {% endfor %}
+                {{ field|add_class:"form-control-dark form-control form-control-lg" }}
+                {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
               </div>
             {% endfor %}
 
-            <!-- PASSWORD -->
-            <h5 class="mt-4 mb-3">Cambiar Contraseña</h5>
+            <!-- Password (PasswordForm) -->
+            <h2 class="h6 footer-heading mt-4 mb-3">Cambiar contraseña</h2>
             {{ password_form.non_field_errors }}
-            {% for field in password_form %}
-              <div class="mb-3">
-                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field|add_class:"form-control form-control-lg" }}
-                {% for error in field.errors %}
-                  <div class="invalid-feedback d-block">{{ error }}</div>
-                {% endfor %}
-              </div>
-            {% endfor %}
+              {% for field in password_form %}
+                <div class="mb-3">
+                  <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                  <div class="input-group">
+                    {{ field|add_class:"form-control-dark form-control form-control-lg" }}
+                    <button
+                      type="button"
+                      class="btn btn-outline-gold toggle-pass"
+                      data-target="{{ field.id_for_label }}"
+                      aria-label="Mostrar u ocultar contraseña">
+                      <i class="bi bi-eye" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+                </div>
+              {% endfor %}
 
-            <button type="submit" class="btn btn-primary btn-lg w-100">
-              💾 Guardar Cambios
+
+            <button type="submit" class="btn btn-gold btn-lg w-100">
+              <i class="bi bi-save me-1" aria-hidden="true"></i> Guardar cambios
             </button>
           </form>
         </div>
 
-        <div class="card-footer text-center">
-          <a href="{% url 'users:perfil_usuario' %}" class="btn btn-outline-primary">
-            ↩️ Volver al Perfil
+        <div class="card-footer text-center bg-transparent border-0 animate-on-load" style="--a-delay:300ms">
+          <a href="{% url 'users:perfil_usuario' %}" class="btn btn-outline-gold">
+            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Volver al perfil
           </a>
         </div>
       </div>
-      <!-- ──────── FIN MAIN CARD ──────── -->
 
-      <!-- ───────── ZONA DE PELIGRO ───────── -->
-      <div class="card mt-4 border-danger shadow-sm">
-        <div class="card-header bg-danger bg-opacity-75 text-white text-center">
+      <!-- Zona de peligro -->
+      <div class="card card-glass mt-4 shadow-sm border-0 animate-on-load" style="--a-delay:360ms">
+        <div class="card-header bg-danger bg-opacity-75 text-white text-center rounded-top">
           ⚠️ Zona de peligro
         </div>
         <div class="card-body text-center">
-          <p class="mb-3">
+          <p class="mb-3 text-ink">
             Eliminar tu cuenta es irreversible. Se borrarán tus datos y citas.
           </p>
           <a href="{% url 'users:delete_account' %}"
-             class="btn btn-danger btn-lg"
+             class="btn btn-outline-danger btn-lg"
              onclick="return confirm('¿Seguro que quieres eliminar tu cuenta? Esta acción no se puede deshacer.');">
             ❌ Eliminar cuenta definitivamente
           </a>
         </div>
+      </div>
+
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="{% static 'js/togglePassword.js' %}" defer></script>
 {% endblock %}

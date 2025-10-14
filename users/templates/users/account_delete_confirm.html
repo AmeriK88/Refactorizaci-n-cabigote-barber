@@ -1,31 +1,98 @@
 {% extends "base.html" %}
+
+{% block title %}Eliminar cuenta · Ca’Bigote{% endblock %}
+
 {% block content %}
 <div class="container py-5">
-  <div class="text-center">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
 
-    <h2 class="text-danger fw-bold">
-      <i class="fas fa-exclamation-triangle me-2"></i>
-      ¿Seguro que quieres eliminar tu cuenta?
-    </h2>
+      <div class="card card-glass shadow-sm animate-on-load">
+        <!-- Header con barra vertical -->
+        <div class="card-header gradiente-header text-center">
+          <h1 class="h5 fw-bold mb-0 text-ink">
+            <i class="fas fa-exclamation-triangle text-gold me-2" aria-hidden="true"></i>
+            Eliminar cuenta
+          </h1>
+        </div>
 
-    <p class="lead">
-      Esta acción es <span class="fw-bold text-danger">permanente</span>.
-      Tus citas y facturas se conservarán, pero
-      <u>no podrás volver a iniciar sesión</u>.
-    </p>
+        <div class="card-body text-center">
+          <p class="lead text-ink">
+            Esta acción es <span class="text-danger fw-bold">permanente</span>.
+            Tus citas y facturas se conservarán para efectos administrativos,
+            pero <u>no podrás volver a iniciar sesión</u>.
+          </p>
 
-    <form method="post" class="d-inline">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-lg btn-danger shadow-sm">
-        <i class="fas fa-user-slash me-1"></i> Sí, eliminar mi cuenta
-      </button>
-    </form>
+          <div class="bg-section p-3 rounded-3 my-4 text-ink-muted small">
+            <p class="mb-1"><i class="bi bi-shield-lock me-1"></i> Por seguridad, confirma que entiendes lo siguiente:</p>
+            <ul class="m-0 ps-3 text-start">
+              <li>La eliminación es irreversible.</li>
+              <li>Perderás acceso a tu perfil y a tu historial personal.</li>
+              <li>Podrás crear una cuenta nueva en el futuro si lo deseas.</li>
+            </ul>
+          </div>
 
-    <a href="{% url 'users:perfil_usuario' %}"
-       class="btn btn-lg btn-outline-secondary ms-2 mt-2">
-       ✋ Cancelar
-    </a>
+          <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
 
+            <!-- Paso 1: checkbox -->
+            <div class="form-check d-flex justify-content-center mb-3">
+              <input class="form-check-input me-2" type="checkbox" value="1" id="chkConfirm" />
+              <label class="form-check-label text-ink-muted" for="chkConfirm">
+                Confirmo que deseo eliminar mi cuenta de forma permanente.
+              </label>
+            </div>
+
+            <!-- Paso 2: escribir ELIMINAR -->
+            <div class="mb-3">
+              <label class="form-label text-ink" for="txtConfirm">Escribe <code>ELIMINAR</code> para confirmar</label>
+              <input id="txtConfirm" type="text" class="form-control-dark form-control form-control-lg" placeholder="ELIMINAR" autocomplete="off" />
+              <div class="invalid-feedback d-block d-none" id="msgError">Debes marcar la casilla y escribir <strong>ELIMINAR</strong>.</div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 justify-content-center mt-3">
+              <button id="btnDelete" type="submit" class="btn btn-outline-danger btn-lg px-4" disabled>
+                <i class="fas fa-user-slash me-1" aria-hidden="true"></i>
+                Sí, eliminar mi cuenta
+              </button>
+              <a href="{% url 'users:perfil_usuario' %}" class="btn btn-outline-gold btn-lg px-4">
+                ✋ Cancelar
+              </a>
+            </div>
+          </form>
+        </div>
+
+        <div class="card-footer text-center bg-transparent border-0">
+          <small class="text-ink-muted">Si necesitas ayuda, contáctanos por email o WhatsApp.</small>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  (function(){
+    const chk = document.getElementById('chkConfirm');
+    const txt = document.getElementById('txtConfirm');
+    const btn = document.getElementById('btnDelete');
+    const msg = document.getElementById('msgError');
+
+    function validate(){
+      const ok = chk.checked && txt.value.trim().toUpperCase() === 'ELIMINAR';
+      btn.disabled = !ok;
+      if(!ok){
+        msg.classList.remove('d-none');
+      } else {
+        msg.classList.add('d-none');
+      }
+    }
+    chk.addEventListener('change', validate);
+    txt.addEventListener('input', validate);
+    // animación on-load si la usas
+    document.querySelectorAll('.animate-on-load').forEach(el=>el.classList.add('loaded'));
+  })();
+</script>
 {% endblock %}

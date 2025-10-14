@@ -1,47 +1,94 @@
 {% extends "base.html" %}
 
-{% block title %}Servicios - Cabigote Barber Shop{% endblock %}
+{% block title %}Servicios · Ca’Bigote{% endblock %}
 
 {% block content %}
-<div class="container mb-5 mt-5">
-    <div class="mb-5 card-header gradiente-header shadow-sm bg-light text-center p-3 border-0">
-    <h2 class="h4 fw-bold mb-0">
-        <i class="fas fa-concierge-bell me-2 text-primary"></i> Servicios
-    </h2>
+<div class="container py-5">
+
+  <!-- Header -->
+  <div class="card card-glass shadow-sm mb-4 animate-on-load" style="--a-delay:0ms">
+    <div class="card-header gradiente-header text-center">
+      <h2 class="h4 fw-bold mb-0 text-ink">
+        <i class="fas fa-concierge-bell me-2 text-gold" aria-hidden="true"></i>
+        Servicios
+      </h2>
     </div>
-    <div class=" mt-5 row g-4 animate-on-load">
-        {% if servicios|length == 1 %}
-            <!-- Si solo hay un servicio, hacer que ocupe toda la fila -->
-            <div class="col-12 d-flex justify-content-center">
-                <div class="card">
-                    {% if servicio.imagen %}
-                        <img src="{{ servicio.imagen.url }}" alt="{{ servicio.nombre }}" loading="lazy" class="card-img-top">
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ servicio.nombre }}</h5>
-                        <p class="card-text">{{ servicio.descripcion }}</p>
-                        <p class="card-text"><strong>Precio:</strong> {{ servicio.precio }} €</p>
-                    </div>
-                </div>
+  </div>
+
+  {% if servicios %}
+
+    <div class="row g-4">
+      {% if servicios|length == 1 %}
+        {# Caso 1 servicio — ancho cómodo centrado #}
+        {% with s=servicios.0 %}
+        <div class="col-12 col-md-10 col-lg-8 mx-auto">
+          <article class="card card-glass h-100 service-card animate-on-load" style="--a-delay:80ms">
+            {% if s.imagen %}
+              <div class="service-thumb">
+                <img src="{{ s.imagen.url }}"
+                     alt="{{ s.nombre }}"
+                     class="w-100 h-100"
+                     loading="lazy">
+              </div>
+            {% endif %}
+            <div class="card-body d-flex flex-column">
+              <h3 class="h5 text-ink mb-2">{{ s.nombre }}</h3>
+              <p class="text-ink-muted mb-3">{{ s.descripcion }}</p>
+
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <span class="price-badge">€{{ s.precio }}</span>
+                <a href="{% url 'appointments:reservar_cita' s.id %}"
+                   class="btn btn-gold"
+                   aria-label="Reservar {{ s.nombre }}">
+                  Reservar
+                </a>
+              </div>
             </div>
-        {% else %}
-            <!-- Si hay varios servicios, mostrar en columnas -->
-            {% for servicio in servicios %}
-                <div class="col-md-6 col-lg-4 mt-5">
-                    <div class="card">
-                        {% if servicio.imagen %}
-                            <img src="{{ servicio.imagen.url }}" alt="{{ servicio.nombre }}" loading="lazy" class="card-img-top">
-                        {% endif %}
-                        <div class="card-body">
-                            <h5 class="card-title">{{ servicio.nombre }}</h5>
-                            <p class="card-text">{{ servicio.descripcion }}</p>
-                            <p class="card-text"><strong>Precio:</strong> {{ servicio.precio }} €</p>
-                            <a href="{% url 'appointments:reservar_cita' servicio.id %}" class="btn btn-primary">Reservar</a>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        {% endif %}
+          </article>
+        </div>
+        {% endwith %}
+      {% else %}
+        {# Varios servicios — grid con escalonado en la tarjeta #}
+        {% for servicio in servicios %}
+        <div class="col-12 col-md-6 col-lg-4">
+          <article class="card card-glass h-100 service-card animate-on-load"
+                   style="--a-delay:{% widthratio forloop.counter0 1 80 %}ms">
+            {% if servicio.imagen %}
+              <div class="service-thumb">
+                <img src="{{ servicio.imagen.url }}"
+                     alt="{{ servicio.nombre }}"
+                     class="w-100 h-100"
+                     loading="lazy">
+              </div>
+            {% endif %}
+            <div class="card-body d-flex flex-column">
+              <h3 class="h6 text-ink mb-2">{{ servicio.nombre }}</h3>
+              <p class="text-ink-muted mb-3">{{ servicio.descripcion }}</p>
+
+              <div class="mt-auto d-flex align-items-center justify-content-between">
+                <span class="price-badge">€{{ servicio.precio }}</span>
+                <a href="{% url 'appointments:reservar_cita' servicio.id %}"
+                   class="btn btn-outline-gold"
+                   aria-label="Reservar {{ servicio.nombre }}">
+                  Reservar
+                </a>
+              </div>
+            </div>
+          </article>
+        </div>
+        {% endfor %}
+      {% endif %}
     </div>
+
+  {% else %}
+    <div class="card card-glass text-center animate-on-load" style="--a-delay:80ms">
+      <div class="card-body">
+        <h5 class="text-ink mb-2">De momento no hay servicios publicados</h5>
+        <p class="text-ink-muted mb-3">Estamos preparando novedades para ti.</p>
+        <a href="{% url 'home' %}" class="btn btn-outline-gold">Volver al inicio</a>
+      </div>
+    </div>
+  {% endif %}
+
 </div>
 {% endblock %}

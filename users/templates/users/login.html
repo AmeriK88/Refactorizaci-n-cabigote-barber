@@ -1,94 +1,114 @@
 {# =============================== EXT & LOADS =============================== #}
 {% extends 'base.html' %}
-{% load static tz widget_tweaks %}
-
-{% load socialaccount %}
+{% load static tz widget_tweaks socialaccount %}
 
 {% block title %}Login · Ca’Bigote{% endblock %}
 
-{# =============================== CONTENT ====================================== #}
+{# =============================== CONTENT ================================= #}
 {% block content %}
 {% localtime on %}
 <div class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-md-12 col-lg-12 col-xl-12">
-      <div class="card shadow-sm">
+    <div class="col-lg-6 col-xl-5">
+      
+      <div class="card card-glass shadow-sm mb-4 animate-on-load" style="--a-delay:80ms">
         <div class="card-header gradiente-header text-center">
-          <h4 class="mb-0">
-            <i class="fas fa-sign-in-alt text-primary me-2"></i> Iniciar Sesión
+          <h4 class="mb-0 text-ink">
+            <i class="fas fa-sign-in-alt me-2 text-gold" aria-hidden="true"></i>
+            Iniciar Sesión
           </h4>
         </div>
-        <form method="post" class="needs-validation animate-on-load" novalidate>
+
+        <form method="post" class="form-dark needs-validation p-3 p-md-4" novalidate>
           {% csrf_token %}
 
           {% if form.non_field_errors %}
-            <div class="alert alert-danger">
+            <div class="alert alert-danger animate-on-load" style="--a-delay:120ms" role="alert">
               {{ form.non_field_errors }}
             </div>
           {% endif %}
 
           {# ----------------------- USERNAME -------------------------------- #}
-          <div class="mb-3">
-            <label for="{{ form.username.id_for_label }}" class="form-label fw-bold">
+          <div class="mb-3 animate-on-load" style="--a-delay:160ms">
+            <label for="{{ form.username.id_for_label }}" class="form-label fw-semibold">
               {{ form.username.label }}
             </label>
-            {{ form.username|add_class:"form-control form-control-lg" }}
+            {% render_field form.username class+="form-control form-control-lg form-control-dark" autocomplete="username" %}
             {% for err in form.username.errors %}
               <div class="invalid-feedback d-block">{{ err }}</div>
             {% endfor %}
           </div>
 
           {# ----------------------- PASSWORD -------------------------------- #}
-          <div class="mb-3">
-            <label for="{{ form.password.id_for_label }}" class="form-label fw-bold">
+          <div class="mb-2 position-relative animate-on-load" style="--a-delay:200ms">
+            <label for="{{ form.password.id_for_label }}" class="form-label fw-semibold">
               {{ form.password.label }}
             </label>
-            {{ form.password|add_class:"form-control form-control-lg" }}
+            <div class="input-group">
+              {% render_field form.password class+="form-control form-control-lg form-control-dark" autocomplete="current-password" %}
+              <button
+                type="button"
+                class="btn btn-outline-gold"
+                id="toggle-pass"
+                data-toggle="password"
+                data-target="{{ form.password.id_for_label }}"
+                aria-label="Mostrar u ocultar contraseña"
+                aria-controls="{{ form.password.id_for_label }}"
+                aria-pressed="false">
+                <i class="bi bi-eye" aria-hidden="true"></i>
+              </button>
+            </div>
             {% for err in form.password.errors %}
               <div class="invalid-feedback d-block">{{ err }}</div>
             {% endfor %}
           </div>
 
-          {# ----------------------- CAPTCHA ---------------------------------- #}
-          <div class="mb-3">
-            {# Render completo para id/for sincronizados #}
+          {# ----------------------- CAPTCHA -------------------------------- #}
+          {% if form.captcha %}
+          <div class="mb-3 animate-on-load" style="--a-delay:240ms">
             {{ form.captcha }}
             {% for err in form.captcha.errors %}
               <div class="invalid-feedback d-block">{{ err }}</div>
             {% endfor %}
           </div>
+          {% endif %}
 
-          {# ----------------------- SUBMIT BTN ------------------------------- #}
-          <button type="submit" class="btn btn-primary btn-lg w-100 mt-4">
+          {# ----------------------- SUBMIT BTN ------------------------------ #}
+          <button type="submit" class="btn btn-gold btn-lg w-100 mt-3 animate-on-load" style="--a-delay:280ms">
             Entrar
           </button>
         </form>
-
-        {# ======================= SOCIAL LOGIN ============================ #}
-        <a href="{% provider_login_url 'google' %}">
-          <button type="button" class="btn btn-lg btn-google w-100 mt-2">
-            <i class="fab fa-google me-2"></i> Continuar con Google
-          </button>
-        </a>
       </div>
 
-      {# ======================= LINKS =================================== #}
-      <div class="card bg-light border-0 text-center mt-4 p-4 shadow-sm">
+      {# ======================= SOCIAL LOGIN ================================ #}
+      <a href="{% provider_login_url 'google' %}" class="text-decoration-none">
+        <button type="button" class="btn btn-lg btn-google w-100 animate-on-load" style="--a-delay:320ms">
+          <i class="fab fa-google me-2"></i> Continuar con Google
+        </button>
+      </a>
+
+      {# ======================= LINKS SECUNDARIOS =========================== #}
+      <div class="card card-glass border-0 text-center mt-4 p-4 shadow-sm animate-on-load" style="--a-delay:360ms">
         <div class="mb-3">
-          <p class="mb-2">¿No tienes cuenta?</p>
-          <a href="{% url 'users:register' %}" class="btn btn-primary btn-login" aria-label="Ir a registrarse">
+          <p class="mb-2 text-ink-muted">¿No tienes cuenta?</p>
+          <a href="{% url 'users:register' %}" class="btn btn-outline-gold btn-login" aria-label="Ir a registrarse">
             <i class="fas fa-user-plus"></i> Registrarse
           </a>
         </div>
         <div>
-          <p class="mb-0">¿Olvidaste tu contraseña?</p>
-          <a href="{% url 'password_reset' %}" class="btn btn-outline-secondary btn-login" aria-label="Recuperar contraseña">
+          <p class="mb-2 text-ink-muted">¿Olvidaste tu contraseña?</p>
+          <a href="{% url 'password_reset' %}" class="btn btn-outline-gold btn-login" aria-label="Recuperar contraseña">
             <i class="fas fa-key"></i> Recuperar Contraseña
           </a>
         </div>
       </div>
+
     </div>
   </div>
 </div>
 {% endlocaltime %}
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="{% static 'js/togglePassword.js' %}" defer></script>
 {% endblock %}
