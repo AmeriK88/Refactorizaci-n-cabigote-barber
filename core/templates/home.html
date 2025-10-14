@@ -22,17 +22,21 @@
     </div>
 
     <div class="col-lg-6 text-center position-relative hero-glow">
-      <img
-        src="{% static 'imagenes/cabigote.webp' %}"
-        alt="Logo CaʼBigote"
-        class="hero-image img-fluid mx-auto animate-on-load rounded-4 shadow-none border-0"
-        loading="lazy">
+      <!-- NUEVO WRAPPER -->
+      <div class="hero-frame rounded-4">
+        <img
+          src="{% static 'imagenes/cabigote.webp' %}"
+          alt="Logo CaʼBigote"
+          class="hero-image img-fluid mx-auto animate-on-load rounded-4 shadow-none border-0"
+          loading="lazy">
+      </div>
     </div>
   </div>
 
+
   <!-- TARIFA -->
   <section class="my-5" aria-labelledby="tarifa-title">
-    <div class="animete-on-load">
+    <div class="card-user-profile animate-on-load">
       <div class="mb-4 card-header gradiente-header shadow-0 bg-transparent text-center p-2 border-0">
         <h2 id="tarifa-title" class="h4 fw-bold mb-0 text-ink">
           <i class="fas fa-scissors me-2 text-gold" aria-hidden="true"></i>
@@ -42,7 +46,7 @@
 
       <div class="row justify-content-center">
         <div class="col-md-8">
-          <div class="card card-glass overflow-hidden">
+          <div class="card card-glass overflow-hidden animate-on-load">
             <div class="price-card-head text-center py-2 text-ink-muted small">Lista de Precios</div>
             <ul class="list-unstyled m-0 price-list">
               {% for servicio in servicios|slice:":10" %}
@@ -125,7 +129,7 @@
 
   <!-- ABOUT -->
   <section class="my-5" aria-labelledby="about-title">
-    <div class="card card-glass text-center p-4">
+    <div class="card card-glass card-user-profile text-center p-4 animate-on-load">
       <h3 id="about-title" class="fw-bold mb-3 text-ink">¿Por qué elegirnos?</h3>
       <p class="lead text-ink-muted">
         En CaʼBigote cada visita es una experiencia personalizada. Nuestros barberos están

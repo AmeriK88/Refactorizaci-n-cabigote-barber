@@ -51,32 +51,94 @@ body{ display:flex; flex-direction:column; margin:0;background:var(--bg-900); co
 .text-ink-muted{ color:var(--ink-300)!important; }
 .text-gold{ color:var(--gold-400)!important; }
 
-/* Contenedor del glow */
+
+/* ====== SETTINGS GLOW ====== */
 .hero-glow {
   --size: clamp(320px, 55vmin, 560px);
   --br: 1rem;
+  --glow-w: 10px;      /* grosor del anillo glow */
+  --blur: 18px;        /* blur del glow */
   --c1: 210 100% 60%;
   --c2: 280 100% 65%;
   --c3: 170 100% 55%;
 }
-.hero-glow .hero-image { position: relative; z-index: 1; }
-.hero-glow::before { content: ""; position: absolute; inset: 0; margin: auto; width: var(--size); height: var(--size); z-index: 0;
+
+.hero-glow .hero-image {
+  position: relative;
+  z-index: 1;
+  display: block;
+  border-radius: inherit;
+}
+
+/* --- Glow que rota alrededor (sin mask, 100% adaptable al tamaño) --- */
+.hero-frame {
+  position: relative;
+  display: inline-block;
+  border-radius: var(--br);
+  isolation: isolate;
+}
+
+.hero-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;                    /* se adapta al tamaño de la imagen */
+  border-radius: inherit;
+  z-index: 0;                  /* debajo de la imagen */
+  padding: var(--glow-w);      /* define el ancho del anillo */
+
+  /* Pintamos solo la “corona” usando background-clip */
   background:
-    radial-gradient(closest-side at var(--x1,15%) var(--y1,30%),
-      hsl(var(--c1) / 0.60), transparent 60%),
-    radial-gradient(closest-side at var(--x2,75%) var(--y2,65%),
-      hsl(var(--c2) / 0.50), transparent 60%),
-    radial-gradient(closest-side at var(--x3,45%) var(--y3,75%),
-      hsl(var(--c3) / 0.45), transparent 60%);
-  filter: blur(36px) saturate(140%) brightness(1.25); border-radius: var(--br); mask: radial-gradient(closest-side at 50% 50%, #000 60%, transparent 100%);
+    linear-gradient(#0000 0 0) content-box,           /* agujero interior transparente */
+    conic-gradient(
+      from var(--ang2, 0deg),
+      hsl(var(--c1) / .55),
+      hsl(var(--c2) / .55),
+      hsl(var(--c3) / .55),
+      hsl(var(--c1) / .55)
+    ) padding-box;                                     /* el anillo */
+
+  filter: blur(var(--blur)) saturate(140%);
+  opacity: .45;               /* visible sin hover */
+  transition: opacity .3s ease, filter .3s ease;
+  animation: spin2 10s linear infinite;  /* siempre en movimiento */
+}
+
+.hero-frame:hover::before {
+  opacity: .85;                               /* más intenso en hover */
+  filter: blur(calc(var(--blur) + 6px)) saturate(160%);
+}
+
+/* Giro del glow alrededor */
+@keyframes spin2 { to { --ang2: 360deg; } }
+
+/* (Opcional) Si quieres mantener tu glow orgánico de fondo, déjalo bajito */
+.hero-glow::before {
+  content: "";
+  position: absolute; inset: 0; margin: auto;
+  width: var(--size); height: var(--size); z-index: 0;
+  background:
+    radial-gradient(closest-side at var(--x1,15%) var(--y1,30%), hsl(var(--c1) / 0.60), transparent 60%),
+    radial-gradient(closest-side at var(--x2,75%) var(--y2,65%), hsl(var(--c2) / 0.50), transparent 60%),
+    radial-gradient(closest-side at var(--x3,45%) var(--y3,75%), hsl(var(--c3) / 0.45), transparent 60%);
+  filter: blur(36px) saturate(140%) brightness(1.15);
+  border-radius: var(--br);
+  opacity: .25; /* bajito para no competir con el anillo */
+
+  /* sin warnings: definimos ambas cuando uses mask;
+     aquí no hace falta, así que lo omitimos completamente */
   animation:
     move1 13s ease-in-out infinite alternate,
     move2 17s ease-in-out infinite alternate,
     move3 21s ease-in-out infinite alternate;
-  will-change: transform, filter;
+  pointer-events: none;
 }
 
-/* Animaciones: “pseudo-aleatorias” con keyframes desfasados */
+
+/* Keyframes del borde y del halo */
+@keyframes spin   { to { --ang: 360deg;  } }
+@keyframes spin2  { to { --ang2: 360deg; } }
+
+/* === Tus animaciones “orgánicas” existentes (sin cambios) === */
 @keyframes move1 {
   0%   { --x1: 12%; --y1: 28%; }
   25%  { --x1: 22%; --y1: 42%; }
@@ -168,7 +230,7 @@ main{ padding-block: 24px; margin-bottom:60px; flex:1; }
 .footer-link:hover{ opacity:1; text-decoration:underline; text-decoration-color:var(--gold-400); }
 
 /* ===== Métricas en lados opuestos (desktop) ===== */
-.visits-counter-card{background: linear-gradient(135deg, rgba(201,167,109,.18) 0%, var(--surface-800) 100%);border: 1px solid var(--border-soft);border-radius: var(--radius);box-shadow: var(--shadow-2);color: var(--ink-50); padding: 1rem; position: relative; min-height: 180px;}
+.visits-counter-card{background: linear-gradient(135deg, rgba(201,167,109,.18) 0%, var(--surface-800) 100%);border: 1px solid var(--border-soft);border-radius: var(--radius);box-shadow: var(--shadow-2);color: var(--ink-50); padding: 1rem; position: relative; min-height: 140px;}
 .visits-counter-card .metrics{ display: block;}
 .visits-counter-card .metrics .metric{ font-size: 1.1rem; position: absolute; max-width: 45%; display: flex; align-items: center; gap: .6rem;}
 .visits-counter-card.metrics--opposite .metrics .metric:first-child{ left: 1rem; bottom: 1rem; text-align: left; }
@@ -392,10 +454,7 @@ img{ box-sizing:border-box; max-width:100%; height:auto; }
 .whatsapp-icon{ margin-top:15px; }
 
 
-/* Dark mode: más intensidad y saturación */
-@media (prefers-color-scheme: dark) {
-  .hero-glow::before { filter: blur(48px) saturate(150%) brightness(1.3); }
-}
+
 
 /* =========================
    Responsive (optimized)
