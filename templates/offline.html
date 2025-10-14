@@ -1,7 +1,40 @@
 {% extends "base.html" %}
+
+{% block title %}Sin conexión · CaʼBigote{% endblock %}
+
 {% block content %}
-  <div class="container text-center py-5">
-    <h1>📡 Sin conexión</h1>
-    <p>No hay red. Cuando vuelva te mostraremos el sitio.</p>
-  </div>
+<div class="container py-5">
+  <section class="my-5" aria-labelledby="offline-title">
+    <div class="card card-glass p-4 text-center">
+      <div class="mb-3">
+        <div class="brand-avatar-badge mx-auto mb-3" aria-hidden="true" style="width:84px;height:84px;">
+          <img src="{% static 'imagenes/cabigote.webp' %}" alt="" class="brand-avatar" style="width:84px;height:84px; border-radius:50%;">
+        </div>
+        <h1 id="offline-title" class="h4 fw-bold text-ink">📡 Sin conexión</h1>
+        <p class="text-ink-muted m-0">
+          Ahora mismo no hay red. Puedes seguir navegando las páginas que estén en caché
+          o reintentar cuando vuelvas a tener conexión.
+        </p>
+      </div>
+
+      <div class="d-flex flex-wrap gap-3 justify-content-center mt-3">
+        <button id="retryBtn" class="btn btn-gold btn-lg">
+          Reintentar
+        </button>
+        <a href="{% url 'core:home' %}" class="btn btn-outline-gold btn-lg">
+          Ir al inicio
+        </a>
+      </div>
+
+      <div class="mt-4 small text-ink-muted">
+        <p class="mb-2">Accesos rápidos (si están en caché):</p>
+        <div class="d-flex flex-wrap justify-content-center gap-2">
+          <a class="btn btn-outline-gold btn-sm" href="{% url 'appointments:reservar_cita' %}">Reservar cita</a>
+          <a class="btn btn-outline-gold btn-sm" href="{% url 'services:ver_servicios' %}">Servicios</a>
+          <a class="btn btn-outline-gold btn-sm" href="{% url 'users:login' %}">Iniciar sesión</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
 {% endblock %}
