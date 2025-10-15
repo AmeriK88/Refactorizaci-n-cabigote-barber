@@ -85,6 +85,8 @@ urlpatterns = [
 # Rutas traducibles
 # ──────────────────────────────────────────────────────────
 urlpatterns += i18n_patterns(
+    path("offline.html", TemplateView.as_view(template_name="offline.html"), name="offline_i18n"),
+
     path("admin/", admin_dashboard, name="admin-dashboard"),    
     path("admin/", admin.site.urls),
     path("", home, name="home"),

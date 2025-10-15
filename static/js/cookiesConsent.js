@@ -1,28 +1,39 @@
-/* cookiesConsent.js — Ca'Bigote (modal 1ª capa + panel 2ª capa) */
 (function () {
   const KEY = 'ck-consent-v1';
+  const isOfflinePage = location.pathname.endsWith('/offline.html');
 
-  // 1ª capa (modal centrado). Si no existe, usaremos banner como fallback (no lo estás usando ya).
-  const firstLayerEl = document.getElementById('ck-modal');
-  const firstLayer   = () => firstLayerEl ? bootstrap.Modal.getOrCreateInstance(firstLayerEl, { backdrop: 'static', keyboard: false }) : null;
-  const banner       = document.getElementById('ck-banner'); // por si lo dejas en alguna página
-
-  // Panel 2ª capa
-  const panelEl = document.getElementById('ck-panel');
-  const panel   = () => bootstrap.Modal.getOrCreateInstance(panelEl);
-
-  const q = sel => document.querySelector(sel);
+  // Helpers / guards
+  const hasBootstrap = !!window.bootstrap;
+  const q  = (sel) => document.querySelector(sel);
+  const qa = (sel) => Array.from(document.querySelectorAll(sel));
   const getVersion = () =>
     document.querySelector('meta[name="application-version"]')?.content || '1.0';
 
+  // 1ª capa (modal centrado) y banner (si existiera)
+  const firstLayerEl = document.getElementById('ck-modal');
+  const firstLayer   = () =>
+    (hasBootstrap && firstLayerEl)
+      ? bootstrap.Modal.getOrCreateInstance(firstLayerEl, { backdrop: 'static', keyboard: false })
+      : null;
+
+  const banner = document.getElementById('ck-banner'); // opcional/no usado ahora
+
+  // 2ª capa (panel)
+  const panelEl = document.getElementById('ck-panel');
+  const panel   = () =>
+    (hasBootstrap && panelEl)
+      ? bootstrap.Modal.getOrCreateInstance(panelEl)
+      : null;
+
+  // ====== CONSENTIMIENTO ======
   const defaultConsent = () => ({
-    necessary: true,
+    necessary:   true,
     preferences: false,
-    analytics: false,
-    marketing: false,
-    thirdparty: false,
-    ts: new Date().toISOString(),
-    version: getVersion()
+    analytics:   false,
+    marketing:   false,
+    thirdparty:  false,
+    ts:          new Date().toISOString(),
+    version:     getVersion(),
   });
 
   const readConsent = () => {
@@ -37,40 +48,23 @@
     return data;
   };
 
-  // Mostrar 1ª capa si no hay consentimiento previo
+  // 1ª layer si no hay consentimiento previo / no mostrar en offline.html
   const showFirstLayerIfNeeded = () => {
+    if (isOfflinePage) return;
     if (readConsent()) return;
     if (firstLayerEl) firstLayer()?.show();
     else if (banner) banner.removeAttribute('hidden');
-  };
-
-  const openPanel = (e) => {
-    e?.preventDefault?.();
-    // si el modal de 1ª capa está abierto, ciérralo antes de abrir 2ª capa
-    if (firstLayerEl && firstLayerEl.classList.contains('show')) {
-      firstLayer()?.hide();
-    } else if (banner && !banner.hasAttribute('hidden')) {
-      banner.setAttribute('hidden', '');
-    }
-
-    const c = readConsent() || defaultConsent();
-    // sincroniza switches
-    q('#ck-pref').checked       = !!c.preferences;
-    q('#ck-analytics').checked  = !!c.analytics;
-    q('#ck-marketing').checked  = !!c.marketing;
-    q('#ck-thirdparty').checked = !!c.thirdparty;
-    panel().show();
   };
 
   // ====== APLICAR CONSENTIMIENTO EN LA PÁGINA ======
   const applyConsent = (c) => {
     handleMap(c.thirdparty);
 
-    // (Opcional) gatear Instagram embed
+    // (Opcional) Instagram embed
     if (c.thirdparty) loadInstagram();
     else removeInstagram();
 
-    // TODO futuro: cargar analytics/pixel sólo si c.analytics / c.marketing
+    // TODO: cargar analytics/pixel sólo si c.analytics / c.marketing
   };
 
   // ====== MAPS LOADER ======
@@ -118,39 +112,78 @@
     if (s) s.remove();
   };
 
-  // ====== EVENTOS UI ======
+  // ====== ACCESIBILIDAD: foco seguro al cerrar ======
+  let lastTrigger = null;
+  const defocusToSafePlace = () => (lastTrigger || document.body).focus();
+
+  // recuerda el disparador que abrió un modal/panel (o data-ck-open)
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-bs-toggle="modal"], [data-ck-open]');
+    if (t) lastTrigger = t;
+  });
+
+  // devuelve el foco al cerrar modales
+  firstLayerEl?.addEventListener('hidden.bs.modal', defocusToSafePlace);
+  panelEl?.addEventListener('hidden.bs.modal', defocusToSafePlace);
+
+  // ====== UI: abrir panel (2ª capa) ======
+  const openPanel = (e) => {
+    e?.preventDefault?.();
+
+    // sincroniza switches con el consentimiento guardado
+    const c = readConsent() || defaultConsent();
+    const map = {
+      '#ck-pref':       !!c.preferences,
+      '#ck-analytics':  !!c.analytics,
+      '#ck-marketing':  !!c.marketing,
+      '#ck-thirdparty': !!c.thirdparty,
+    };
+    Object.entries(map).forEach(([sel, val]) => {
+      const el = q(sel);
+      if (el) el.checked = val;
+    });
+
+    // si la 1ª capa está visible, ciérrala y abre el panel tras hidden
+    if (firstLayerEl && firstLayerEl.classList.contains('show')) {
+      firstLayerEl.addEventListener('hidden.bs.modal', () => panel()?.show(), { once: true });
+      firstLayer()?.hide();
+    } else {
+      panel()?.show();
+    }
+  };
+
+  // delega clicks en data-ck-open
   document.addEventListener('click', (e) => {
     const openBtn = e.target.closest('[data-ck-open]');
     if (openBtn) openPanel(e);
   });
 
-  // aceptar/rechazar (IDs compartidos en modal o banner)
-  const onAccept = () => {
+  // ====== Aceptar / Rechazar (1ª capa) ======
+  const onAccept = (e) => {
     saveConsent({ preferences: true, analytics: true, marketing: true, thirdparty: true });
+    e?.target?.blur();
     firstLayer()?.hide();
     banner?.setAttribute('hidden', '');
   };
-  const onReject = () => {
+  const onReject = (e) => {
     saveConsent({ preferences: false, analytics: false, marketing: false, thirdparty: false });
+    e?.target?.blur();
     firstLayer()?.hide();
     banner?.setAttribute('hidden', '');
   };
-
   q('#ck-accept')?.addEventListener('click', onAccept);
   q('#ck-reject')?.addEventListener('click', onReject);
 
-  // Guardar desde 2ª capa
+  // ====== Guardar desde 2ª capa ======
   q('#ck-save')?.addEventListener('click', () => {
     const newC = {
       preferences: q('#ck-pref')?.checked || false,
-      analytics:  q('#ck-analytics')?.checked || false,
-      marketing:  q('#ck-marketing')?.checked || false,
-      thirdparty: q('#ck-thirdparty')?.checked || false
+      analytics:   q('#ck-analytics')?.checked || false,
+      marketing:   q('#ck-marketing')?.checked || false,
+      thirdparty:  q('#ck-thirdparty')?.checked || false,
     };
     saveConsent(newC);
-    panel().hide();
-    firstLayer()?.hide();
-    banner?.setAttribute('hidden', '');
+    panel()?.hide();
   });
 
   // botón “Permitir y cargar mapa” directo
@@ -163,7 +196,7 @@
     }
   });
 
-  // Init
+  // ====== INIT ======
   document.addEventListener('DOMContentLoaded', () => {
     const c = readConsent();
     if (c) applyConsent(c);

@@ -276,7 +276,16 @@
                 <li><a href="{% url 'services:ver_servicios' %}" class="footer-link">Servicios</a></li>
                 <li><a href="{% url 'appointments:reservar_cita' %}" class="footer-link">Reservar Cita</a></li>
                 <li><a href="{% url 'products:ver_imagenes' %}" class="footer-link">Productos</a></li>
-                <li><a href="#" class="footer-link" data-ck-open>Preferencias de cookies</a></li>
+                <!-- Abrir panel de cookies con Bootstrap (evita aria-hidden+focus conflict) -->
+                <li>
+                    <a href="#ck-panel"
+                    class="footer-link"
+                    role="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#ck-panel">
+                    Preferencias de cookies
+                    </a>
+                </li>
                 </ul>
             </div>
 
@@ -347,23 +356,21 @@
             </div>
 
             <div class="text-center mt-2">
-                <small class="opacity-75">v{{ APP_VERSION }}</small>
+            <small class="opacity-75">v{{ APP_VERSION }}</small>
             </div>
 
         </div>
         </footer>
 
-            
         <!-- BTN WHATSAPP -->
         <a id="whatsapp-btn"
-            href="https://wa.me/+34659809165"
-            target="_blank"
-            class="whatsapp-float"
-            aria-label="Contactar vía WhatsApp"
-            title="WhatsApp">
-            <i class="fab fa-whatsapp whatsapp-icon"></i>
+        href="https://wa.me/+34659809165"
+        target="_blank"
+        class="whatsapp-float"
+        aria-label="Contactar vía WhatsApp"
+        title="WhatsApp">
+        <i class="fab fa-whatsapp whatsapp-icon"></i>
         </a>
-
 
         {# ========= Modal de cookies (1ª capa) ========= #}
         <div id="ck-modal"
@@ -376,7 +383,6 @@
             <div class="modal-content modal-content-contrast">
             <div class="modal-header">
                 <h5 id="ckm-title" class="modal-title text-ink">Tu privacidad es importante</h5>
-                <!-- Si quieres forzar decisión, elimina este botón -->
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
 
@@ -384,15 +390,25 @@
                 <p class="mb-2 text-ink-muted">
                 Usamos cookies propias (necesarias) y de terceros para funciones como mapas integrados.
                 Puedes <a href="{% url 'home' %}cookies" target="_blank" rel="noopener" class="footer-link">leer la política</a>
-                o <button class="btn btn-link p-0 align-baseline footer-link" data-ck-open type="button">configurar</button> tus preferencias.
+                o <button class="btn btn-link p-0 align-baseline footer-link"
+                            type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#ck-panel"
+                            data-bs-dismiss="modal">configurar</button> tus preferencias.
                 </p>
                 <small class="text-ink-muted">Solo las necesarias están activas por defecto.</small>
             </div>
 
             <div class="modal-footer">
-                <button id="ck-reject" class="btn btn-outline-secondary">Solo necesarias</button>
-                <button id="ck-accept" class="btn btn-gold">Aceptar todas</button>
-                <button class="btn btn-outline-gold" data-ck-open type="button">Configurar</button>
+                <button id="ck-reject" class="btn btn-outline-secondary" data-bs-dismiss="modal">Solo necesarias</button>
+                <button id="ck-accept" class="btn btn-gold" data-bs-dismiss="modal">Aceptar todas</button>
+                <button class="btn btn-outline-gold"
+                        type="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#ck-panel"
+                        data-bs-dismiss="modal">
+                Configurar
+                </button>
             </div>
             </div>
         </div>
@@ -516,7 +532,7 @@
 
             <div class="modal-footer py-2">
                 <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button id="ck-save" class="btn btn-gold">Guardar preferencias</button>
+                <button id="ck-save" class="btn btn-gold" data-bs-dismiss="modal">Guardar preferencias</button>
             </div>
             </div>
         </div>
@@ -550,6 +566,7 @@
             </div>
         </div>
         </div>
+
 
 
         <!-- SCRIPTS -->

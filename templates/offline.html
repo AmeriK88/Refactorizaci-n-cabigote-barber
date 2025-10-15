@@ -1,40 +1,72 @@
 {% extends "base.html" %}
+{% load static i18n %}
 
 {% block title %}Sin conexión · CaʼBigote{% endblock %}
 
 {% block content %}
 <div class="container py-5">
-  <section class="my-5" aria-labelledby="offline-title">
-    <div class="card card-glass p-4 text-center">
-      <div class="mb-3">
-        <div class="brand-avatar-badge mx-auto mb-3" aria-hidden="true" style="width:84px;height:84px;">
-          <img src="{% static 'imagenes/cabigote.webp' %}" alt="" class="brand-avatar" style="width:84px;height:84px; border-radius:50%;">
-        </div>
-        <h1 id="offline-title" class="h4 fw-bold text-ink">📡 Sin conexión</h1>
-        <p class="text-ink-muted m-0">
-          Ahora mismo no hay red. Puedes seguir navegando las páginas que estén en caché
-          o reintentar cuando vuelvas a tener conexión.
-        </p>
-      </div>
 
-      <div class="d-flex flex-wrap gap-3 justify-content-center mt-3">
-        <button id="retryBtn" class="btn btn-gold btn-lg">
-          Reintentar
-        </button>
-        <a href="{% url 'core:home' %}" class="btn btn-outline-gold btn-lg">
-          Ir al inicio
-        </a>
-      </div>
-
-      <div class="mt-4 small text-ink-muted">
-        <p class="mb-2">Accesos rápidos (si están en caché):</p>
-        <div class="d-flex flex-wrap justify-content-center gap-2">
-          <a class="btn btn-outline-gold btn-sm" href="{% url 'appointments:reservar_cita' %}">Reservar cita</a>
-          <a class="btn btn-outline-gold btn-sm" href="{% url 'services:ver_servicios' %}">Servicios</a>
-          <a class="btn btn-outline-gold btn-sm" href="{% url 'users:login' %}">Iniciar sesión</a>
-        </div>
+  <!-- HERO OFFLINE -->
+  <div class="row align-items-center mb-5 flex-column flex-lg-row">
+    <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
+      <h1 class="display-5 fw-bold text-ink animate-on-load hero-title">📡 {% trans "Sin conexión" %}</h1>
+      <p class="lead mb-4 text-ink-muted">
+        {% trans "No tienes conexión. Algunas páginas pueden estar disponibles si ya se guardaron en tu dispositivo." %}
+      </p>
+      <div class="d-flex gap-3 justify-content-center justify-content-lg-start">
+        <a href="/" class="btn btn-gold btn-lg">{% trans "Ir al inicio" %}</a>
+        <a href="{% url 'services:ver_servicios' %}" class="btn btn-outline-gold btn-lg">{% trans "Ver servicios" %}</a>
       </div>
     </div>
+
+    <div class="col-lg-6 text-center position-relative hero-glow">
+      <div class="hero-frame rounded-4">
+        <img
+          src="{% static 'imagenes/cabigote.webp' %}"
+          alt="{% trans 'Logo CaʼBigote' %}"
+          class="hero-image img-fluid mx-auto animate-on-load rounded-4 shadow-none border-0"
+          loading="lazy">
+      </div>
+    </div>
+  </div>
+
+  <!-- ACCESOS RÁPIDOS -->
+  <section class="my-5" aria-labelledby="offline-quick-title">
+    <div class="card-user-profile animate-on-load">
+      <div class="mb-4 card-header gradiente-header shadow-0 bg-transparent text-center p-2 border-0">
+        <h2 id="offline-quick-title" class="h4 fw-bold mb-0 text-ink">
+          {% trans "Accesos rápidos" %}
+        </h2>
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card card-glass overflow-hidden animate-on-load p-3">
+            <div class="d-grid gap-2">
+              <a class="btn btn-outline-gold" href="/">{% trans "Inicio" %}</a>
+              <a class="btn btn-outline-gold" href="{% url 'appointments:reservar_cita' %}">{% trans "Reservar cita" %}</a>
+              <a class="btn btn-outline-gold" href="{% url 'services:ver_servicios' %}">{% trans "Servicios" %}</a>
+              <a class="btn btn-outline-gold" href="{% url 'users:login' %}">{% trans "Iniciar sesión" %}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-center mt-4 text-ink-muted small">
+        {% trans "Consejo: cuando recuperes la conexión, vuelve a esta página o actualiza para seguir navegando." %}
+      </p>
+    </div>
   </section>
+
+  <!-- INFO -->
+  <section class="my-3" aria-labelledby="offline-info">
+    <div class="card card-glass card-user-profile text-center p-4 animate-on-load">
+      <h3 id="offline-info" class="fw-bold mb-3 text-ink">{% trans "¿Qué puedes hacer ahora?" %}</h3>
+      <p class="text-ink-muted mb-0">
+        {% trans "Revisa tu conexión Wi-Fi o datos móviles y vuelve a intentarlo más tarde." %}
+      </p>
+    </div>
+  </section>
+
 </div>
 {% endblock %}

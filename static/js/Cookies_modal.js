@@ -1,40 +1,42 @@
-/* cookies-banner logic -------------------------------------------------- */
+/* cookies-banner logic (legacy, safe mode) */
 document.addEventListener('DOMContentLoaded', () => {
+  // Si el sistema nuevo está presente, NO hacer nada
+  if (document.getElementById('ck-modal')) return;
 
-  // 1️⃣ build the Bootstrap modal
-  const modalEl     = document.getElementById('cookiesModal');
-  const cookiesModal = new bootstrap.Modal(modalEl, { backdrop: 'static' });
+  const modalEl = document.getElementById('cookiesModal');
+  if (!modalEl || !window.bootstrap) return;  
 
-  // 2️⃣ helper to store the choice
-  const setPref = pref => {
-    localStorage.setItem('cookiesPreference', pref);
+  const cookiesModal = bootstrap.Modal.getOrCreateInstance(modalEl, { backdrop: 'static' });
+
+  // Usa su propia clave (legacy) pero no interfieras con ck-consent-v1
+  const KEY = 'cookiesPreference';
+
+  const setPref = (pref) => {
+    localStorage.setItem(KEY, pref);
     cookiesModal.hide();
-    console.log(`Cookies ${pref}.`);
   };
 
-  // 3️⃣ button events (once)
   modalEl.querySelector('.btn-primary')
-         .addEventListener('click', () => setPref('accepted'));
+         ?.addEventListener('click', () => setPref('accepted'));
 
   modalEl.querySelector('.btn-outline-secondary')
-         .addEventListener('click', () => setPref('rejected'));
+         ?.addEventListener('click', () => setPref('rejected'));
 
-  // 4️⃣ show banner only if not decided, after page is idle/loaded
   const openIfNeeded = () => {
-    if (!localStorage.getItem('cookiesPreference')) {
-      modalEl.removeAttribute('inert');   // enable clicks & focus
+    if (!localStorage.getItem(KEY)) {
+      modalEl.removeAttribute('inert'); 
       cookiesModal.show();
     }
   };
 
   ('requestIdleCallback' in window)
     ? requestIdleCallback(openIfNeeded, { timeout: 500 })
-    : window.addEventListener('load', openIfNeeded);      
+    : window.addEventListener('load', openIfNeeded);
 
-  // 5️⃣ privacy-policy link inside the banner
   document.getElementById('privacyPolicyLink')
-          .addEventListener('click', e => {
+          ?.addEventListener('click', e => {
             e.preventDefault();
-            bootstrap.Modal.getOrCreateInstance('#privacyPolicyModal').show();
+            const target = document.getElementById('privacyPolicyModal');
+            if (target) bootstrap.Modal.getOrCreateInstance(target).show();
           });
 });
