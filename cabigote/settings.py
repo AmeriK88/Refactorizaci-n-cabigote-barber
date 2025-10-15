@@ -382,9 +382,12 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 # Content Security Policy (CSP)
 CONTENT_SECURITY_POLICY = {
     "DIRECTIVES": {
+        # ───────── BASE ─────────
         "default-src": ("'self'",),
+        "object-src": ("'none'",),
+        "base-uri": ("'self'",),
 
-        # ─────────── SCRIPTS ───────────
+        # ───────── SCRIPTS ─────────
         "script-src": (
             "'self'",
             "'unsafe-inline'",
@@ -397,7 +400,7 @@ CONTENT_SECURITY_POLICY = {
         ),
         "script-src-elem": (
             "'self'",
-            "'unsafe-inline'",        
+            "'unsafe-inline'",
             "https://code.jquery.com",
             "https://cdnjs.cloudflare.com",
             "https://stackpath.bootstrapcdn.com",
@@ -408,7 +411,7 @@ CONTENT_SECURITY_POLICY = {
             "https://www.instagram.com",
         ),
 
-        # ─────────── ESTILOS ───────────
+        # ───────── ESTILOS ─────────
         "style-src": (
             "'self'",
             "'unsafe-inline'",
@@ -419,7 +422,7 @@ CONTENT_SECURITY_POLICY = {
             "https://www.gstatic.com",
         ),
 
-        # ─────────── FUENTES ───────────
+        # ───────── FUENTES ─────────
         "font-src": (
             "'self'",
             "data:",
@@ -427,7 +430,7 @@ CONTENT_SECURITY_POLICY = {
             "https://cdnjs.cloudflare.com",
         ),
 
-        # ─────────── IMÁGENES ───────────
+        # ───────── IMÁGENES ─────────
         "img-src": (
             "'self'",
             "data:",
@@ -446,16 +449,20 @@ CONTENT_SECURITY_POLICY = {
         ),
 
         # ───────── AJAX / FETCH ─────────
+        # Añadidos jsDelivr y cdnjs para evitar el error del .map de Bootstrap
         "connect-src": (
             "'self'",
             "https://www.google.com",
             "https://www.gstatic.com",
+            "https://cdn.jsdelivr.net",
+            "https://cdnjs.cloudflare.com",
         ),
 
         # Proteger contra clickjacking
-        "frame-ancestors": ("'self'",), 
+        "frame-ancestors": ("'self'",),
     }
 }
+
 
 X_FRAME_OPTIONS = 'SAMEORIGIN' 
 

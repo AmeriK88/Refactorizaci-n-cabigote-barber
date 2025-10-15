@@ -8,12 +8,21 @@ const IGNORE_PATHS = [
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-          .then(cache => cache.add(new Request(OFFLINE_URL, {cache: 'reload'})))
-  );
-  self.skipWaiting();
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    try {
+      const req = new Request(OFFLINE_URL, { cache: 'reload' });
+      const res = await fetch(req);
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      await cache.put(req, res.clone());
+      console.log('[SW] offline precached OK');
+    } catch (err) {
+      console.warn('[SW] No se pudo cachear OFFLINE_URL:', OFFLINE_URL, err);
+    }
+    self.skipWaiting();
+  })());
 });
+
 
 self.addEventListener('activate',  e => e.waitUntil(clients.claim()));
 
