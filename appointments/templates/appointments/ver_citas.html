@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static tz %}
 
 {% block title %}Mis Citas{% endblock %}
 
@@ -93,7 +94,7 @@
         <div class="row g-3">
           {% for cita in grupo.list %}
           <div class="col-12 col-md-6 col-lg-4">
-            <div class="card card-glass h-100 animate-on-load">
+            <div class="card card-glass h-100 animate-on-load historial-item">
               <div class="card-body">
                 <h5 class="card-title text-ink">{{ cita.servicio.nombre }}</h5>
 
@@ -137,4 +138,8 @@
     </div>
   {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="{% static 'js/historial-citas.js' %}" defer></script>
 {% endblock %}
