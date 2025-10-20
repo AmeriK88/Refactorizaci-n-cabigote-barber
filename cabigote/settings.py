@@ -37,6 +37,7 @@ INSTALLED_APPS = [
 # Application definition
     'whitenoise.runserver_nostatic',
     'admin_interface',
+    'colorfield',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -61,7 +62,6 @@ INSTALLED_APPS = [
     'reviews',
     'reports',
     'users',
-    'colorfield',
     'core',
     'widget_tweaks', 
     "crispy_forms",
@@ -77,6 +77,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     # Seguridad y estáticos primero
     'django.middleware.security.SecurityMiddleware',
+    'core.middlewares.block_probes.BlockProbesMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
 
     # Sesión y localización
@@ -100,8 +101,8 @@ MIDDLEWARE = [
     # CSP (cabecera en la respuesta, bien al final)
     'csp.middleware.CSPMiddleware',
 
-    # Tu middleware de redirección (mejor aquí, tras Common/CSRF)
-    'core.redirectionMiddleware.redirectionDomainMiddleware',
+    # Middleware de redirección
+    'core.middlewares.redirection.RedirectionDomainMiddleware',
 ]
 
 ROOT_URLCONF = 'cabigote.urls'
@@ -241,8 +242,8 @@ USE_TZ = True
 # EMAIL CONFIG PRODUCTION
 EMAIL_BACKEND = env('EMAIL_BACKEND') 
 EMAIL_HOST = env('EMAIL_HOST')
-EMAIL_PORT = env('EMAIL_PORT')
-EMAIL_USE_TLS = env('EMAIL_USE_TLS')
+EMAIL_PORT = env.int('EMAIL_PORT')
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
@@ -368,8 +369,8 @@ if not DEBUG:
         raise ImproperlyConfigured("CSRF_TRUSTED_ORIGINS must be set in production (include https://).")
     
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # BLACKLISTED USERNAMES
@@ -466,19 +467,57 @@ CONTENT_SECURITY_POLICY = {
 
 X_FRAME_OPTIONS = 'SAMEORIGIN' 
 
-# django-axes: 5 intentos -> bloqueo 1 hora
+# ───────── CACHÉ (Redis) ─────────
+REDIS_URL = env('REDIS_URL', default='')
+
+if REDIS_URL:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": REDIS_URL,
+            "OPTIONS": {
+                "socket_connect_timeout": 5,
+                "socket_timeout": 5,
+                "retry_on_timeout": True,
+            },
+            "TIMEOUT": 60 * 10,  # 10 minutos por defecto
+        }
+    }
+else:
+    # Fallback a memoria local si no hay Redis (dev)
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "unique-dev",
+        }
+    }
+
+# ───────── django-axes ─────────
+AXES_ENABLED = not DEBUG                       # activo solo en prod
 AXES_FAILURE_LIMIT = 5
-AXES_COOLOFF_TIME = 1  # horas
+AXES_COOLOFF_TIME = 1                          # horas
 AXES_LOCKOUT_TEMPLATE = 'errors/locked_out.html'
 
-AXES_ENABLED = False
-if not DEBUG:
-    AXES_ENABLED = True
+# Usa handler de caché si hay Redis; si no, DB handler (evita el warning W001)
+if REDIS_URL:
+    AXES_HANDLER = 'axes.handlers.cache.AxesCacheHandler'
+    AXES_CACHE = 'default'
+else:
+    AXES_HANDLER = 'axes.handlers.database.AxesDatabaseHandler'
 
 
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_COOKIE_AGE = 7 * 24 * 60 * 60
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+
 
 
 # APP VERSION
