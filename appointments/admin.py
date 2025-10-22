@@ -31,15 +31,15 @@ from .models import Cita, FechaBloqueada, BloqueoHora
 
 
 # ────────────────────────────────────────────────────────────────────────────────
-# SIMPLE LIST FILTER: "Today"
+# SIMPLE LIST FILTER: "Today / Tomorrow"
 # Shows a visible filter chip and can be triggered via querystring (?hoy=1)
 # ────────────────────────────────────────────────────────────────────────────────
 class TodayFilter(admin.SimpleListFilter):
-    title = "Today"
-    parameter_name = "hoy"  # keep param key in Spanish to match the shortcut naming
+    title = "Hoy"
+    parameter_name = "hoy"  
 
     def lookups(self, request, model_admin):
-        return (("1", "Today"),)
+        return (("1", "Hoy"),)
 
     def queryset(self, request, queryset):
         if self.value() == "1":
@@ -47,6 +47,21 @@ class TodayFilter(admin.SimpleListFilter):
             start = now.replace(hour=0, minute=0, second=0, microsecond=0)
             end = start + timedelta(days=1)
             # Filter by local-day range [00:00, 24:00) — DST-safe
+            return queryset.filter(fecha__gte=start, fecha__lt=end)
+        return queryset
+
+class TomorrowFilter(admin.SimpleListFilter):
+    title = "Mañana"
+    parameter_name = "manana"
+
+    def lookups(self, request, model_admin):
+        return (("1", "Mañana"),)
+
+    def queryset(self, request, queryset):
+        if self.value() == "1":
+            now = timezone.localtime()
+            start = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+            end = start + timedelta(days=1)
             return queryset.filter(fecha__gte=start, fecha__lt=end)
         return queryset
 
@@ -69,7 +84,7 @@ class CitaAdmin(admin.ModelAdmin):
         "ver_grafico_link",
     )
     search_fields = ("usuario__username", "servicio__nombre", "fecha")
-    list_filter = ("fecha", "servicio", TodayFilter)  # add visible "Today" filter
+    list_filter = ("fecha", "servicio", TodayFilter, TomorrowFilter)
     ordering = ("-fecha",)
     list_per_page = 20
 
@@ -103,11 +118,15 @@ class CitaAdmin(admin.ModelAdmin):
     # -------- SHORTCUT: "Today" redirect --------
     def citas_hoy_redirect(self, request):
         """
-        Redirect to the Cita changelist applying the 'Today' filter.
+        Redirect to the Cita changelist applying the 'Hoy' filter.
         We use the SimpleListFilter via querystring (?hoy=1) so the filter chip is visible.
         """
         changelist_url = reverse("admin:appointments_cita_changelist")
         return redirect(f"{changelist_url}?hoy=1")
+    
+    def citas_manana_redirect(self, request):
+        changelist_url = reverse("admin:appointments_cita_changelist")
+        return redirect(f"{changelist_url}?manana=1")
 
     # -------- EXTRA ADMIN URLs --------
     def get_urls(self):
@@ -117,6 +136,7 @@ class CitaAdmin(admin.ModelAdmin):
             path("graficar/data/", self.admin_site.admin_view(self.graficar_citas_data), name="cita_graph_data"),
             # Shortcut to show only today's appointments
             path("hoy/", self.admin_site.admin_view(self.citas_hoy_redirect), name="appointments_cita_changelist_hoy"),
+            path("mañana/", self.admin_site.admin_view(self.citas_manana_redirect), name="appointments_cita_changelist_manana"),
         ]
         return custom + urls
 

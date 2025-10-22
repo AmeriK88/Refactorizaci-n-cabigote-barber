@@ -17,7 +17,7 @@
     <meta name="keywords" content="barbería, cuidado personal, corte de pelo, afeitado, estilo, Ca'Bigote">
     <meta name="author" content="Jose Felix Gordo Castaño">
     <meta name="robots" content="index, follow">
-    <meta name="copyright" content="Ca'Bigote © 2024">
+    <meta name="copyright" content="Ca'Bigote © 2025">
 
     <!-- Open Graph -->
     <meta property="og:url" content="https://cabigotebarbershop.com/">
@@ -350,14 +350,20 @@
             <!-- LEGAL / CREDIT -->
             <div class="row align-items-center gy-2 animate-on-load" style="--a-delay:120ms">
             <div class="col text-center small text-ink-muted">
-                <p class="mb-0">&copy; 2024–{{ now|date:"Y" }} CaʼBigote. Todos los derechos reservados.</p>
+
+                {% now "Y" as current_year %}
+                <p class="mb-0">&copy; {% now "Y" %} - CaʼBigote. Todos los derechos reservados.</p>
+
+
                 <p class="mb-0">
                 Desarrollado <i class="bi bi-code-slash text-gold"></i> por
                 <a href="https://web-production-jfgc.up.railway.app/" target="_blank" class="footer-link fw-semibold">JFGC</a>
                 </p>
+
             </div>
             </div>
 
+            <!-- APP VERSION -->
             <div class="text-center mt-2">
             <small class="opacity-75">v{{ APP_VERSION }}</small>
             </div>

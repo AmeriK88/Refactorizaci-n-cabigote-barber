@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 import subprocess
 import os
 from services.models import Servicio
+from django.utils import timezone
 
 
 def home(request):
@@ -12,7 +13,6 @@ def home(request):
     contador, _ = ContadorVisitas.objects.get_or_create(pk=1)
     contador.total += 1
     contador.save()
-
     contador.refresh_from_db()
 
     # GET SERVICES
@@ -21,6 +21,7 @@ def home(request):
     context = {
         'contador_actualizado': contador.total,
         'servicios': servicios,
+        'now': timezone.now(),
     }
 
     response = render(request, 'home.html', context)
