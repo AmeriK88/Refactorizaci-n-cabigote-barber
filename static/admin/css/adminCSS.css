@@ -4,6 +4,10 @@
 /* ────────────────────────────────────────────────────────── */
 
 /* 1) Miniaturas (servicios, productos, etc.) */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
 .admin-thumb {
   max-width: 80px;
   max-height: 80px;
@@ -16,18 +20,16 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
-/* Tipografía en tablas del changelist */
-.change-list table {
-  font-size: .95rem;
-}
+/* 2) Tipografía en tablas del changelist */
+.change-list table { font-size: .95rem; }
 
-/* Badges (si usas Bootstrap en admin) */
+/* 3) Badges (si usas Bootstrap en admin) */
 .badge.bg-secondary {
   font-size: .85rem;
   padding: .35em .55em;
 }
 
-/* Columnas de iconos booleanos */
+/* 4) Columnas de iconos booleanos */
 .column-staff_icon,
 .column-active_icon,
 .column-super_icon,
@@ -38,11 +40,9 @@
 
 /* 5) Centrado vertical general en celdas */
 .change-list td,
-.change-list th {
-  vertical-align: middle;
-}
+.change-list th { vertical-align: middle; }
 
-/* Hover para puntuación con transición suave */
+/* 6) Hover para puntuación con transición suave */
 .change-list .field-puntuacion_icon span:hover {
   filter: brightness(1.1);
   transition: filter .2s ease;
@@ -55,22 +55,23 @@
 }
 
 /* ────────────────────────────────────────────────────────── */
-/* 9) Dashboard metrics cards                                 */
+/* 8) Dashboard metrics cards                                 */
 /* ────────────────────────────────────────────────────────── */
 .dashboard-cards {
   display: flex;
   justify-content: center;
   gap: 1rem;
   margin: 2rem auto 3rem;
-  max-width: 900px;
+  max-width: 1100px;
   flex-wrap: wrap;
+  padding-inline: clamp(16px, 3vw, 40px);
 }
 
 .metric-card {
   flex: 1;
   min-width: 200px;
   max-width: 280px;
-  background: #f9f9f9;
+  background: #f1f1f1;
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -82,26 +83,12 @@
   box-shadow: 0 4px 16px rgba(0,0,0,0.15);
 }
 
-.metric-icon {
-  font-size: 2.5rem;
-  margin-bottom: .5rem;
-  display: block;
-}
-
-.metric-title {
-  font-size: 1.1rem;
-  margin-bottom: .75rem;
-  color: #333;
-}
-
-.metric-value {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #111;
-}
+.metric-icon { font-size: 2.5rem; margin-bottom: .5rem; display: block; }
+.metric-title { font-size: 1.1rem; margin-bottom: .75rem; color: #333; }
+.metric-value { font-size: 2rem; font-weight: bold; color: #111; }
 
 /* ────────────────────────────────────────────────────────── */
-/* 10) Dashboard header styles                               */
+/* 9) Dashboard header styles                                 */
 /* ────────────────────────────────────────────────────────── */
 .dashboard-title {
   text-align: center;
@@ -109,7 +96,6 @@
   font-size: 2rem;
   color: #222;
 }
-
 .dashboard-subtitle {
   text-align: center;
   color: #666;
@@ -118,66 +104,121 @@
 }
 
 /* ────────────────────────────────────────────────────────── */
-/* 12) Botones responsive del dashboard (grid)               */
+/* 10) Acciones (container + botón)                           */
 /* ────────────────────────────────────────────────────────── */
-.button-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: .8rem;
-  margin-bottom: 2rem;
+
+/* Wrapper tipo "container" (blindado con !important) */
+.admin-actions-wrap {
+  max-width: 1100px;
+  margin-inline: auto;
+  padding-left: 16px !important; 
+  padding-right: 16px !important;
+  padding-inline: clamp(16px, 3.5vw, 40px);
 }
 
-.btn-admin-action {
+/* Anula márgenes negativos del .row SIEMPRE (y con !important) */
+.admin-actions-wrap .actions-grid {
+  --bs-gutter-x: 1.25rem;
+  --bs-gutter-y: 1rem;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Gutters explícitos en columnas dentro del wrapper */
+.admin-actions-wrap .actions-grid > .col {
+  padding-left: calc(var(--bs-gutter-x) / 2) !important;
+  padding-right: calc(var(--bs-gutter-x) / 2) !important;
+  padding-top: .15rem;
+  padding-bottom: .15rem;
+}
+
+/* Botón */
+.btn-admin-action,
+.admin-actions-wrap a.btn-admin-action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: .5rem;
   width: 100%;
-  min-height: 44px;               /* tamaño táctil recomendado */
-  padding: 10px 16px;
+  min-height: 46px;
+  padding: 12px 18px;
   font-size: .95rem;
   font-weight: 600;
+  letter-spacing: .1px;
   text-decoration: none;
-  border-radius: 8px;
-  background: #198754;
-  color: #fff;
-  box-shadow: 0 1px 3px rgba(0,0,0,.12);
-  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+
+  background: #1e875e;
+  border: 1px solid rgba(0, 0, 0, .06);
+  border-radius: 10px;
+
+  color: #fff !important;                       /* texto blanco fijo */
+  -webkit-tap-highlight-color: transparent;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,.08);
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease, color .12s ease;
 }
+
+/* Asegurar blanco en todos los estados del <a> */
+.admin-actions-wrap a.btn-admin-action:link,
+.admin-actions-wrap a.btn-admin-action:visited,
+.admin-actions-wrap a.btn-admin-action:hover,
+.admin-actions-wrap a.btn-admin-action:active,
+.admin-actions-wrap a.btn-admin-action:focus {
+  color: #fff !important;
+}
+
+/* Hover/active/focus */
 .btn-admin-action:hover {
-  background: #157347;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,.18);
-  color: #fff;
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,.12);
 }
 .btn-admin-action:active {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  box-shadow: 0 3px 10px rgba(0,0,0,.10);
 }
 .btn-admin-action:focus-visible {
-  outline: 3px solid rgba(25, 135, 84, .35);
+  outline: 3px solid rgba(30, 135, 94, .35);
   outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(25,135,84,.15);
+  box-shadow: 0 0 0 4px rgba(30,135,94,.15);
 }
 
-/* Ajustes finos en pantallas muy pequeñas */
-@media (max-width: 480px) {
-  .button-row {
-    grid-template-columns: 1fr;    /* una columna: botones apilados */
-    gap: .75rem;
+/* ────────────────────────────────────────────────────────── */
+/* 11) Modo oscuro                                            */
+/* ────────────────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  .btn-admin-action,
+  .admin-actions-wrap a.btn-admin-action {
+    background: #1f6f52;
+    border-color: rgba(255,255,255,.06);
+    box-shadow: 0 2px 6px rgba(0,0,0,.25);
+    color: #fff !important;
   }
-  .btn-admin-action {
-    font-size: 1rem;
-    padding: 12px 18px;
-    border-radius: 10px;
+  .btn-admin-action:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 6px 18px rgba(0,0,0,.35);
+    color: #fff !important;
   }
 }
 
-/* Respeta preferencias de movimiento del usuario */
+/* ────────────────────────────────────────────────────────── */
+/* 12) XS: reforzamos el padding (por si algún CSS global pisa)*/
+/* ────────────────────────────────────────────────────────── */
+@media (max-width: 576px) {
+  .admin-actions-wrap {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  .admin-actions-wrap .actions-grid {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+/* 13) Reduce motion */
 @media (prefers-reduced-motion: reduce) {
   .admin-thumb,
   .metric-card,
-  .btn-admin-action {
-    transition: none;
-  }
+  .btn-admin-action { transition: none; }
 }
+
