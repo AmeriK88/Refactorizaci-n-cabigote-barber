@@ -1,4 +1,3 @@
-// Toggle de contraseña accesible y reutilizable
 document.addEventListener('DOMContentLoaded', () => {
   // Soporta múltiples toggles si los hubiera
   document.querySelectorAll('[data-toggle="password"]').forEach(btn => {

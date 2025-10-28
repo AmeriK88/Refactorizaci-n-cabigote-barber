@@ -352,7 +352,7 @@
             <div class="col text-center small text-ink-muted">
 
                 {% now "Y" as current_year %}
-                <p class="mb-0">&copy; {% now "Y" %} - CaʼBigote. Todos los derechos reservados.</p>
+                <p class="mb-0">&copy; {% now "Y" %} CaʼBigote - Todos los derechos reservados.</p>
 
 
                 <p class="mb-0">
@@ -580,6 +580,7 @@
 
         <!-- SCRIPTS -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+        <script src="{% static 'js/polyfills/patch_jquery_passive.js' %}" defer></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
 
         <script src="https://cdn.jsdelivr.net/npm/jquery-zoom@1.7.21/jquery.zoom.min.js" defer></script>
@@ -588,14 +589,14 @@
         {% block extra_scripts %}{% endblock %}
 
         <!-- CUSTOM SCRIPTS-->
-        <script src="{% static 'js/Loader.js' %}" defer></script>
-        <script src="{% static 'js/cookiesConsent.js' %}" defer></script>
-        <script src="{% static 'js/whatsappConsent.js' %}" defer></script>
-        <script src="{% static 'js/Animations.js' %}" defer></script>
-        <script src="{% static 'js/historial-citas.js' %}" defer></script>
-        <script src="{% static 'js/special_message.js' %}" defer></script>
-        <script async src="https://www.instagram.com/embed.js"></script>
+        <script src="{% static 'js/core/Loader.js' %}" defer></script>
+        <script src="{% static 'js/features/cookies/cookiesConsent.js' %}" defer></script>
+        <script src="{% static 'js/features/cookies/whatsappConsent.js' %}" defer></script>
+        <script src="{% static 'js/ui/Animations.js' %}" defer></script>
+        <script src="{% static 'js/features/appointments/historial-citas.js' %}" defer></script>
+        <script src="{% static 'js/features/messages/special_message.js' %}" defer></script>
+        <script src="{% static 'js/features/embeded/instagram_lazy.js' %}" defer></script>
          <!-- SERVICE WORKER INSTALL -->
-        <script src="{% static 'js/pwa-install.js' %}" defer></script> 
+        <script src="{% static 'js/core/pwa-install.js' %}" defer></script> 
     </body>
 </html>
