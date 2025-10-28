@@ -29,6 +29,12 @@ html{ text-size-adjust:100%; }
 html,body{ height:100%; }
 body{ display:flex; flex-direction:column; margin:0;background:var(--bg-900); color:var(--ink-50); font-family:var(--font-family); line-height:1.65;}
 
+/* contenedores con scroll */
+.scrollable { touch-action: pan-y; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+
+/* botones/enlaces: evita necesidad de preventDefault en tap */
+a, button { touch-action: manipulation; }
+
 /* ---------- HEADER ---------- */
 .site-header{ background: transparent; box-shadow: none; }
 /* Barber + micro‑anim */
@@ -57,8 +63,8 @@ body{ display:flex; flex-direction:column; margin:0;background:var(--bg-900); co
 .hero-glow {
   --size: clamp(320px, 55vmin, 560px);
   --br: 1rem;
-  --glow-w: 10px;      /* grosor del anillo glow */
-  --blur: 18px;        /* blur del glow */
+  --glow-w: 10px; 
+  --blur: 18px; 
   --c1: 210 100% 60%;
   --c2: 280 100% 65%;
   --c3: 170 100% 55%;

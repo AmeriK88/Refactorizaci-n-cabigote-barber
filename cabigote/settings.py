@@ -493,9 +493,9 @@ else:
     }
 
 # ───────── django-axes ─────────
-AXES_ENABLED = not DEBUG                       # activo solo en prod
+AXES_ENABLED = not DEBUG 
 AXES_FAILURE_LIMIT = 5
-AXES_COOLOFF_TIME = 1                          # horas
+AXES_COOLOFF_TIME = 1  
 AXES_LOCKOUT_TEMPLATE = 'errors/locked_out.html'
 
 # Usa handler de caché si hay Redis; si no, DB handler (evita el warning W001)
@@ -517,6 +517,9 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
     SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
     SECURE_CONTENT_TYPE_NOSNIFF = True
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    CSRF_COOKIE_SAMESITE = "Lax"
 
 
 

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Eliminar cuenta · Ca’Bigote{% endblock %}
 
@@ -73,26 +74,5 @@
 {% endblock %}
 
 {% block extra_scripts %}
-<script>
-  (function(){
-    const chk = document.getElementById('chkConfirm');
-    const txt = document.getElementById('txtConfirm');
-    const btn = document.getElementById('btnDelete');
-    const msg = document.getElementById('msgError');
-
-    function validate(){
-      const ok = chk.checked && txt.value.trim().toUpperCase() === 'ELIMINAR';
-      btn.disabled = !ok;
-      if(!ok){
-        msg.classList.remove('d-none');
-      } else {
-        msg.classList.add('d-none');
-      }
-    }
-    chk.addEventListener('change', validate);
-    txt.addEventListener('input', validate);
-    // animación on-load si la usas
-    document.querySelectorAll('.animate-on-load').forEach(el=>el.classList.add('loaded'));
-  })();
-</script>
+  <script defer src="{% static 'js/features/account/delete-account.js' %}"></script>
 {% endblock %}

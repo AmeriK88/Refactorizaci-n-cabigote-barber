@@ -1,4 +1,3 @@
-/* pwa-install.js */
 document.addEventListener('DOMContentLoaded', () => {
   const installBtn = document.getElementById('btn-instalar');
   let deferredPrompt;
