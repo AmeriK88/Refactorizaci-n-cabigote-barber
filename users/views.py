@@ -78,35 +78,39 @@ def logout_view(request):
 @login_required
 @handle_exceptions
 def perfil_usuario(request):
-    # Citas activas para mostrar en el perfil
+    # Año actual (zona horaria de Django)
+    current_year = timezone.localdate().year
+
     citas_activas = Cita.objects.filter(
-        usuario=request.user, 
+        usuario=request.user,
         fecha__gte=timezone.now()
-    ).order_by('fecha', 'hora')
+    ).select_related("servicio").order_by("fecha", "hora")
 
-    # Estadísticas usando todas las citas del usuario
-    all_citas = Cita.objects.filter(usuario=request.user)
-    total_citas = all_citas.count()
-    
-    # Suponiendo que cada cita tenga asociado un servicio con un campo 'precio'
-    total_gastado = all_citas.aggregate(total=Sum('servicio__precio'))['total'] or 0
+    # Solo citas del año actual
+    citas_year = Cita.objects.filter(
+        usuario=request.user,
+        fecha__year=current_year
+    ).select_related("servicio")
 
-    # Calcula el servicio favorito (el que aparece más veces en las citas)
+    total_citas_year = citas_year.count()
+    total_gastado_year = citas_year.aggregate(total=Sum("servicio__precio"))["total"] or 0
+
     fav_service_data = (
-        all_citas.values('servicio__nombre')
-        .annotate(service_count=Count('servicio'))
-        .order_by('-service_count')
+        citas_year.values("servicio__nombre")
+        .annotate(service_count=Count("servicio"))
+        .order_by("-service_count")
         .first()
     )
-    favorite_service = fav_service_data['servicio__nombre'] if fav_service_data else "N/A"
+    favorite_service_year = fav_service_data["servicio__nombre"] if fav_service_data else "N/A"
 
     context = {
-        'citas': citas_activas,
-        'total_citas': total_citas,
-        'total_gastado': total_gastado,
-        'favorite_service': favorite_service,
+        "year": current_year,
+        "citas": citas_activas,
+        "total_citas": total_citas_year,
+        "total_gastado": total_gastado_year,
+        "favorite_service": favorite_service_year,
     }
-    return render(request, 'users/perfil_usuario.html', context)
+    return render(request, "users/perfil_usuario.html", context)
 
 
 # Edición de perfil

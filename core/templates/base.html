@@ -153,59 +153,77 @@
 
         <!-- NAVBAR -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-surface shadow-sm rounded-3 sticky-top">
-            <div class="container">
-                <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
-                <span class="brand-avatar-badge" aria-hidden="true">
-                    <img src="{% static 'imagenes/logo-cb-nav.png' %}" alt="Logo de Ca'Bigote" class="brand-avatar animate-on-load">
-                </span>
-                <span class="brand-wordmark">CaʼBigote</span>
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
+            <span class="brand-avatar-badge" aria-hidden="true">
+                <img src="{% static 'imagenes/logo-cb-nav.png' %}" alt="Logo de Ca'Bigote" class="brand-avatar animate-on-load">
+            </span>
+            <span class="brand-wordmark">CaʼBigote</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                    aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav align-items-lg-center gap-lg-2">
+
+                <li class="nav-item">
+                <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
+                    href="{% url 'home' %}">
+                    <span class="nav-link-label">Inicio</span>
                 </a>
+                </li>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-                        aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <li class="nav-item">
+                <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'reservar_cita' %}active{% endif %}"
+                    href="{% url 'appointments:reservar_cita' %}">
+                    <span class="nav-link-label">Citas</span>
+                </a>
+                </li>
 
-                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                    <ul class="navbar-nav align-items-lg-center gap-lg-2">
-                    <li class="nav-item">
-                        <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
-                        href="{% url 'home' %}">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'reservar_cita' %}active{% endif %}"
-                        href="{% url 'appointments:reservar_cita' %}">Citas</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'ver_servicios' %}active{% endif %}"
-                        href="{% url 'services:ver_servicios' %}">Servicios</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'ver_resenas' %}active{% endif %}"
-                        href="{% url 'reviews:ver_resenas' %}">Reseñas</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'ver_imagenes' %}active{% endif %}"
-                        href="{% url 'products:ver_imagenes' %}">Productos</a>
-                    </li>
+                <li class="nav-item">
+                <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'ver_servicios' %}active{% endif %}"
+                    href="{% url 'services:ver_servicios' %}">
+                    <span class="nav-link-label">Servicios</span>
+                </a>
+                </li>
 
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                        <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'perfil_usuario' %}active{% endif %}"
-                            href="{% url 'users:perfil_usuario' %}">Perfil</a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="btn btn-outline-gold ms-lg-2" href="{% url 'users:logout' %}">Salir</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                        <a class="btn btn-gold ms-lg-2" href="{% url 'users:login' %}">Acceder</a>
-                        </li>
-                    {% endif %}
-                    </ul>
-                </div>
+                <li class="nav-item">
+                <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'ver_resenas' %}active{% endif %}"
+                    href="{% url 'reviews:ver_resenas' %}">
+                    <span class="nav-link-label">Reseñas</span>
+                </a>
+                </li>
+
+                <li class="nav-item">
+                <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'ver_imagenes' %}active{% endif %}"
+                    href="{% url 'products:ver_imagenes' %}">
+                    <span class="nav-link-label">Productos</span>
+                </a>
+                </li>
+
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link nav-underline {% if request.resolver_match.url_name == 'perfil_usuario' %}active{% endif %}"
+                    href="{% url 'users:perfil_usuario' %}">
+                    <span class="nav-link-label">Perfil</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-outline-gold ms-lg-2" href="{% url 'users:logout' %}">Salir</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="btn btn-gold ms-lg-2" href="{% url 'users:login' %}">Acceder</a>
+                </li>
+                {% endif %}
+
+            </ul>
             </div>
+        </div>
         </nav>
         </header>
 

@@ -7,7 +7,10 @@ from django.db.models import Count
 from .models import Cita, FechaBloqueada, Servicio, BloqueoHora
 from .forms import CitaForm  
 from core.utils import enviar_confirmacion_cita, enviar_notificacion_modificacion_cita, enviar_notificacion_eliminacion_cita
-from core.decorators import handle_exceptions  
+from core.decorators import handle_exceptions
+from django.core.paginator import Paginator
+from django.db.models import Sum
+
 
 # APPOINTMENT RESERVATION
 @login_required
@@ -124,19 +127,41 @@ def reservar_cita(request, servicio_id=None):
 @login_required
 @handle_exceptions
 def ver_citas(request):
+    current_year = timezone.localdate().year
+    selected_year = int(request.GET.get("year", current_year))
+
+    # Años disponibles para este usuario (solo los que existen)
+    years = [
+        d.year for d in Cita.objects.filter(usuario=request.user)
+        .dates("fecha", "year", order="DESC")
+    ]
+
     citas_activas = Cita.objects.filter(
         usuario=request.user,
         fecha__gte=timezone.now()
-    ).order_by('fecha', 'hora')
-    
-    citas_pasadas = Cita.objects.filter(
-        usuario=request.user,
-        fecha__lt=timezone.now()
-    ).order_by('-fecha', '-hora') 
+    ).select_related("servicio").order_by("fecha", "hora")
 
-    return render(request, 'appointments/ver_citas.html', {
-        'citas_activas': citas_activas,
-        'citas_pasadas': citas_pasadas
+    # Historial filtrado por año
+    citas_pasadas_qs = Cita.objects.filter(
+        usuario=request.user,
+        fecha__lt=timezone.now(),
+        fecha__year=selected_year
+    ).select_related("servicio").order_by("-fecha", "-hora")
+
+    # (Opcional pero útil) total gastado en ese año
+    total_gastado_year = citas_pasadas_qs.aggregate(total=Sum("servicio__precio"))["total"] or 0
+
+    # Paginación (recomendado si hay mucha tralla)
+    paginator = Paginator(citas_pasadas_qs, 18)  # 18 = 6 cards por fila x 3 filas aprox
+    page_number = request.GET.get("page")
+    citas_pasadas = paginator.get_page(page_number)
+
+    return render(request, "appointments/ver_citas.html", {
+        "citas_activas": citas_activas,
+        "citas_pasadas": citas_pasadas,
+        "years": years,
+        "selected_year": selected_year,
+        "total_gastado_year": total_gastado_year,
     })
 
 @login_required

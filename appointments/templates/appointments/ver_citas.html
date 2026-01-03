@@ -74,14 +74,36 @@
   <!-- Historial -->
   <div class="text-center mt-5">
     <h3 class="h4 fw-bold text-ink mb-1">Historial de Citas</h3>
+
+    {# Selector de año + resumen #}
+    {% if years %}
+      <div class="d-flex flex-wrap gap-2 justify-content-center align-items-center mt-2">
+        <form method="get" class="d-flex gap-2 align-items-center">
+          <span class="text-ink-muted small">Año:</span>
+          <select name="year" class="form-select form-select-sm" onchange="this.form.submit()">
+            {% for y in years %}
+              <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>{{ y }}</option>
+            {% endfor %}
+          </select>
+        </form>
+
+        <div class="text-ink-muted small">
+          Gastado en {{ selected_year }}: <strong class="text-ink">{{ total_gastado_year }} €</strong>
+        </div>
+      </div>
+    {% endif %}
+
     {% if citas_pasadas %}
-      <p class="text-ink-muted">Mostrando las 5 citas más recientes del historial.</p>
+      <p class="text-ink-muted mt-2">
+        Mostrando historial de <strong>{{ selected_year }}</strong>.
+      </p>
     {% endif %}
   </div>
 
+
   {% if citas_pasadas %}
     {# Group por mes #}
-    <div id="historial-citas" class="mt-3">
+    <div id="historial-citas" class="mt-3" data-year="{{ selected_year }}">
       {% regroup citas_pasadas by fecha|date:"F Y" as citas_por_mes %}
 
       {% for grupo in citas_por_mes %}
