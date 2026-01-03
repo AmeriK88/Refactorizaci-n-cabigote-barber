@@ -128,31 +128,41 @@ def reservar_cita(request, servicio_id=None):
 @handle_exceptions
 def ver_citas(request):
     current_year = timezone.localdate().year
-    selected_year = int(request.GET.get("year", current_year))
 
-    # Años disponibles para este usuario (solo los que existen)
+    # años existentes en BD para el usuario
     years = [
         d.year for d in Cita.objects.filter(usuario=request.user)
         .dates("fecha", "year", order="DESC")
     ]
+
+    # asegura que el año actual esté disponible aunque no haya citas
+    if current_year not in years:
+        years = [current_year] + years
+
+    # year seleccionado (con fallback seguro)
+    try:
+        selected_year = int(request.GET.get("year", current_year))
+    except (TypeError, ValueError):
+        selected_year = current_year
+
+    # si el usuario pide un año que no está en la lista, cae al primero disponible
+    if years and selected_year not in years:
+        selected_year = years[0]
 
     citas_activas = Cita.objects.filter(
         usuario=request.user,
         fecha__gte=timezone.now()
     ).select_related("servicio").order_by("fecha", "hora")
 
-    # Historial filtrado por año
     citas_pasadas_qs = Cita.objects.filter(
         usuario=request.user,
         fecha__lt=timezone.now(),
         fecha__year=selected_year
     ).select_related("servicio").order_by("-fecha", "-hora")
 
-    # (Opcional pero útil) total gastado en ese año
     total_gastado_year = citas_pasadas_qs.aggregate(total=Sum("servicio__precio"))["total"] or 0
 
-    # Paginación (recomendado si hay mucha tralla)
-    paginator = Paginator(citas_pasadas_qs, 18)  # 18 = 6 cards por fila x 3 filas aprox
+    paginator = Paginator(citas_pasadas_qs, 18)
     page_number = request.GET.get("page")
     citas_pasadas = paginator.get_page(page_number)
 
@@ -163,6 +173,7 @@ def ver_citas(request):
         "selected_year": selected_year,
         "total_gastado_year": total_gastado_year,
     })
+
 
 @login_required
 @handle_exceptions
