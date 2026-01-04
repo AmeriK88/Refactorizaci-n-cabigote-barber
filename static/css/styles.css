@@ -502,8 +502,9 @@ img{ box-sizing:border-box; max-width:100%; height:auto; }
   .nav-underline::after{ content:none !important; }
 
   /* Subrayado con background-size animado (no se descuadra) */
-  .navbar-dark .navbar-nav .nav-link.nav-underline{ position: relative;  display: block; padding-block: .7rem; background-image: linear-gradient(90deg, var(--gold-400), var(--red-400)); background-repeat: no-repeat; background-position: left calc(100% - .35rem);  background-size: 0% 3px; transition: background-size .25s ease, opacity .2s ease; -webkit-tap-highlight-color: rgba(255,255,255,.08); border-radius: .5rem;
-}
+  .navbar-dark .navbar-nav .nav-link.nav-underline{
+    background-image: none; /* quitamos el underline del <a> */
+  }
 
   .navbar-dark .navbar-nav .nav-link.nav-underline:hover,
   .navbar-dark .navbar-nav .nav-link.nav-underline:focus,
