@@ -1,0 +1,33 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="cb-admin-container">
+    <h1 class="dashboard-title">📊 Dashboard Citas</h1>
+    <p class="dashboard-subtitle">Resumen del último año + accesos rápidos</p>
+
+    <div class="cb-admin-actions">
+      <a class="btn-admin-action" href="{% url 'admin:appointments_cita_changelist_hoy' %}">✅ Citas Hoy</a>
+      <a class="btn-admin-action" href="{% url 'admin:appointments_cita_changelist_manana' %}">📅 Citas Mañana</a>
+      <a class="btn-admin-action" href="{% url 'admin:appointments_cita_changelist' %}">📋 Todas las Citas</a>
+      <a class="btn-admin-action" href="{% url 'admin:cita_graph' %}">🖼️ Vista Imagen</a>
+    </div>
+
+    <div class="cb-admin-card">
+      <h2 class="cb-admin-card-title">Citas por mes (últimos 12 meses)</h2>
+
+      <div class="cb-admin-chart-wrap">
+        <canvas
+          id="chart-citas"
+          data-endpoint="{% url 'admin:cita_graph_data' %}"
+        ></canvas>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'admin/css/adminCSS.css' %}">
+  <script defer src="{% static 'admin/js/citas_dashboard_chart.js' %}"></script>
+{% endblock %}

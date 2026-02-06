@@ -4,7 +4,7 @@ from .models import Servicio
 
 @admin.register(Servicio)
 class ServicioAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'descripcion', 'precio', 'imagen_preview')
+    list_display = ('nombre', 'descripcion', 'precio', 'imagen_preview', 'duracion')
     search_fields  = ('nombre',)
     ordering       = ('nombre',)
     readonly_fields = ('imagen_preview',)

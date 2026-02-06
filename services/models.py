@@ -6,6 +6,7 @@ class Servicio(models.Model):
     descripcion = models.TextField()
     precio = models.DecimalField(max_digits=6, decimal_places=2)
     imagen = models.ImageField(upload_to='servicios/', blank=True, null=True)
+    duracion = models.PositiveIntegerField(default=30, help_text="Duración en minutos")
 
     def __str__(self):
         return self.nombre
