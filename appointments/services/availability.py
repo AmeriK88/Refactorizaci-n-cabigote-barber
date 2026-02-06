@@ -1,0 +1,207 @@
+"""
+Lógica de disponibilidad de citas:
+- slots disponibles
+- solapamientos
+- duración de servicios
+"""
+
+from datetime import datetime
+from datetime import timedelta
+from django.db.models import Count
+from django.utils import timezone
+
+from appointments.models import Cita, FechaBloqueada, BloqueoHora
+from appointments.forms import CitaForm
+from services.models import Servicio 
+
+from django.core.exceptions import ValidationError
+
+
+def build_calendar_constraints(*, exclude_cita_id=None):
+    """
+    Devuelve toda la info necesaria para el calendario:
+    - fechas_ocupadas
+    - fechas_bloqueadas
+    - horas_ocupadas_por_fecha
+    - bloqueos_por_fecha
+
+    exclude_cita_id: para editar cita, excluye la cita actual del cálculo.
+    """
+    valid_hours_str = [h[0] for h in CitaForm.HORA_CHOICES if h[0]]
+
+    qs_citas = Cita.objects.filter(hora__in=valid_hours_str)
+    if exclude_cita_id:
+        qs_citas = qs_citas.exclude(id=exclude_cita_id)
+
+    # Fechas llenas
+    horas_por_dia = (
+        qs_citas.values("fecha__date")
+        .annotate(total_citas=Count("hora"))
+        .filter(total_citas=len(valid_hours_str))
+    )
+    fechas_ocupadas = [e["fecha__date"].isoformat() for e in horas_por_dia]
+
+    # Fechas bloqueadas
+    fechas_bloqueadas = [
+        f.isoformat() for f in FechaBloqueada.objects.values_list("fecha", flat=True)
+    ]
+
+    # Horas ocupadas por fecha
+    horas_ocupadas_por_fecha = {}
+    for c in qs_citas.select_related(None):
+        fecha_str = c.fecha.date().isoformat()
+        horas_ocupadas_por_fecha.setdefault(fecha_str, []).append(c.hora.strftime("%H:%M"))
+
+    # Horas bloqueadas por fecha
+    bloqueos_por_fecha = {}
+    for bloqueo in BloqueoHora.objects.all():
+        fecha_str = bloqueo.fecha.isoformat()
+        bloqueos_por_fecha.setdefault(fecha_str, [])
+        for hour_str in valid_hours_str:
+            opt_time = datetime.strptime(hour_str, "%H:%M").time()
+            if bloqueo.hora_inicio <= opt_time < bloqueo.hora_fin:
+                bloqueos_por_fecha[fecha_str].append(hour_str)
+
+    return fechas_ocupadas, fechas_bloqueadas, horas_ocupadas_por_fecha, bloqueos_por_fecha
+
+
+
+def validate_datetime_for_booking(*, fecha, hora, fecha_hora, service_minutes, exclude_cita_id=None):
+    """
+    Lanza ValidationError si la fecha/hora no es válida.
+    """
+    # Fecha bloqueada
+    if FechaBloqueada.objects.filter(fecha=fecha).exists():
+        raise ValidationError({"fecha": "Esta fecha está bloqueada. Selecciona otra."})
+
+    # Hora bloqueada
+    for bloqueo in BloqueoHora.objects.filter(fecha=fecha):
+        if bloqueo.hora_inicio <= hora < bloqueo.hora_fin:
+            raise ValidationError({
+                "hora": (
+                    f"La hora seleccionada está bloqueada "
+                    f"({bloqueo.hora_inicio:%H:%M} - {bloqueo.hora_fin:%H:%M})."
+                )
+            })
+
+    # Conflicto por duración (solapes)
+    if has_duration_conflict(
+        fecha_hora_inicio=fecha_hora,
+        new_minutes=service_minutes,
+        exclude_cita_id=exclude_cita_id,
+    ):
+        raise ValidationError("Ya hay una cita que se solapa con ese horario.")
+
+
+
+def overlaps(existing_start, existing_minutes, new_start, new_minutes):
+    """
+    Devuelve True si dos intervalos de tiempo se solapan.
+    """
+    existing_end = existing_start + timedelta(minutes=existing_minutes)
+    new_end = new_start + timedelta(minutes=new_minutes)
+    return max(existing_start, new_start) < min(existing_end, new_end)
+
+
+def has_duration_conflict(*, fecha_hora_inicio, new_minutes, exclude_cita_id=None):
+    """
+    True si la nueva cita solapa con otra existente ese día, considerando duración.
+    """
+    day = fecha_hora_inicio.date()
+    qs = Cita.objects.filter(fecha__date=day)
+
+    if exclude_cita_id:
+        qs = qs.exclude(id=exclude_cita_id)
+
+    for c in qs.select_related("servicio"):
+        existing_start = c.fecha
+        existing_minutes = int(getattr(c.servicio, "duracion", 30) or 30)
+        if overlaps(existing_start, existing_minutes, fecha_hora_inicio, new_minutes):
+            return True
+
+    return False
+
+
+def build_unavailable_hours_by_date(*, service_minutes, exclude_cita_id=None, citas_qs=None):
+    """
+    Devuelve un dict:
+    {
+      "YYYY-MM-DD": ["10:00", "10:30", ...]
+    }
+    Marcando como no disponibles las horas de inicio que generarían solape
+    con citas existentes (considerando duración del servicio).
+    """
+    valid_hours_str = [h[0] for h in CitaForm.HORA_CHOICES if h[0]]
+    valid_times = [datetime.strptime(h, "%H:%M").time() for h in valid_hours_str]
+
+    # agrupamos citas por día
+    qs = citas_qs if citas_qs is not None else Cita.objects.all()
+
+    unavailable = {}
+
+    # Pre-cargar citas por día (y su duración)
+    citas_por_dia = {}
+    for c in qs.select_related("servicio"):
+        day = c.fecha.date().isoformat()
+        citas_por_dia.setdefault(day, []).append(c)
+
+    for day_str, citas in citas_por_dia.items():
+        # para cada hora posible, comprobamos si solapa con alguna cita existente
+        for t in valid_times:
+            start_dt = timezone.make_aware(
+                datetime.combine(datetime.fromisoformat(day_str).date(), t),
+                timezone.get_current_timezone(),
+            )
+            conflict = False
+            for c in citas:
+                existing_minutes = int(getattr(c.servicio, "duracion", 30) or 30)
+                if overlaps(c.fecha, existing_minutes, start_dt, service_minutes):
+                    conflict = True
+                    break
+            if conflict:
+                unavailable.setdefault(day_str, []).append(t.strftime("%H:%M"))
+
+    return unavailable
+
+def build_unavailable_by_service(*, exclude_cita_id=None):
+    """
+    Devuelve:
+    {
+      "service_id": { "YYYY-MM-DD": ["10:00", ...] }
+    }
+    Optimizado: carga citas una vez y reutiliza.
+    """
+
+    citas_qs = Cita.objects.select_related("servicio")
+    if exclude_cita_id:
+        citas_qs = citas_qs.exclude(id=exclude_cita_id)
+
+    unavailable_by_service = {}
+    for s in Servicio.objects.only("id", "duracion"):
+        minutes = int(getattr(s, "duracion", 30) or 30)
+        unavailable_by_service[str(s.id)] = build_unavailable_hours_by_date(
+            service_minutes=minutes,
+            citas_qs=citas_qs,
+        )
+
+    return unavailable_by_service
+
+
+def normalize_booking_datetime(*, fecha, hora):
+    """
+    Normaliza inputs del form y devuelve:
+    (fecha_date, hora_time, fecha_hora_aware)
+    """
+    if isinstance(fecha, datetime):
+        fecha = fecha.date()
+
+    if isinstance(hora, str):
+        hora = datetime.strptime(hora, "%H:%M").time()
+
+    fecha_hora = timezone.make_aware(
+        datetime.combine(fecha, hora),
+        timezone.get_current_timezone(),
+    )
+    return fecha, hora, fecha_hora
+
+
