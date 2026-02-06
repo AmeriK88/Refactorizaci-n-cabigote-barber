@@ -195,7 +195,7 @@ class FechaBloqueadaAdmin(admin.ModelAdmin):
             reverse("admin:appointments_bloqueohora_changelist")
             + f"?fecha__exact={obj.fecha.isoformat()}"
         )
-        return format_html('<a href="{}">Ver franjas horarias</a>', url)
+        return format_html('<a class="btn-admin-action" href="{}">Ver franjas horarias</a>', url)
     ver_bloqueos_link.short_description = "Franjas horarias"
 
     class Media:

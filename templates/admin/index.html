@@ -1,0 +1,72 @@
+{% extends "admin/base_site.html" %}
+{% load tz %}
+{% load static %}
+
+{% block extrahead %}
+  <link rel="stylesheet" href="{% static 'admin/css/adminCSS.css' %}">
+{% endblock %}
+
+
+
+{% block content %}
+<div id="content-main">
+  <div class="cb-admin-container">
+    <div class="cb-admin-layout">
+      <main class="cb-admin-main">
+
+        <h1 class="dashboard-title">
+          👋 ¡Bienvenido, {{ request.user.get_full_name|default:request.user.username }}!
+        </h1>
+
+        <p class="dashboard-subtitle">
+          Hoy es {% now "l, d F Y" %}
+        </p>
+
+        <div class="dashboard-cards">
+          <div class="metric-card">
+            <span class="metric-icon">📆</span>
+            <div class="metric-title">Citas hoy</div>
+            <div class="metric-value">{{ citas_hoy }}</div>
+          </div>
+
+          <div class="metric-card">
+            <span class="metric-icon">💶</span>
+            <div class="metric-title">Ingresos hoy</div>
+            <div class="metric-value">€{{ ingresos_hoy|floatformat:2 }}</div>
+          </div>
+
+          <div class="metric-card">
+            <span class="metric-icon">🛠️</span>
+            <div class="metric-title">Servicios</div>
+            <div class="metric-value">{{ servicios_total }}</div>
+          </div>
+
+          <div class="metric-card">
+            <span class="metric-icon">👥</span>
+            <div class="metric-title">Usuarios</div>
+            <div class="metric-value">{{ usuarios_total }}</div>
+          </div>
+        </div>
+
+        <div class="admin-actions-wrap">
+          <div class="cb-admin-actions-grid">
+            <a href="{% url 'admin:descargar_reporte' %}?force=1" class="btn-admin-action">📥 Informe</a>
+            <a href="{% url 'admin:appointments_cita_changelist_hoy' %}" class="btn-admin-action">👁️ Citas hoy</a>
+            <a href="{% url 'admin:auth_user_changelist' %}" class="btn-admin-action">👤 Usuarios</a>
+            <a href="{% url 'admin:appointments_cita_changelist_manana' %}" class="btn-admin-action">🔮 Mañana</a>
+          </div>
+        </div>
+
+        <section class="cb-admin-app-list">
+          {% if app_list %}
+            {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+          {% else %}
+            <p>No tienes permisos para ver ninguna aplicación.</p>
+          {% endif %}
+        </section>
+
+      </main>
+    </div>
+  </div>
+</div>
+{% endblock %}

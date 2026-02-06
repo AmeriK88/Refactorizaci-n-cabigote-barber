@@ -53,7 +53,7 @@ class ReporteMensualAdmin(admin.ModelAdmin):
     def descargar_reporte_link(self, obj):
         url = reverse('admin:descargar_reporte') + '?force=1'
         return format_html(
-            '<a class="button btn-admin-action" href="{}" download>📥 Descargar</a>',
+            '<a class="btn-admin-action" href="{}" download>📥 Descargar</a>',
             url
         )
     descargar_reporte_link.short_description = _("Descargar")

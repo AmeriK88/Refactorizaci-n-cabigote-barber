@@ -6,4 +6,4 @@ class CoreConfig(AppConfig):
     name = "core"
 
     def ready(self):
-        admin.site.index_template = "admin/custom_index.html"
+        admin.site.index_template = "admin/index.html"
