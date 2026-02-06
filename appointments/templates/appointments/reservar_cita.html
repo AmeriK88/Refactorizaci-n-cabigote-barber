@@ -94,10 +94,11 @@
 
 {% block extra_scripts %}
   <script>
-    const fechasOcupadas        = {{ fechas_ocupadas|safe }};
-    const fechasBloqueadas      = {{ fechas_bloqueadas|safe }};
-    const horasOcupadasPorFecha = {{ horas_ocupadas_por_fecha|safe }};
-    const bloqueos_por_fecha    = {{ bloqueos_por_fecha|safe }};
+    {{ fechas_ocupadas|json_script:"fechas-ocupadas" }}
+    {{ fechas_bloqueadas|json_script:"fechas-bloqueadas" }}
+    {{ horas_ocupadas_por_fecha|json_script:"horas-ocupadas-por-fecha" }}
+    {{ bloqueos_por_fecha|json_script:"bloqueos-por-fecha" }}
+    {{ unavailable_by_service|json_script:"unavailable-by-service" }}
   </script>
   <script src="{% static 'js/disableDates.js' %}" defer></script>
 {% endblock %}
