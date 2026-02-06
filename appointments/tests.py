@@ -7,7 +7,9 @@ from django.core.exceptions import ValidationError
 from appointments.models import FechaBloqueada, BloqueoHora
 from appointments.services.availability import validate_datetime_for_booking
 
-from appointments.models import Servicio, Cita
+from .models import Cita
+from services.models import Servicio
+
 from appointments.services.availability import has_duration_conflict
 from django.contrib.auth import get_user_model
 

@@ -9,7 +9,8 @@ from django.utils import timezone
 from core.decorators import handle_exceptions
 
 from .forms import CitaForm
-from .models import Cita, Servicio
+from .models import Cita
+from services.models import Servicio
 from .services.forms import apply_validation_error_to_form
 
 from .services.availability import (
