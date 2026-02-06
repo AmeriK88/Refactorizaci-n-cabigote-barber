@@ -4,6 +4,8 @@ from django.utils import timezone
 from .models import Cita
 from services.models import Servicio
 from products.models import Imagen
+from .services.availability import VALID_HOURS_CHOICES
+
 
 # ------------------------------------------------------------------
 # PERSONALIZED CHOICE FIELDS
@@ -25,27 +27,11 @@ class ImagenChoiceField(forms.ModelChoiceField):
 # ------------------------------------------------------------------
 # APPOINTMENT FORM
 # ------------------------------------------------------------------
-class CitaForm(forms.ModelForm):
-    HORA_CHOICES = [
-        ("", "Seleccione una hora"),
-        ("09:30", "09:30 AM"),
-        ("10:00", "10:00 AM"),
-        ("10:30", "10:30 AM"),
-        ("11:00", "11:00 AM"),
-        ("11:30", "11:30 AM"),
-        ("12:00", "12:00 PM"),
-        ("12:30", "12:30 PM"),
-        ("16:00", "04:00 PM"),
-        ("16:30", "04:30 PM"),
-        ("17:00", "05:00 PM"),
-        ("17:30", "05:30 PM"),
-        ("18:00", "06:00 PM"),
-        ("18:30", "06:30 PM"),
-        ("19:00", "07:00 PM"),
-        ("19:30", "07:30 PM"),
-    ]
 
+class CitaForm(forms.ModelForm):
+    HORA_CHOICES = [("", "Seleccione una hora")] + VALID_HOURS_CHOICES
     hora = forms.ChoiceField(choices=HORA_CHOICES, label="Hora")
+
 
     servicio = ServicioChoiceField(
         queryset=Servicio.objects.all(),
