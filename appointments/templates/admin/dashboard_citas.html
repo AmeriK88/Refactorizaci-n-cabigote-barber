@@ -4,30 +4,59 @@
 
 {% block extrahead %}
   {{ block.super }}
-  <link rel="stylesheet" href="{% static 'admin/css/adminCSS.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/css/adminDashboard.css' %}">
   <script defer src="{% static 'admin/js/citas_dashboard_chart.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-<div class="cb-admin-container">
-  <h1 class="dashboard-title">📊 Dashboard Citas</h1>
-  <p class="dashboard-subtitle">Resumen del último año + accesos rápidos</p>
+<div id="content-main">
+  <div class="cb-admin-container">
+    <div class="cb-admin-layout">
+      <main class="cb-admin-main">
 
-  <div class="cb-admin-actions">
-    <a class="btn-admin-action" href="{% url 'admin:appointments_cita_changelist_hoy' %}">✅ Citas Hoy</a>
-    <a class="btn-admin-action" href="{% url 'admin:appointments_cita_changelist_manana' %}">📅 Citas Mañana</a>
-    <a class="btn-admin-action" href="{% url 'admin:appointments_cita_changelist' %}">📋 Todas las Citas</a>
-    <a class="btn-admin-action" href="{% url 'admin:cita_graph' %}">🖼️ Vista Imagen</a>
-  </div>
+        {# ───────────── HERO ───────────── #}
+        <section class="cb-hero">
+          <div class="cb-hero-content">
+            <div class="cb-hero-kicker">📊 Panel · Citas</div>
 
-  <div class="cb-admin-card">
-    <h2 class="cb-admin-card-title">Citas por mes (últimos 12 meses)</h2>
+            <h1 class="cb-hero-title">
+              Dashboard <strong>Citas</strong>
+            </h1>
 
-    <div class="cb-admin-chart-wrap">
-      <canvas
-        id="chart-citas"
-        data-endpoint="{% url 'admin:cita_graph_data' %}">
-      </canvas>
+            <p class="cb-hero-subtitle">
+              Resumen del último año y accesos rápidos.
+            </p>
+
+            <div class="cb-hero-meta">
+              📅 {% now "l, d F Y" %}
+            </div>
+          </div>
+
+          <div class="cb-hero-brand">
+            <div class="cb-hero-logo" aria-label="Logo Ca'Bigote"></div>
+          </div>
+        </section>
+
+        {# ───────────── ACCIONES ───────────── #}
+        <div class="admin-actions-wrap">
+          <div class="cb-admin-actions-grid">
+            <a class="btn-admin-action" href="{% url 'admin:appointments_cita_changelist_hoy' %}">✅ Citas Hoy</a>
+            <a class="btn-admin-action" href="{% url 'admin:appointments_cita_changelist_manana' %}">📅 Citas Mañana</a>
+            <a class="btn-admin-action" href="{% url 'admin:appointments_cita_changelist' %}">📋 Todas las Citas</a>
+            <a class="btn-admin-action" href="{% url 'admin:cita_graph' %}">🖼️ Vista Imagen</a>
+          </div>
+        </div>
+
+        {# ───────────── CARD (reutilizada) ───────────── #}
+        <section class="cb-admin-card">
+          <h2 class="cb-admin-card-title">Citas por mes (últimos 12 meses)</h2>
+
+          <div class="cb-admin-chart-wrap">
+            <canvas id="chart-citas" data-endpoint="{% url 'admin:cita_graph_data' %}"></canvas>
+          </div>
+        </section>
+
+      </main>
     </div>
   </div>
 </div>

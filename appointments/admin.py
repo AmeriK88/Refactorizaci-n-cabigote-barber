@@ -169,7 +169,7 @@ class CitaAdmin(admin.ModelAdmin):
         return JsonResponse({"labels": labels, "counts": counts})
 
     class Media:
-        css = {"all": ("admin/css/adminCSS.css",)}
+        css = {"all": ("admin/css/adminDashboard.css",)}
 
 
 # ────────────────────────────────────────────────────────────────────────────────
@@ -199,7 +199,7 @@ class FechaBloqueadaAdmin(admin.ModelAdmin):
     ver_bloqueos_link.short_description = "Franjas horarias"
 
     class Media:
-        css = {"all": ("admin/css/adminCSS.css",)}
+        css = {"all": ("admin/css/adminDashboard.css",)}
 
 
 # ────────────────────────────────────────────────────────────────────────────────
@@ -214,4 +214,4 @@ class BloqueoHoraAdmin(admin.ModelAdmin):
     search_fields = ("fecha", "razon")
 
     class Media:
-        css = {"all": ("admin/css/adminCSS.css",)}
+        css = {"all": ("admin/css/adminDashboard.css",)}

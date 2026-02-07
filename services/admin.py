@@ -25,7 +25,7 @@ class ServicioAdmin(admin.ModelAdmin):
 
     class Media:
         css = {
-            'all': ('admin/css/adminCSS.css',)
+            'all': ('admin/css/adminDashboard.css',)
         }
 
 

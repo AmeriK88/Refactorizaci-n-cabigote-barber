@@ -17,7 +17,7 @@ class MensajeEspecialAdmin(admin.ModelAdmin):
         return '✔️' if obj.activo else '❌'
 
     class Media:
-        css = {'all': ('admin/css/adminCSS.css',)}
+        css = {'all': ('admin/css/adminDashboard.css',)}
 
 
 @admin.register(ContadorVisitas)
@@ -25,4 +25,4 @@ class ContadorVisitasAdmin(admin.ModelAdmin):
     pass
 
     class Media:
-        css = {'all': ('admin/css/adminCSS.css',)}
+        css = {'all': ('admin/css/adminDashboard.css',)}

@@ -1,0 +1,362 @@
+/* ────────────────────────────────────────────────────────── */
+/* admin/css/adminCSS.css                                      */
+/* Ca’Bigote — Admin Dashboard UI (premium + HERO)             */
+/* Scope: ONLY dashboard components (no global admin overrides) */
+/* ────────────────────────────────────────────────────────── */
+
+/* 0) Variables (solo para tus componentes) */
+:root{
+  --cb-radius: 16px;
+  --cb-shadow: 0 10px 30px rgba(0,0,0,.10);
+  --cb-shadow-sm: 0 6px 18px rgba(0,0,0,.10);
+  --cb-border: rgba(0,0,0,.10);
+
+  --cb-bg: #a1b2e2;
+  --cb-panel: #8fd0ee;
+  --cb-text: #14161a;
+  --cb-muted: rgba(20,22,26,.65);
+
+  --cb-accent: #2563eb;
+  --cb-accent-2: #14b8a6;
+
+  --cb-ring: 0 0 0 4px rgba(37, 99, 235, .18);
+
+  /* Ruta del logo para el HERO (ajústala a tu estático real) */
+  --cb-logo: url("../../icons/cb-admin.png");
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+/* 1) Fondo SOLO en body.admin */
+body.admin{
+  background: var(--cb-bg);
+}
+
+/* 2) Contenedor principal */
+.cb-admin-container{
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: clamp(14px, 2.6vw, 26px);
+}
+
+.cb-admin-main{ min-width: 0; }
+
+/* ───────────────── HERO / BIENVENIDA ───────────────── */
+.cb-hero{
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.25fr .75fr;
+  gap: clamp(14px, 2vw, 22px);
+
+  padding: clamp(16px, 2.2vw, 24px);
+  border-radius: calc(var(--cb-radius) + 4px);
+  border: 1px solid rgba(255,255,255,.22);
+
+  /* degradado premium + brillos suaves */
+  background:
+    radial-gradient(900px 320px at 12% 0%, rgba(255,255,255,.32), transparent 60%),
+    radial-gradient(700px 260px at 90% 30%, rgba(20,184,166,.26), transparent 58%),
+    linear-gradient(135deg, rgba(37,99,235,.92), rgba(20,184,166,.86));
+
+  box-shadow: 0 18px 45px rgba(0,0,0,.14);
+  overflow: hidden;
+  isolation: isolate;
+  margin: 4px 0 16px;
+}
+
+/* brillo diagonal */
+.cb-hero::before{
+  content:"";
+  position:absolute;
+  inset:-40% -30%;
+  background: linear-gradient( to bottom right, rgba(255,255,255,.22), transparent 55% );
+  transform: rotate(12deg);
+  z-index: 0;
+  pointer-events:none;
+}
+
+/* línea decorativa inferior */
+.cb-hero::after{
+  content:"";
+  position:absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 14px;
+  height: 1px;
+  background: rgba(255,255,255,.22);
+  z-index: 0;
+  pointer-events:none;
+}
+
+.cb-hero-content,
+.cb-hero-brand{
+  position: relative;
+  z-index: 1;
+}
+
+.cb-hero-kicker{
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+
+  padding: 7px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.26);
+  background: rgba(255,255,255,.14);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  color: rgba(255,255,255,.92);
+  font-weight: 750;
+  font-size: .92rem;
+  letter-spacing: .12px;
+
+  margin: 0 0 10px;
+}
+
+.cb-hero-title{
+  margin: 0 0 10px;
+  color: #fff !important;
+  font-size: clamp(1.75rem, 2.9vw, 2.75rem);
+  font-weight: 950;
+  letter-spacing: -.04em;
+  line-height: 1.05;
+  text-shadow: 0 18px 40px rgba(0,0,0,.28);
+}
+
+.cb-hero-title strong{
+  font-weight: 980;
+  text-decoration: none;
+  background: linear-gradient(90deg, rgba(255,255,255,.98), rgba(255,255,255,.78));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.cb-hero-subtitle{
+  margin: 0 0 12px;
+  color: rgba(255,255,255,.88) !important;
+  font-size: 1.02rem;
+  line-height: 1.4;
+  max-width: 62ch;
+}
+
+.cb-hero-meta{
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.24);
+  background: rgba(0,0,0,.10);
+  color: rgba(255,255,255,.9);
+  font-weight: 700;
+}
+
+/* Logo derecha */
+.cb-hero-brand{
+  display: grid;
+  place-items: center;
+}
+
+.cb-hero-logo{
+  width: min(220px, 100%);
+  aspect-ratio: 1 / 1;
+  border-radius: 22px;
+
+  background-image: var(--cb-logo);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+  /* glass */
+  border: 1px solid rgba(255,255,255,.22);
+  background-color: rgba(0,0,0,.12);
+  box-shadow: 0 16px 40px rgba(0,0,0,.25);
+}
+
+/* en móviles el logo baja */
+@media (max-width: 860px){
+  .cb-hero{
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+  .cb-hero-brand{
+    justify-items: start;
+  }
+  .cb-hero-logo{
+    width: 160px;
+    border-radius: 18px;
+  }
+}
+
+/* ───────────────── METRIC CARDS ───────────────── */
+.dashboard-cards{
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin: 10px 0 18px;
+}
+
+.metric-card{
+  background:
+    radial-gradient(1200px 320px at 10% -10%, rgba(37,99,235,.14), transparent 55%),
+    radial-gradient(900px 260px at 110% 10%, rgba(20,184,166,.12), transparent 55%),
+    var(--cb-panel);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-radius);
+  padding: 16px 16px 14px;
+  box-shadow: var(--cb-shadow-sm);
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+  overflow: hidden;
+  will-change: transform, box-shadow;
+}
+
+.metric-card:hover{
+  transform: translateY(-2px);
+  box-shadow: var(--cb-shadow);
+  border-color: rgba(37,99,235,.22);
+}
+
+.metric-icon{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: rgba(37,99,235,.10);
+  border: 1px solid rgba(37,99,235,.18);
+  margin-bottom: 10px;
+  font-size: 22px;
+}
+
+.metric-title{
+  font-size: .95rem;
+  color: var(--cb-muted);
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.metric-value{
+  font-size: 1.9rem;
+  font-weight: 950;
+  letter-spacing: -.03em;
+  color: var(--cb-text);
+}
+
+/* ───────────────── BOTONES / ACCIONES ───────────────── */
+.admin-actions-wrap{ margin: 4px 0 18px; }
+
+.cb-admin-actions-grid{
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+/* FIX definitivo hover/transición vs Django Admin */
+#container a.btn-admin-action,
+body a.btn-admin-action{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .55rem;
+
+  padding: 9px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(37,99,235,.22);
+
+  background: linear-gradient(135deg, rgba(37,99,235,1), rgba(20,184,166,1));
+  color: #fff !important;
+
+  font-weight: 800;
+  font-size: .92rem;
+  letter-spacing: .12px;
+  line-height: 1;
+
+  text-decoration: none !important;
+
+  box-shadow: 0 10px 22px rgba(37,99,235,.18);
+
+  transform: translate3d(0,0,0);
+  will-change: transform, box-shadow, filter;
+
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+
+
+/* ───────────────── CARDS GENÉRICAS ───────────────── */
+.cb-admin-card{
+  background: var(--cb-panel);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-radius);
+  padding: 16px;
+  box-shadow: var(--cb-shadow-sm);
+}
+
+.cb-admin-card-title{
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+  font-weight: 850;
+  color: var(--cb-text);
+}
+
+.cb-admin-chart-wrap{
+  position: relative;
+  width: 100%;
+  min-height: 360px;
+}
+
+/* ───────────────── MINIATURAS ───────────────── */
+.admin-thumb{
+  max-width: 78px;
+  max-height: 78px;
+  border-radius: 12px;
+  border: 1px solid var(--cb-border);
+  box-shadow: 0 10px 18px rgba(0,0,0,.10);
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+  will-change: transform, box-shadow;
+}
+.admin-thumb:hover{
+  transform: translateY(-2px) scale(1.08);
+  box-shadow: 0 16px 26px rgba(0,0,0,.16);
+  filter: saturate(1.05);
+}
+
+/* ───────────────── RESPONSIVE ───────────────── */
+@media (max-width: 1024px){
+  .dashboard-cards{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cb-admin-actions-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 768px){
+  .dashboard-cards{ grid-template-columns: 1fr; }
+  .cb-admin-actions-grid{ grid-template-columns: 1fr; }
+}
+
+/* ───────────────── DARK MODE (Django 4.2+) ───────────────── */
+html[data-theme="dark"],
+html[data-admin-color-scheme="dark"]{
+  --cb-bg: #0f1115;
+  --cb-panel: rgba(20,22,26,.72);
+  --cb-text: #f3f4f6;
+  --cb-muted: rgba(243,244,246,.65);
+  --cb-border: rgba(255,255,255,.10);
+  --cb-shadow: 0 16px 38px rgba(0,0,0,.45);
+  --cb-shadow-sm: 0 10px 26px rgba(0,0,0,.40);
+  --cb-ring: 0 0 0 4px rgba(20, 184, 166, .18);
+}
+
+/* ───────────────── REDUCE MOTION ───────────────── */
+@media (prefers-reduced-motion: reduce){
+  .admin-thumb,
+  .metric-card,
+  .cb-admin-container a.btn-admin-action{
+    transition: none !important;
+  }
+}

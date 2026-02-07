@@ -45,5 +45,5 @@ class ResenaAdmin(admin.ModelAdmin):
     # ───────── CSS extra para el listado ─────
     class Media:
         css = {
-            'all': ('admin/css/adminCSS.css',),   # tu hoja global
+            'all': ('admin/css/adminDashboard.css',),  
         }

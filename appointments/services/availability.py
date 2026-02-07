@@ -99,17 +99,16 @@ def validate_datetime_for_booking(
     if FechaBloqueada.objects.filter(fecha=fecha).exists():
         raise ValidationError({"fecha": "Esta fecha está bloqueada. Selecciona otra."})
 
-    # Hora bloqueada
+    # Bloqueo por intervalo completo (inicio -> fin del servicio)
     for bloqueo in BloqueoHora.objects.filter(fecha=fecha):
-        if bloqueo.hora_inicio <= hora < bloqueo.hora_fin:
-            raise ValidationError(
-                {
-                    "hora": (
-                        f"La hora seleccionada está bloqueada "
-                        f"({bloqueo.hora_inicio:%H:%M} - {bloqueo.hora_fin:%H:%M})."
-                    )
-                }
-            )
+        if overlaps_block(fecha_hora, service_minutes, bloqueo):
+            raise ValidationError({
+                "hora": (
+                    f"¡Chavalote! La duración del servicio pisa un bloqueo administrativo en esa fecha. "
+                    f"({bloqueo.hora_inicio:%H:%M} - {bloqueo.hora_fin:%H:%M})."
+                )
+            })
+
 
     # Conflicto por duración (solapes)
     if has_duration_conflict(
@@ -127,6 +126,25 @@ def overlaps(existing_start, existing_minutes, new_start, new_minutes):
     existing_end = existing_start + timedelta(minutes=existing_minutes)
     new_end = new_start + timedelta(minutes=new_minutes)
     return max(existing_start, new_start) < min(existing_end, new_end)
+
+def overlaps_block(start_dt, minutes, bloqueo):
+    """
+    True si el rango [start_dt, start_dt+minutes) pisa un bloqueo (hora_inicio-hora_fin).
+    """
+    end_dt = start_dt + timedelta(minutes=minutes)
+
+    block_start = timezone.make_aware(
+        datetime.combine(bloqueo.fecha, bloqueo.hora_inicio),
+        timezone.get_current_timezone(),
+    )
+    block_end = timezone.make_aware(
+        datetime.combine(bloqueo.fecha, bloqueo.hora_fin),
+        timezone.get_current_timezone(),
+    )
+
+    # solape de intervalos
+    return max(start_dt, block_start) < min(end_dt, block_end)
+
 
 
 def has_duration_conflict(*, fecha_hora_inicio, new_minutes, exclude_cita_id=None):
@@ -172,18 +190,30 @@ def build_unavailable_hours_by_date(*, service_minutes, exclude_cita_id=None, ci
         citas_por_dia.setdefault(day, []).append(c)
 
     for day_str, citas in citas_por_dia.items():
-        # para cada hora posible, comprobamos si solapa con alguna cita existente
+        bloqueos = list(BloqueoHora.objects.filter(fecha=datetime.fromisoformat(day_str).date()))
+
         for t in valid_times:
             start_dt = timezone.make_aware(
                 datetime.combine(datetime.fromisoformat(day_str).date(), t),
                 timezone.get_current_timezone(),
             )
+
             conflict = False
-            for c in citas:
-                existing_minutes = int(getattr(c.servicio, "duracion", 30) or 30)
-                if overlaps(c.fecha, existing_minutes, start_dt, service_minutes):
+
+            # 1) bloqueos admin
+            for b in bloqueos:
+                if overlaps_block(start_dt, service_minutes, b):
                     conflict = True
                     break
+
+            # 2) citas existentes
+            if not conflict:
+                for c in citas:
+                    existing_minutes = int(getattr(c.servicio, "duracion", 30) or 30)
+                    if overlaps(c.fecha, existing_minutes, start_dt, service_minutes):
+                        conflict = True
+                        break
+
             if conflict:
                 unavailable.setdefault(day_str, []).append(t.strftime("%H:%M"))
 
