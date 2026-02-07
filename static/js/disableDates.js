@@ -21,48 +21,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // ---------- Data desde Django (json_script) ----------
+  const hasAnyEnabledHour = () => {
+    return Array.from(inputHora.options).some(
+      (opt) => opt.value && !opt.disabled
+    );
+  };
+
+  // ---------- Data desde Django ----------
   const fechasOcupadas = safeJSON("fechas-ocupadas", []);
   const fechasBloqueadas = safeJSON("fechas-bloqueadas", []);
   const horasOcupadasPorFecha = safeJSON("horas-ocupadas-por-fecha", {});
   const bloqueosPorFecha = safeJSON("bloqueos-por-fecha", {});
   const unavailableByService = safeJSON("unavailable-by-service", {});
 
-  // ---------- Normaliza fechas a ISO "YYYY-MM-DD" ----------
-  const reservedDates = (fechasOcupadas || []).map((f) => {
-    // si viene "2026-02-05" perfecto
-    // si viene Date/otro formato, intenta convertir
-    try {
-      return new Date(f).toISOString().split("T")[0];
-    } catch {
-      return String(f).slice(0, 10);
-    }
-  });
+  // ---------- Normaliza fechas a ISO ----------
+  const reservedDates = fechasOcupadas.map((f) => String(f).slice(0, 10));
+  const blockedDates = fechasBloqueadas.map((f) => String(f).slice(0, 10));
 
-  const blockedDates = (fechasBloqueadas || []).map((f) => {
-    try {
-      return new Date(f).toISOString().split("T")[0];
-    } catch {
-      return String(f).slice(0, 10);
-    }
-  });
-
-  // Evitar elegir fechas pasadas
+  // Evitar fechas pasadas
   const minDateISO = new Date().toISOString().split("T")[0];
   inputFecha.setAttribute("min", minDateISO);
 
   // ---------- Lógica ----------
   const getHorasSolapadas = (selectedDate) => {
-    if (!selectedDate) return [];
-    const serviceId = inputServicio ? inputServicio.value : null;
-    if (!serviceId) return [];
-    const mapForService = unavailableByService[String(serviceId)] || {};
-    return mapForService[selectedDate] || [];
+    if (!selectedDate || !inputServicio?.value) return [];
+    return unavailableByService[inputServicio.value]?.[selectedDate] || [];
   };
 
   const enableAllHourOptions = () => {
     Array.from(inputHora.options).forEach((option) => {
-      if (!option.value) return; // placeholder
+      if (!option.value) return;
       option.disabled = false;
     });
   };
@@ -76,8 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const disableBlockedHours = (selectedDate) => {
-    const horasBloqueadas = bloqueosPorFecha[selectedDate] || [];
-    disableHoursList(horasBloqueadas);
+    disableHoursList(bloqueosPorFecha[selectedDate] || []);
   };
 
   const disablePastHoursIfToday = (selectedDate) => {
@@ -100,39 +87,44 @@ document.addEventListener("DOMContentLoaded", () => {
     // 1) Reset
     enableAllHourOptions();
 
-    // 2) Occupied (por fecha)
-    const ocupadas = horasOcupadasPorFecha[selectedDate] || [];
-    disableHoursList(ocupadas);
+    // 2) Horas ya ocupadas
+    disableHoursList(horasOcupadasPorFecha[selectedDate] || []);
 
-    // 3) Overlaps (por servicio y fecha)
-    const solapadas = getHorasSolapadas(selectedDate);
-    disableHoursList(solapadas);
+    // 3) Solapes por duración del servicio
+    disableHoursList(getHorasSolapadas(selectedDate));
 
-    // 4) Blocked (por rangos)
+    // 4) Bloqueos del admin
     disableBlockedHours(selectedDate);
 
-    // 5) Past hours today
+    // 5) Horas pasadas si es hoy
     disablePastHoursIfToday(selectedDate);
+
+    // 6) 🔥 FIX CLAVE: día sin ninguna hora disponible
+    if (!hasAnyEnabledHour()) {
+      alert(
+        "Mi niño, este día ya no tiene hueco ni pa’ colar un café ☕. Elige otro."
+      );
+      inputFecha.value = "";
+      enableAllHourOptions();
+    }
   };
 
   // ---------- Eventos ----------
-  // Si ya hay fecha precargada
   if (inputFecha.value) updateHours();
 
-  // Cuando cambias fecha
   inputFecha.addEventListener("input", () => {
     const selectedDate = inputFecha.value;
     if (!selectedDate) return;
 
     if (blockedDates.includes(selectedDate)) {
-      alert("¡Estás bonito! Te recuerdo que este día no curro niñote.");
+      alert("Ese día no curro, máquina. Está bloqueado.");
       inputFecha.value = "";
       enableAllHourOptions();
       return;
     }
 
     if (reservedDates.includes(selectedDate)) {
-      alert("¡Chacho loco! La fecha seleccionada está completamente reservada.");
+      alert("Ese día está completo completo, niñote.");
       inputFecha.value = "";
       enableAllHourOptions();
       return;
@@ -141,10 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateHours();
   });
 
-  // Cuando cambias servicio, recalcula solapes
   if (inputServicio) {
-    inputServicio.addEventListener("change", () => {
-      updateHours();
-    });
+    inputServicio.addEventListener("change", updateHours);
   }
 });
