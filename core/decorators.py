@@ -1,4 +1,3 @@
-# core/decorators.py
 """
 Compat layer:
 Se movió la implementación a `core.web.decorators`.

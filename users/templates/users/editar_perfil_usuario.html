@@ -8,9 +8,7 @@
   <div class="row justify-content-center">
     <div class="col-12">
 
-      <!-- MAIN CARD -->
       <div class="card card-glass shadow-sm animate-on-load" style="--a-delay:0ms">
-        <!-- Header -->
         <div class="card-header gradiente-header text-center">
           <h1 class="h5 fw-bold mb-0 text-ink">
             <i class="fas fa-user-edit text-gold me-2" aria-hidden="true"></i>
@@ -20,7 +18,7 @@
 
         <div class="card-body">
           <p class="text-ink-muted mb-4 text-center">
-            Todos los campos son opcionales, pero te recomendamos mantener tu información al día.
+            Puedes cambiar tu nombre, apellido, email y teléfono. El nombre de usuario no se puede modificar.
           </p>
 
           <!-- Acceso con Google -->
@@ -50,65 +48,82 @@
             <div class="card-header text-center footer-heading">Información del Usuario</div>
             <div class="card-body">
               <p class="mb-2"><strong>Nombre de usuario:</strong> <span class="text-ink">{{ username }}</span></p>
-              <p class="mb-2"><strong>Correo electrónico:</strong> <span class="text-ink">{{ current_email }}</span></p>
+              <p class="mb-2"><strong>Correo electrónico:</strong> <span class="text-ink">{{ current_email|default:"—" }}</span></p>
               <p class="mb-0"><strong>Teléfono actual:</strong> <span class="text-ink">{{ current_phone|default:"—" }}</span></p>
             </div>
           </div>
 
-          <!-- FORMULARIOS -->
+          <!-- FORMULARIO -->
           <form method="post" class="needs-validation form-dark animate-on-load" style="--a-delay:240ms" novalidate>
             {% csrf_token %}
 
-            <!-- Email / cuenta (UserForm) -->
-            <h2 class="h6 footer-heading mb-3">Correo electrónico</h2>
-            {{ user_form.non_field_errors }}
-            {% for field in user_form %}
-              <div class="mb-3">
-                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field|add_class:"form-control-dark form-control form-control-lg" }}
-                {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger shadow-sm" role="alert">
+                {{ form.non_field_errors }}
               </div>
-            {% endfor %}
+            {% endif %}
 
-            <!-- Perfil (ProfileForm) -->
-            <h2 class="h6 footer-heading mt-4 mb-3">Actualizar información</h2>
-            {{ profile_form.non_field_errors }}
-            {% for field in profile_form %}
-              <div class="mb-3">
-                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field|add_class:"form-control-dark form-control form-control-lg" }}
-                {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
-              </div>
-            {% endfor %}
+            <h2 class="h6 footer-heading mb-3">Datos personales</h2>
 
-            <!-- Password (PasswordForm) -->
-            <h2 class="h6 footer-heading mt-4 mb-3">Cambiar contraseña</h2>
-            {{ password_form.non_field_errors }}
-              {% for field in password_form %}
-                <div class="mb-3">
-                  <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                  <div class="input-group">
-                    {{ field|add_class:"form-control-dark form-control form-control-lg" }}
-                    <button
-                      type="button"
-                      class="btn btn-outline-gold toggle-pass"
-                      data-target="{{ field.id_for_label }}"
-                      aria-label="Mostrar u ocultar contraseña">
-                      <i class="bi bi-eye" aria-hidden="true"></i>
-                    </button>
-                  </div>
-                  {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
-                </div>
+            <!-- Nombre -->
+            <div class="mb-3">
+              <label class="form-label" for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+              {{ form.first_name|add_class:"form-control-dark form-control form-control-lg" }}
+              {% for error in form.first_name.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
               {% endfor %}
+            </div>
 
+            <!-- Apellido -->
+            <div class="mb-3">
+              <label class="form-label" for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
+              {{ form.last_name|add_class:"form-control-dark form-control form-control-lg" }}
+              {% for error in form.last_name.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
 
-            <button type="submit" class="btn btn-gold btn-lg w-100">
+            <h2 class="h6 footer-heading mt-4 mb-3">Datos de contacto</h2>
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label class="form-label" for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+              {{ form.email|add_class:"form-control-dark form-control form-control-lg" }}
+              {% for error in form.email.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- Teléfono -->
+            <div class="mb-3">
+              <label class="form-label" for="{{ form.telefono.id_for_label }}">{{ form.telefono.label }}</label>
+              {{ form.telefono|add_class:"form-control-dark form-control form-control-lg" }}
+              {% for error in form.telefono.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <button type="submit" class="btn btn-gold btn-lg w-100 mt-2">
               <i class="bi bi-save me-1" aria-hidden="true"></i> Guardar cambios
             </button>
+
+            <!-- Seguridad -->
+            <div class="card card-glass mt-4 shadow-sm animate-on-load" style="--a-delay:280ms">
+              <div class="card-header text-center footer-heading">Seguridad</div>
+              <div class="card-body text-center">
+                <p class="mb-3 text-ink-muted">
+                  Cambia tu contraseña desde la sección de seguridad.
+                </p>
+                <a href="{% url 'users:password_change' %}" class="btn btn-outline-gold">
+                  <i class="bi bi-shield-lock me-1" aria-hidden="true"></i> Cambiar contraseña
+                </a>
+              </div>
+            </div>
+
           </form>
         </div>
 
-        <div class="card-footer text-center bg-transparent border-0 animate-on-load" style="--a-delay:300ms">
+        <div class="card-footer text-center bg-transparent border-0 animate-on-load" style="--a-delay:320ms">
           <a href="{% url 'users:perfil_usuario' %}" class="btn btn-outline-gold">
             <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Volver al perfil
           </a>
@@ -138,5 +153,5 @@
 {% endblock %}
 
 {% block extra_scripts %}
-  <script src="{% static 'js/togglePassword.js' %}" defer></script>
+  {# Ya no hay password aquí #}
 {% endblock %}

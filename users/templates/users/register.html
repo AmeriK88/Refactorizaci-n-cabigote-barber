@@ -80,7 +80,14 @@
             <label for="{{ form.password1.id_for_label }}" class="form-label fw-semibold">{{ form.password1.label }}</label>
             <div class="input-group">
               {% render_field form.password1 class+="form-control form-control-dark" autocomplete="new-password" %}
-              <button type="button" class="btn btn-outline-gold" id="toggle-pass1" aria-label="Mostrar u ocultar contraseña">
+              <button
+                type="button"
+                class="btn btn-outline-gold"
+                data-toggle="password"
+                data-target="{{ form.password1.id_for_label }}"
+                aria-label="Mostrar u ocultar contraseña"
+                aria-controls="{{ form.password1.id_for_label }}"
+                aria-pressed="false">
                 <i class="bi bi-eye" aria-hidden="true"></i>
               </button>
             </div>
@@ -95,7 +102,14 @@
             <label for="{{ form.password2.id_for_label }}" class="form-label fw-semibold">{{ form.password2.label }}</label>
             <div class="input-group">
               {% render_field form.password2 class+="form-control form-control-dark" autocomplete="new-password" %}
-              <button type="button" class="btn btn-outline-gold" id="toggle-pass2" aria-label="Mostrar u ocultar contraseña">
+              <button
+                type="button"
+                class="btn btn-outline-gold"
+                data-toggle="password"
+                data-target="{{ form.password2.id_for_label }}"
+                aria-label="Mostrar u ocultar contraseña"
+                aria-controls="{{ form.password2.id_for_label }}"
+                aria-pressed="false">
                 <i class="bi bi-eye" aria-hidden="true"></i>
               </button>
             </div>
@@ -130,5 +144,5 @@
 {% endblock %}
 
 {% block extra_scripts %}
-  <script src="{% static 'js/passwordToggle.js' %}" defer></script>
+  <script src="{% static 'js/togglePassword.js' %}" defer></script>
 {% endblock %}
