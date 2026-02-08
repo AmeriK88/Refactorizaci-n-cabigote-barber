@@ -37,7 +37,7 @@
 
             <p class="card-text d-flex align-items-center">
               <i class="bi bi-calendar-event me-2 text-ink-muted"></i>
-              <span class="text-ink-muted"><strong class="text-ink">Fecha:</strong> {{ cita.fecha }}</span>
+              <span class="text-ink-muted"><strong class="text-ink">Fecha:</strong> {{ cita.fecha|date:"d/m/Y" }}</span>
             </p>
 
             <p class="card-text d-flex align-items-center">
@@ -72,10 +72,10 @@
   {% endif %}
 
   <!-- Historial -->
+  <!-- ================= HISTORIAL DE CITAS ================= -->
   <div class="text-center mt-5">
     <h3 class="h4 fw-bold text-ink mb-1">Historial de Citas</h3>
 
-    {# Selector de año + resumen #}
     {% if years %}
       <div class="d-flex flex-wrap gap-2 justify-content-center align-items-center mt-2">
         <form method="get" class="d-flex gap-2 align-items-center">
@@ -88,78 +88,84 @@
         </form>
 
         <div class="text-ink-muted small">
-          Gastado en {{ selected_year }}: <strong class="text-ink">{{ total_gastado_year }} €</strong>
+          Gastado en {{ selected_year }}:
+          <strong class="text-ink">{{ total_gastado_year }} €</strong>
         </div>
       </div>
     {% endif %}
-
-    {% if citas_pasadas %}
-      <p class="text-ink-muted mt-2">
-        Mostrando historial de <strong>{{ selected_year }}</strong>.
-      </p>
-    {% endif %}
   </div>
 
-
   {% if citas_pasadas %}
-    {# Group por mes #}
-    <div id="historial-citas" class="mt-3" data-year="{{ selected_year }}">
-      {% regroup citas_pasadas by fecha|date:"F Y" as citas_por_mes %}
+    {% regroup citas_pasadas by fecha|date:"F Y" as citas_por_mes %}
 
+    <div class="mt-4">
       {% for grupo in citas_por_mes %}
-        <div class="text-center mt-4 animate-on-load">
-          <h4 class="h6 text-ink-muted m-0">
-            <i class="bi bi-folder2-open me-1"></i> {{ grupo.grouper }}
-          </h4>
-        </div>
+        <details class="card card-glass mb-3 animate-on-load">
+          <summary class="card-header d-flex justify-content-between align-items-center cursor-pointer">
+            <span class="text-ink fw-semibold">
+              <i class="bi bi-folder2-open me-2"></i>
+              {{ grupo.grouper }}
+            </span>
+            <span class="badge bg-secondary">
+              {{ grupo.list|length }} citas
+            </span>
+          </summary>
 
-        <div class="row g-3">
-          {% for cita in grupo.list %}
-          <div class="col-12 col-md-6 col-lg-4">
-            <div class="card card-glass h-100 animate-on-load historial-item">
-              <div class="card-body">
-                <h5 class="card-title text-ink">{{ cita.servicio.nombre }}</h5>
+          <div class="card-body">
+            <div class="row g-3">
+              {% for cita in grupo.list %}
+                <!-- MOBILE: lista compacta / DESKTOP: card -->
+                <div class="col-12 col-md-6 col-lg-4 historial-item">
+                  <div class="border rounded-3 p-3 h-100 bg-transparent">
 
-                <p class="card-text d-flex align-items-center">
-                  <i class="bi bi-calendar-event me-2 text-ink-muted"></i>
-                  <span class="text-ink-muted"><strong class="text-ink">Fecha:</strong> {{ cita.fecha }}</span>
-                </p>
+                    <h6 class="mb-1 text-ink fw-semibold">
+                      {{ cita.servicio.nombre }}
+                    </h6>
 
-                <p class="card-text d-flex align-items-center">
-                  <i class="bi bi-clock me-2 text-ink-muted"></i>
-                  <span class="text-ink-muted"><strong class="text-ink">Hora:</strong> {{ cita.hora }}</span>
-                </p>
+                    <p class="small text-ink-muted mb-1">
+                      <i class="bi bi-calendar-event me-1"></i>
+                      {{ cita.fecha|date:"d/m/Y" }}
+                      ·
+                      <i class="bi bi-clock ms-2 me-1"></i>
+                      {{ cita.hora|time:"H:i" }}
+                    </p>
 
-                {% if cita.comentario %}
-                <p class="card-text d-flex align-items-start">
-                  <i class="bi bi-chat-left-dots me-2 text-ink-muted"></i>
-                  <span class="text-ink-muted"><strong class="text-ink">Comentario:</strong> {{ cita.comentario }}</span>
-                </p>
-                {% endif %}
-              </div>
+                    {% if cita.comentario %}
+                      <p class="small text-ink-muted mb-0">
+                        <i class="bi bi-chat-left-dots me-1"></i>
+                        {{ cita.comentario }}
+                      </p>
+                    {% endif %}
+
+                  </div>
+                </div>
+              {% endfor %}
             </div>
           </div>
-          {% endfor %}
-        </div>
+        </details>
       {% endfor %}
     </div>
 
     {% if citas_pasadas|length > 5 %}
-      <div class="text-center mt-3 animate-on-load">
-        <button id="cargar-mas-btn" class="btn btn-outline-gold">Cargar más</button>
+      <div class="text-center mt-3">
+        <button id="cargar-mas-btn" class="btn btn-outline-gold">
+          Cargar más
+        </button>
       </div>
     {% endif %}
 
   {% else %}
-    <div class="card card-glass text-center mt-4 animate-on-load">
+    <div class="card card-glass text-center mt-4">
       <div class="card-body">
         <h5 class="card-title text-ink">No tienes citas pasadas</h5>
         <p class="text-ink-muted mb-3">Pero no te preocupes, puedes ver nuestros servicios.</p>
-        <a href="{% url 'services:ver_servicios' %}" class="btn btn-outline-gold">Ver servicios</a>
+        <a href="{% url 'services:ver_servicios' %}" class="btn btn-outline-gold">
+          Ver servicios
+        </a>
       </div>
     </div>
   {% endif %}
-</div>
+
 {% endblock %}
 
 {% block extra_scripts %}

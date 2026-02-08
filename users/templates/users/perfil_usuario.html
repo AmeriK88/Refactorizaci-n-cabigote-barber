@@ -82,7 +82,8 @@
 
             <p class="card-text d-flex align-items-center">
               <i class="bi bi-calendar-event me-2 text-ink-muted"></i>
-              <span class="text-ink-muted"><strong class="text-ink">Fecha:</strong> {{ cita.fecha }}</span>
+              <span class="text-ink-muted"><strong class="text-ink">Fecha:</strong> {{ cita.fecha|date:"d/m/Y" }}
+</span>
             </p>
             <p class="card-text d-flex align-items-center">
               <i class="bi bi-clock me-2 text-ink-muted"></i>
