@@ -4,7 +4,6 @@ Lógica de disponibilidad de citas:
 - solapamientos
 - duración de servicios
 """
-
 from datetime import datetime, timedelta
 
 from django.core.exceptions import ValidationError
@@ -259,3 +258,43 @@ def normalize_booking_datetime(*, fecha, hora):
         timezone.get_current_timezone(),
     )
     return fecha, hora, fecha_hora
+
+
+
+def get_unavailable_start_hours_for_date(*, day, service_minutes, exclude_cita_id=None):
+    """
+    Devuelve ["10:00", "10:30", ...] para un día concreto.
+    1 query de citas + 1 query de bloqueos.
+    """
+    tz = timezone.get_current_timezone()
+    valid_times = [datetime.strptime(h, "%H:%M").time() for h in VALID_HOURS_VALUES]
+
+    qs = Cita.objects.filter(fecha__date=day).select_related("servicio")
+    if exclude_cita_id:
+        qs = qs.exclude(id=exclude_cita_id)
+    citas = list(qs)
+
+    bloqueos = list(BloqueoHora.objects.filter(fecha=day))
+
+    unavailable = []
+    for t in valid_times:
+        start_dt = timezone.make_aware(datetime.combine(day, t), tz)
+
+        # Bloqueos
+        if any(overlaps_block(start_dt, service_minutes, b) for b in bloqueos):
+            unavailable.append(t.strftime("%H:%M"))
+            continue
+
+        # Solapes con citas
+        conflict = False
+        for c in citas:
+            existing_minutes = int(getattr(c.servicio, "duracion", 30) or 30)
+            if overlaps(c.fecha, existing_minutes, start_dt, service_minutes):
+                conflict = True
+                break
+
+        if conflict:
+            unavailable.append(t.strftime("%H:%M"))
+
+    return unavailable
+

@@ -13,6 +13,12 @@ from .models import Cita
 from services.models import Servicio
 from .services.forms import apply_validation_error_to_form
 
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET
+from django.utils.dateparse import parse_date
+
+from .services.availability import get_unavailable_start_hours_for_date
+
 from .services.availability import (
     build_calendar_constraints,
     build_unavailable_by_service,
@@ -30,19 +36,20 @@ from .services.notifications import (
 @login_required
 @handle_exceptions
 def reservar_cita(request, servicio_id=None):
-    """
-    Reserva una cita: controla fechas/horas bloqueadas y guarda un DateTimeField aware en Cita.fecha.
-    """
-    fechas_ocupadas, fechas_bloqueadas, horas_ocupadas_por_fecha, bloqueos_por_fecha = (
-        build_calendar_constraints()
-    )
-
     servicio_seleccionado = (
         Servicio.objects.filter(id=servicio_id).first() if servicio_id else None
     )
 
-    # Mapa por servicio (para el JS)
-    unavailable_by_service = build_unavailable_by_service()
+    def calendar_payload():
+        fechas_ocupadas, fechas_bloqueadas, horas_ocupadas_por_fecha, bloqueos_por_fecha = (
+            build_calendar_constraints()
+        )
+        return {
+            "fechas_ocupadas": fechas_ocupadas,
+            "fechas_bloqueadas": fechas_bloqueadas,
+            "horas_ocupadas_por_fecha": horas_ocupadas_por_fecha,
+            "bloqueos_por_fecha": bloqueos_por_fecha,
+        }   
 
     if request.method == "POST":
         form = CitaForm(request.POST)
@@ -74,29 +81,22 @@ def reservar_cita(request, servicio_id=None):
                 cita.hora = hora
                 cita.save()
 
+                # OJO: esto puede ser lento si manda email síncrono
                 notify_booking_created(request.user.email, cita)
-                messages.success(
-                    request,
-                    "¡Viejito! Ya tienes tu cita confirmada. ¡Esa es niñote!",
-                )
+
+                messages.success(request, "¡Viejito! Ya tienes tu cita confirmada. ¡Esa es niñote!")
                 return redirect("users:perfil_usuario")
 
-    else:
-        initial = {"servicio": servicio_seleccionado} if servicio_seleccionado else {}
-        form = CitaForm(initial=initial)
+        # Solo si hay errores y hay que re-renderizar, calculamos payload
+        ctx = {"form": form, **calendar_payload()}
+        return render(request, "appointments/reservar_cita.html", ctx)
 
-    return render(
-        request,
-        "appointments/reservar_cita.html",
-        {
-            "form": form,
-            "fechas_ocupadas": fechas_ocupadas,
-            "fechas_bloqueadas": fechas_bloqueadas,
-            "horas_ocupadas_por_fecha": horas_ocupadas_por_fecha,
-            "bloqueos_por_fecha": bloqueos_por_fecha,
-            "unavailable_by_service": unavailable_by_service,
-        },
-    )
+    # GET
+    initial = {"servicio": servicio_seleccionado} if servicio_seleccionado else {}
+    form = CitaForm(initial=initial)
+    ctx = {"form": form, **calendar_payload()}
+    return render(request, "appointments/reservar_cita.html", ctx)
+
 
 
 # APPOINTMENT HISTORY
@@ -174,8 +174,6 @@ def editar_cita(request, cita_id):
         build_calendar_constraints(exclude_cita_id=cita_id)
     )
 
-    # Mapa por servicio (para el JS) excluyendo la cita actual
-    unavailable_by_service = build_unavailable_by_service(exclude_cita_id=cita_id)
 
     if request.method == "POST":
         form = CitaForm(request.POST, instance=cita)
@@ -218,13 +216,14 @@ def editar_cita(request, cita_id):
         "appointments/editar_cita.html",
         {
             "form": form,
+            "cita": cita, 
             "fechas_ocupadas": fechas_ocupadas,
             "fechas_bloqueadas": fechas_bloqueadas,
             "horas_ocupadas_por_fecha": horas_ocupadas_por_fecha,
             "bloqueos_por_fecha": bloqueos_por_fecha,
-            "unavailable_by_service": unavailable_by_service,
         },
     )
+
 
 
 # DELETE APPOINTMENT
@@ -258,6 +257,34 @@ def eliminar_cita(request, cita_id):
         return redirect("appointments:ver_citas")
 
     return render(request, "appointments/eliminar_cita.html", {"cita": cita})
+
+
+
+@login_required
+@require_GET
+def availability_for_date(request):
+    service_id = request.GET.get("service_id")
+    date_str = request.GET.get("date")
+
+    if not service_id or not date_str:
+        return JsonResponse({"unavailable": []}, status=400)
+
+    day = parse_date(date_str)
+    if not day:
+        return JsonResponse({"unavailable": []}, status=400)
+
+    servicio = get_object_or_404(Servicio.objects.only("id", "duracion"), id=service_id)
+    service_minutes = int(getattr(servicio, "duracion", 30) or 30)
+
+    exclude_cita_id = request.GET.get("exclude_cita_id")
+    exclude_cita_id = int(exclude_cita_id) if exclude_cita_id and exclude_cita_id.isdigit() else None
+
+    unavailable = get_unavailable_start_hours_for_date(
+        day=day,
+        service_minutes=service_minutes,
+        exclude_cita_id=exclude_cita_id,
+    )
+    return JsonResponse({"unavailable": unavailable})
 
 
 # Autor: José Félix Gordo Castaño
