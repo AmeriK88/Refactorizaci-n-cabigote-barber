@@ -268,16 +268,27 @@ LOGIN_REDIRECT_URL = '/users/perfil/'
 LOGOUT_REDIRECT_URL = '/' 
 
 # ───────── CLOUDINARY / STORAGE ─────────
+CLOUDINARY_URL = env("CLOUDINARY_URL", default="")
 
-# ✅ Django storage backends (Django 4.2+ recomendado)
-STORAGES = {
-    "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+if CLOUDINARY_URL:
+    STORAGES = {
+        "default": {
+            "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+else:
+    # Fallback seguro (evita 500 si faltan credenciales en prod)
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
 
 
 # ───────── MEDIA ─────────
