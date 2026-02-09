@@ -291,6 +291,8 @@ STORAGES = {
 if CLOUDINARY_URL:
     os.environ.setdefault("CLOUDINARY_URL", CLOUDINARY_URL)
 
+WHITENOISE_MANIFEST_STRICT = False
+
 
 # ───────── MEDIA ─────────
 MEDIA_URL = "/media/"
