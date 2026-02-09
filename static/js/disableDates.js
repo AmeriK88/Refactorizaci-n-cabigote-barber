@@ -3,12 +3,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const inputHora = document.querySelector('select[name="hora"]');
   const inputServicio = document.querySelector('select[name="servicio"]');
 
-  // Si no existen los inputs, salimos
   if (!inputFecha || !inputHora) return;
 
-  // ---------- Helpers ----------
   const pad = (n) => String(n).padStart(2, "0");
-  const normalizeTime = (v) => (v || "").trim().slice(0, 5); // "10:00:00" -> "10:00"
+  const normalizeTime = (v) => (v || "").trim().slice(0, 5);
 
   const safeJSON = (id, fallback) => {
     const el = document.getElementById(id);
@@ -21,20 +19,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  const hasAnyEnabledHour = () => {
-    return Array.from(inputHora.options).some(
-      (opt) => opt.value && !opt.disabled
-    );
-  };
+  const hasAnyEnabledHour = () =>
+    Array.from(inputHora.options).some((opt) => opt.value && !opt.disabled);
 
-  // ---------- Data desde Django ----------
+  // Data desde Django
   const fechasOcupadas = safeJSON("fechas-ocupadas", []);
   const fechasBloqueadas = safeJSON("fechas-bloqueadas", []);
   const horasOcupadasPorFecha = safeJSON("horas-ocupadas-por-fecha", {});
   const bloqueosPorFecha = safeJSON("bloqueos-por-fecha", {});
-  const unavailableByService = safeJSON("unavailable-by-service", {});
 
-  // ---------- Normaliza fechas a ISO ----------
+  // Normaliza fechas a ISO
   const reservedDates = fechasOcupadas.map((f) => String(f).slice(0, 10));
   const blockedDates = fechasBloqueadas.map((f) => String(f).slice(0, 10));
 
@@ -42,12 +36,40 @@ document.addEventListener("DOMContentLoaded", () => {
   const minDateISO = new Date().toISOString().split("T")[0];
   inputFecha.setAttribute("min", minDateISO);
 
-  // ---------- Lógica ----------
-  const getHorasSolapadas = (selectedDate) => {
-    if (!selectedDate || !inputServicio?.value) return [];
-    return unavailableByService[inputServicio.value]?.[selectedDate] || [];
+  // ===== AJAX availability =====
+  const AV_URL = window.AVAILABILITY_URL; // lo defines en el template
+  const EXCLUDE_ID = window.EXCLUDE_CITA_ID; // solo en editar
+  const cache = new Map(); // key: serviceId|date
+
+  const fetchSolapes = async (serviceId, dateISO) => {
+    if (!AV_URL || !serviceId || !dateISO) return [];
+
+    const key = `${serviceId}|${dateISO}|${EXCLUDE_ID || ""}`;
+    if (cache.has(key)) return cache.get(key);
+
+    const params = new URLSearchParams({
+      service_id: serviceId,
+      date: dateISO,
+    });
+
+    if (EXCLUDE_ID) params.set("exclude_cita_id", String(EXCLUDE_ID));
+
+    try {
+      const res = await fetch(`${AV_URL}?${params.toString()}`, {
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      });
+      if (!res.ok) return [];
+      const data = await res.json();
+      const list = Array.isArray(data.unavailable) ? data.unavailable : [];
+      cache.set(key, list);
+      return list;
+    } catch (e) {
+      console.error("Error fetch availability", e);
+      return [];
+    }
   };
 
+  // Helpers options
   const enableAllHourOptions = () => {
     Array.from(inputHora.options).forEach((option) => {
       if (!option.value) return;
@@ -80,8 +102,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  const updateHours = () => {
+  // ===== Update hours (async) =====
+  const updateHours = async () => {
     const selectedDate = inputFecha.value;
+    const serviceId = inputServicio?.value;
+
     if (!selectedDate) return;
 
     // 1) Reset
@@ -90,8 +115,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // 2) Horas ya ocupadas
     disableHoursList(horasOcupadasPorFecha[selectedDate] || []);
 
-    // 3) Solapes por duración del servicio
-    disableHoursList(getHorasSolapadas(selectedDate));
+    // 3) Solapes por duración del servicio (AJAX)
+    if (serviceId) {
+      const solapes = await fetchSolapes(serviceId, selectedDate);
+      disableHoursList(solapes);
+    }
 
     // 4) Bloqueos del admin
     disableBlockedHours(selectedDate);
@@ -99,20 +127,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // 5) Horas pasadas si es hoy
     disablePastHoursIfToday(selectedDate);
 
-    // 6) 🔥 FIX CLAVE: día sin ninguna hora disponible
+    // 6) Día sin ninguna hora disponible
     if (!hasAnyEnabledHour()) {
-      alert(
-        "Mi niño, este día ya no tiene hueco ni pa’ colar un café ☕. Elige otro."
-      );
+      alert("Mi niño, este día ya no tiene hueco ni pa’ colar un café ☕. Elige otro.");
       inputFecha.value = "";
       enableAllHourOptions();
     }
   };
 
-  // ---------- Eventos ----------
+  // Eventos
   if (inputFecha.value) updateHours();
 
-  inputFecha.addEventListener("input", () => {
+  inputFecha.addEventListener("input", async () => {
     const selectedDate = inputFecha.value;
     if (!selectedDate) return;
 
@@ -130,10 +156,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    updateHours();
+    await updateHours();
   });
 
   if (inputServicio) {
-    inputServicio.addEventListener("change", updateHours);
+    inputServicio.addEventListener("change", async () => {
+      if (inputFecha.value) await updateHours();
+    });
   }
 });

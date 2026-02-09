@@ -3,33 +3,30 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db.models import Sum
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.dateparse import parse_date
+from django.views.decorators.http import require_GET
 
 from core.decorators import handle_exceptions
+from services.models import Servicio
 
 from .forms import CitaForm
 from .models import Cita
-from services.models import Servicio
 from .services.forms import apply_validation_error_to_form
-
-from django.http import JsonResponse
-from django.views.decorators.http import require_GET
-from django.utils.dateparse import parse_date
-
-from .services.availability import get_unavailable_start_hours_for_date
-
 from .services.availability import (
     build_calendar_constraints,
-    build_unavailable_by_service,
     normalize_booking_datetime,
     validate_datetime_for_booking,
+    get_unavailable_start_hours_for_date,
 )
 from .services.notifications import (
     notify_booking_created,
     notify_booking_deleted,
     notify_booking_updated,
 )
+
 
 
 # APPOINTMENT RESERVATION

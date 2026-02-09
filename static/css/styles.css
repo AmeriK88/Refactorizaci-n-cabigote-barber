@@ -240,7 +240,6 @@ main{ padding-block: 24px; margin-bottom:60px; flex:1; }
 .alert-danger{ background: rgba(194,83,83,.15); color:#ffd6d6; }
 
 /* Scrollbar */
-*{ scrollbar-width: thin; scrollbar-color: #5a6270 #1b1f2a; }
 ::-webkit-scrollbar{ width:12px; }
 ::-webkit-scrollbar-track{ background:#1b1f2a; border-radius:10px; }
 ::-webkit-scrollbar-thumb{ background:#5a6270; border-radius:10px; }
