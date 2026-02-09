@@ -268,7 +268,7 @@ LOGIN_REDIRECT_URL = '/users/perfil/'
 LOGOUT_REDIRECT_URL = '/' 
 
 # ───────── CLOUDINARY / STORAGE ─────────
-CLOUDINARY_URL = env("CLOUDINARY_URL", default="").strip()
+CLOUDINARY_URL = (env("CLOUDINARY_URL", default="") or "").strip() # type: ignore[arg-type]
 
 STORAGES = {
     # STATIC always served by WhiteNoise
