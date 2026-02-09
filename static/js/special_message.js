@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const messageId = modalEl.getAttribute("data-message-id");
   if (!messageId) return;
 
-  // ✅ clave por ID (no lista infinita)
+  // clave por ID (no lista infinita)
   const storageKey = `special_message_closed_${messageId}`;
 
   // Si ya lo cerró una vez, no lo vuelvas a mostrar
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   bsModal.show();
 
-  // ✅ solo marcamos como “visto” cuando realmente se cierra
+  // solo marcamos como “visto” cuando realmente se cierra
   modalEl.addEventListener("hidden.bs.modal", () => {
     localStorage.setItem(storageKey, "1");
   });
