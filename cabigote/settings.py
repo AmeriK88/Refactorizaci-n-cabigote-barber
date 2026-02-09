@@ -268,30 +268,38 @@ LOGIN_REDIRECT_URL = '/users/perfil/'
 LOGOUT_REDIRECT_URL = '/' 
 
 # ───────── CLOUDINARY / STORAGE ─────────
-CLOUDINARY_URL = (env("CLOUDINARY_URL", default="") or "").strip() # type: ignore[arg-type]
+
+CLOUDINARY_URL = (env("CLOUDINARY_URL", default="") or "").strip()
+
+# ❌ No permitimos fallback silencioso en producción
+if not DEBUG and not CLOUDINARY_URL:
+    raise ImproperlyConfigured(
+        "CLOUDINARY_URL is missing in production environment"
+    )
+
+# Asegura que Cloudinary lib lo detecta
+if CLOUDINARY_URL:
+    os.environ["CLOUDINARY_URL"] = CLOUDINARY_URL
 
 STORAGES = {
-    # STATIC always served by WhiteNoise
+    # STATIC → WhiteNoise (siempre)
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 
-    # MEDIA depends on Cloudinary availability
+    # MEDIA → Cloudinary (prod) | FileSystem (solo dev)
     "default": {
         "BACKEND": (
             "cloudinary_storage.storage.MediaCloudinaryStorage"
             if CLOUDINARY_URL
             else "django.core.files.storage.FileSystemStorage"
-        )
+        ),
     },
 }
 
-# (Optional but recommended) makes Cloudinary library pick up the URL explicitly
-# Only needed if you see credential errors in prod even with CLOUDINARY_URL set
-if CLOUDINARY_URL:
-    os.environ.setdefault("CLOUDINARY_URL", CLOUDINARY_URL)
-
+# Evita que WhiteNoise rompa el deploy por un favicon faltante
 WHITENOISE_MANIFEST_STRICT = False
+
 
 
 # ───────── MEDIA ─────────
