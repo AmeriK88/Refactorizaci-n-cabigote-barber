@@ -488,10 +488,11 @@ CONTENT_SECURITY_POLICY = {
 
 X_FRAME_OPTIONS = 'SAMEORIGIN' 
 
-# ───────── CACHÉ (Redis) ─────────
-REDIS_URL = env('REDIS_URL', default='')
+# ───────── CACHÉ (Redis opcional, seguro) ─────────
+USE_REDIS = env.bool("USE_REDIS", default=False)
+REDIS_URL = env("REDIS_URL", default="")
 
-if REDIS_URL:
+if USE_REDIS and REDIS_URL:
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.redis.RedisCache",
@@ -501,35 +502,37 @@ if REDIS_URL:
                 "socket_timeout": 5,
                 "retry_on_timeout": True,
             },
-            "TIMEOUT": 60 * 10,  # 10 minutos por defecto
+            "TIMEOUT": 60 * 10,  # 10 minutos
         }
     }
 else:
-    # Fallback a memoria local si no hay Redis (dev)
+    # Fallback seguro (no rompe prod ni dev)
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-            "LOCATION": "unique-dev",
+            "LOCATION": "unique-cabigote",
         }
     }
 
+
 # ───────── django-axes ─────────
-AXES_ENABLED = not DEBUG                       # activo solo en prod
+AXES_ENABLED = not DEBUG
 AXES_FAILURE_LIMIT = 5
-AXES_COOLOFF_TIME = 1                          # horas
+AXES_COOLOFF_TIME = 1  # horas
 AXES_LOCKOUT_TEMPLATE = 'errors/locked_out.html'
 
-# Usa handler de caché si hay Redis; si no, DB handler (evita el warning W001)
-if REDIS_URL:
+if USE_REDIS and REDIS_URL:
     AXES_HANDLER = 'axes.handlers.cache.AxesCacheHandler'
     AXES_CACHE = 'default'
 else:
     AXES_HANDLER = 'axes.handlers.database.AxesDatabaseHandler'
 
 
-
-SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+# ───────── SESIONES (SIEMPRE ESTABLES) ─────────
+# ❗ Regla de oro: sesiones en DB en producción
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
 SESSION_COOKIE_AGE = 7 * 24 * 60 * 60
+
 
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
