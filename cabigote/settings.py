@@ -268,52 +268,49 @@ LOGIN_REDIRECT_URL = '/users/perfil/'
 LOGOUT_REDIRECT_URL = '/' 
 
 # ───────── CLOUDINARY / STORAGE ─────────
-CLOUDINARY_URL = env("CLOUDINARY_URL", default="")
+CLOUDINARY_URL = env("CLOUDINARY_URL", default="").strip()
 
+STORAGES = {
+    # STATIC always served by WhiteNoise
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+
+    # MEDIA depends on Cloudinary availability
+    "default": {
+        "BACKEND": (
+            "cloudinary_storage.storage.MediaCloudinaryStorage"
+            if CLOUDINARY_URL
+            else "django.core.files.storage.FileSystemStorage"
+        )
+    },
+}
+
+# (Optional but recommended) makes Cloudinary library pick up the URL explicitly
+# Only needed if you see credential errors in prod even with CLOUDINARY_URL set
 if CLOUDINARY_URL:
-    STORAGES = {
-        "default": {
-            "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-        },
-        "staticfiles": {
-            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-        },
-    }
-else:
-    # Fallback seguro (evita 500 si faltan credenciales en prod)
-    STORAGES = {
-        "default": {
-            "BACKEND": "django.core.files.storage.FileSystemStorage",
-        },
-        "staticfiles": {
-            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-        },
-    }
+    os.environ.setdefault("CLOUDINARY_URL", CLOUDINARY_URL)
 
 
 # ───────── MEDIA ─────────
-# Aunque uses Cloudinary, definir MEDIA_ROOT evita que algo se guarde “en la raíz” por error.
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = BASE_DIR / "media"   # used only when FileSystemStorage fallback is active
 
 
 # ───────── STATIC ─────────
 STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# WHITENOISE (always active, dev + prod)
+# ───────── WHITENOISE ─────────
 WHITENOISE_ALLOW_ALL_ORIGINS = True
 WHITENOISE_ADD_HEADERS_FUNCTION = add_custom_headers
 WHITENOISE_IGNORE_PATTERNS = ["admin/js/popup_response.js", "admin/js/cancel.js"]
 
-# (Opcional) Este if puedes dejarlo, pero con STORAGES ya queda fijado.
-# Para no tocarte más, lo dejamos como lo tenías:
-if not DEBUG:
-    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
+# ✅ Remove this if you are using STORAGES (Django 4.2+)
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 # LOGGING CONFIGURATION
