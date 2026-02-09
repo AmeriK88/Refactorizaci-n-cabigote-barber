@@ -255,9 +255,8 @@ Abre un [Issue en GitHub](https://github.com/tuusuario/cabigote/issues)
 [Discusiones en GitHub](https://github.com/tuusuario/cabigote/discussions)
 
 ### Contacto Comercial
-📧 **Email:** contacto@cabigote.com  
-📱 **WhatsApp:** +1 (555) 123-4567  
-🌐 **Web:** www.cabigote.com
+📧 **Email:** josefe59@hotmail.com   
+🌐 **Web:** [www.portfolioweb.com](https://web-production-jfgc.up.railway.app/)
 
 ---
 
