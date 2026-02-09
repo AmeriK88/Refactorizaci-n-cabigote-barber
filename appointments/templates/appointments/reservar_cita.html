@@ -93,12 +93,12 @@
 {% endblock %}
 
 {% block extra_scripts %}
-  <script>
-    {{ fechas_ocupadas|json_script:"fechas-ocupadas" }}
-    {{ fechas_bloqueadas|json_script:"fechas-bloqueadas" }}
-    {{ horas_ocupadas_por_fecha|json_script:"horas-ocupadas-por-fecha" }}
-    {{ bloqueos_por_fecha|json_script:"bloqueos-por-fecha" }}
-    {{ unavailable_by_service|json_script:"unavailable-by-service" }}
-  </script>
+  {{ fechas_ocupadas|json_script:"fechas-ocupadas" }}
+  {{ fechas_bloqueadas|json_script:"fechas-bloqueadas" }}
+  {{ horas_ocupadas_por_fecha|json_script:"horas-ocupadas-por-fecha" }}
+  {{ bloqueos_por_fecha|json_script:"bloqueos-por-fecha" }}
+  {{ unavailable_by_service|json_script:"unavailable-by-service" }}
+
   <script src="{% static 'js/disableDates.js' %}" defer></script>
 {% endblock %}
+

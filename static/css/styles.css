@@ -279,6 +279,11 @@ main{ padding-block: 24px; margin-bottom:60px; flex:1; }
 .form-select-dark{ background: var(--surface-700); color: var(--ink-50); border: 1px solid var(--border-soft); border-radius: 12px;}
 .form-select-dark:focus{ border-color: var(--gold-400); box-shadow: 0 0 0 .2rem rgba(201,167,109,.2); background: var(--surface-700); color: var(--ink-50);}
 
+select, .form-select {
+  transform: none !important;
+}
+
+
 /* Sutileza en botones danger (opcional) */
 .btn-danger { border-radius: 12px; }
 .btn-danger:hover { filter: brightness(1.05); }

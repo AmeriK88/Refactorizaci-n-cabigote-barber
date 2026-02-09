@@ -58,6 +58,9 @@ class ReporteMensualAdmin(admin.ModelAdmin):
         )
     descargar_reporte_link.short_description = _("Descargar")
 
+    class Media:
+        css = {"all": ("admin/css/adminDashboard.css",)}
+
     def get_urls(self):
         """
         Inserta dos URLs personalizadas:
