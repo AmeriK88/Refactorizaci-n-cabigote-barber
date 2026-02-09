@@ -267,52 +267,42 @@ LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/users/perfil/'  
 LOGOUT_REDIRECT_URL = '/' 
 
-# ───────── CLOUDINARY / STORAGE ─────────
-
-CLOUDINARY_URL = (env("CLOUDINARY_URL", default="") or "").strip()
-
-# ❌ No permitimos fallback silencioso en producción
-if not DEBUG and not CLOUDINARY_URL:
-    raise ImproperlyConfigured(
-        "CLOUDINARY_URL is missing in production environment"
-    )
-
-# Asegura que Cloudinary lib lo detecta
-if CLOUDINARY_URL:
-    os.environ["CLOUDINARY_URL"] = CLOUDINARY_URL
-
-STORAGES = {
-    # STATIC → WhiteNoise (siempre)
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-
-    # MEDIA → Cloudinary (prod) | FileSystem (solo dev)
-    "default": {
-        "BACKEND": (
-            "cloudinary_storage.storage.MediaCloudinaryStorage"
-            if CLOUDINARY_URL
-            else "django.core.files.storage.FileSystemStorage"
-        ),
-    },
-}
-
-# Evita que WhiteNoise rompa el deploy por un favicon faltante
-WHITENOISE_MANIFEST_STRICT = False
+# ========== ENV ==========
+ENVIRONMENT = env("ENVIRONMENT", default="development").lower()
+DEBUG = env.bool("DEBUG", default=False)
 
 
 
-# ───────── MEDIA ─────────
+# ========== MEDIA / STATIC ==========
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"   # used only when FileSystemStorage fallback is active
 
-
-# ───────── STATIC ─────────
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# ========== STORAGES ==========
+if ENVIRONMENT == "production":
+    # Production: Cloudinary for media
+    STORAGES = {
+        "default": {
+            "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+else:
+    # Development: local media
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+
 
 # ───────── WHITENOISE ─────────
 WHITENOISE_ALLOW_ALL_ORIGINS = True
