@@ -12,6 +12,7 @@ Includes:
 from datetime import timedelta
 
 from django.contrib import admin
+from django.db.models.functions import ExtractYear
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import path, reverse
@@ -64,6 +65,30 @@ class TomorrowFilter(admin.SimpleListFilter):
 
 
 # ────────────────────────────────────────────────────────────────────────────────
+# FILTER: "Año" (dynamic list of years with appointments, no hardcoding)
+# Uses the admin queryset (respects permissions/search if you later add them).
+# ────────────────────────────────────────────────────────────────────────────────
+class YearFilter(admin.SimpleListFilter):
+    title = "Año"
+    parameter_name = "year"
+
+    def lookups(self, request, model_admin):
+        qs = model_admin.get_queryset(request)
+        years = (
+            qs.annotate(y=ExtractYear("fecha"))
+            .values_list("y", flat=True)
+            .distinct()
+            .order_by("-y")
+        )
+        return [(str(y), str(y)) for y in years if y is not None]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(fecha__year=int(self.value()))
+        return queryset
+
+
+# ────────────────────────────────────────────────────────────────────────────────
 # CITA ADMIN
 # ────────────────────────────────────────────────────────────────────────────────
 @admin.register(Cita)
@@ -80,11 +105,20 @@ class CitaAdmin(admin.ModelAdmin):
         "ver_grafico_link",
     )
     search_fields = ("usuario__username", "servicio__nombre", "fecha")
-    list_filter = ("fecha", "servicio", TodayFilter, TomorrowFilter)
+    list_filter = (YearFilter, "servicio", TodayFilter, TomorrowFilter)
     ordering = ("-fecha",)
     list_per_page = 20
 
     actions = ["marcar_como_vistas"]
+
+    # ✅ Default: show current year only (unless user already filtered)
+    def changelist_view(self, request, extra_context=None):
+        if "year" not in request.GET and not request.GET.get("_changelist_filters"):
+            params = request.GET.copy()
+            params["year"] = str(timezone.localtime().year)
+            request.GET = params
+            request.META["QUERY_STRING"] = params.urlencode()
+        return super().changelist_view(request, extra_context=extra_context)
 
     def marcar_como_vistas(self, request, queryset):
         updated = queryset.update(vista=True)
@@ -109,7 +143,6 @@ class CitaAdmin(admin.ModelAdmin):
         """Per-row link to the chart page (convenience)."""
         url = reverse("admin:cita_dashboard")
         return format_html('<a class="btn-admin-action" href="{}">📊 Dashboard</a>', url)
-
     ver_grafico_link.short_description = "Gráfico"
 
     # -------- SHORTCUTS: "Today / Tomorrow" redirect --------
@@ -120,10 +153,9 @@ class CitaAdmin(admin.ModelAdmin):
     def citas_manana_redirect(self, request):
         changelist_url = reverse("admin:appointments_cita_changelist")
         return redirect(f"{changelist_url}?manana=1")
-    
+
     def dashboard_citas(self, request):
         return render(request, "admin/dashboard_citas.html", {})
-
 
     # -------- EXTRA ADMIN URLs --------
     def get_urls(self):
@@ -195,7 +227,10 @@ class FechaBloqueadaAdmin(admin.ModelAdmin):
             reverse("admin:appointments_bloqueohora_changelist")
             + f"?fecha__exact={obj.fecha.isoformat()}"
         )
-        return format_html('<a class="btn-admin-action" href="{}">Ver franjas horarias</a>', url)
+        return format_html(
+            '<a class="btn-admin-action" href="{}">Ver franjas horarias</a>',
+            url,
+        )
     ver_bloqueos_link.short_description = "Franjas horarias"
 
     class Media:
