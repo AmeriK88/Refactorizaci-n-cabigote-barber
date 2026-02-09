@@ -54,7 +54,9 @@
 
     <!-- Custom Styles -->
     <link rel="preload" href="{% static 'css/styles.css' %}" as="style">
+    <link rel="preload" href="{% static 'css/vacationBanner.css' %}" as="style">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/vacationBanner.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Poppins:wght@300;400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
@@ -109,28 +111,52 @@
             </div>
         </div>
 
-        <!-- MODAL: mensaje especial (tu lógica) -->
+        <!-- MODAL: mensaje especial -->
         {% if special_message %}
-        <div class="modal fade" id="specialMessageModal" tabindex="-1" aria-labelledby="specialMessageModalLabel"
-            aria-hidden="true" data-message-id="{{ special_message.id }}">
+        <div class="modal fade"
+            id="specialMessageModal"
+            tabindex="-1"
+            aria-labelledby="specialMessageModalLabel"
+            aria-hidden="true"
+            data-message-id="{{ special_message.id }}"
+            data-show-lottie="{% if special_message.show_lottie and special_message.lottie_file %}1{% else %}0{% endif %}">
+
             <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content modal-content-contrast">
+
                 <div class="modal-header">
                 <h5 class="modal-title" id="specialMessageModalLabel">
                     {{ special_message.titulo|default:"¡Atención!" }}
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
+
                 <div class="modal-body">
+                {# Lottie (opcional) #}
+                {% if special_message.show_lottie and special_message.lottie_file %}
+                {% with f=special_message.lottie_file %}
+                    <div class="d-flex justify-content-center mb-3">
+                    <div
+                        id="specialMessageLottie"
+                        data-lottie-path="{% if f|slice:":7" == "static/" %}/{% else %}{% endif %}{% static f|cut:"static/" %}"
+                        style="width: 220px; height: 220px;">
+                    </div>
+                    </div>
+                {% endwith %}
+                {% endif %}
+
                 {{ special_message.contenido|safe }}
                 </div>
+
                 <div class="modal-footer">
                 <button type="button" class="btn btn-outline-gold" data-bs-dismiss="modal">Cerrar</button>
                 </div>
+
             </div>
             </div>
         </div>
         {% endif %}
+
 
         <!-- TÍTULO DESKTOP -->
         <div class="container py-4 d-none d-md-block">
@@ -611,9 +637,16 @@
         <script src="{% static 'js/whatsappConsent.js' %}" defer></script>
         <script src="{% static 'js/Animations.js' %}" defer></script>
         <script src="{% static 'js/historial-citas.js' %}" defer></script>
+
+        <!-- Lottie (solo una vez) -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js" defer></script>
+
+        <!-- Tus scripts que lo usan -->
+        <script src="{% static 'js/vacationBanner.js' %}" defer></script>
         <script src="{% static 'js/special_message.js' %}" defer></script>
+
         <script async src="https://www.instagram.com/embed.js"></script>
-         <!-- SERVICE WORKER INSTALL -->
-        <script src="{% static 'js/pwa-install.js' %}" defer></script> 
+        <script src="{% static 'js/pwa-install.js' %}" defer></script>
+
     </body>
 </html>

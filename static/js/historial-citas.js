@@ -1,25 +1,40 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const btn = document.getElementById('cargar-mas-btn');
-  const items = Array.from(document.querySelectorAll('.historial-item'));
-  let visible = 6;
+document.addEventListener("DOMContentLoaded", () => {
+  const detailsList = document.querySelectorAll("details.details-anim");
 
-  items.forEach((item, i) => {
-    item.style.display = i < visible ? '' : 'none';
-  });
+  detailsList.forEach((details) => {
+    const content = details.querySelector(".details-content");
+    if (!content) return;
 
-  if (btn && items.length <= visible) {
-    btn.style.display = 'none';
-  }
+    // Si viene abierto por defecto, ajusta altura inicial
+    if (details.open) {
+      content.style.height = "auto";
+    }
 
-  if (btn) {
-    btn.addEventListener('click', function () {
-      for (let i = visible; i < visible + 6 && i < items.length; i++) {
-        items[i].style.display = '';
+    details.addEventListener("toggle", () => {
+      // Cerrar
+      if (!details.open) {
+        const start = content.scrollHeight;
+        content.style.height = start + "px";      // fija altura actual
+        content.offsetHeight;                     // reflow
+        content.style.transition = "height 220ms ease";
+        content.style.height = "0px";
+        return;
       }
-      visible += 6;
-      if (visible >= items.length) {
-        btn.style.display = 'none';
-      }
+
+      // Abrir
+      content.style.transition = "height 220ms ease";
+      content.style.height = "0px";
+      content.offsetHeight;                       // reflow
+      const end = content.scrollHeight;
+      content.style.height = end + "px";
+
+      // Al terminar, dejamos auto para que crezca si cambia el contenido
+      const onEnd = (e) => {
+        if (e.propertyName !== "height") return;
+        content.style.height = "auto";
+        content.removeEventListener("transitionend", onEnd);
+      };
+      content.addEventListener("transitionend", onEnd);
     });
-  }
+  });
 });

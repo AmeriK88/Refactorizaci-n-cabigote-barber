@@ -45,6 +45,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Cloudinary MEDIA STORAGE
+    "cloudinary",
+    "cloudinary_storage",
+
     # Oauth & google login
     'django.contrib.sites',     
     'allauth',
@@ -69,7 +73,8 @@ INSTALLED_APPS = [
 
     # Content Security Policy
     'csp',
-    # Seguridad
+
+    # Security
     'axes',
 ]
 
@@ -262,29 +267,42 @@ LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/users/perfil/'  
 LOGOUT_REDIRECT_URL = '/' 
 
-# MEDIA FILES CONFIG (UPLOADED FILES WILL BE REMOVED ON EVERY DEPLOY!)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# ───────── CLOUDINARY / STORAGE ─────────
 
-# STATIC FILES DIR CONFIG
-STATIC_URL = '/static/'
+# ✅ Django storage backends (Django 4.2+ recomendado)
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+
+# ───────── MEDIA ─────────
+# Aunque uses Cloudinary, definir MEDIA_ROOT evita que algo se guarde “en la raíz” por error.
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+
+# ───────── STATIC ─────────
+STATIC_URL = "/static/"
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',
+    BASE_DIR / "static",
 ]
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # WHITENOISE (always active, dev + prod)
 WHITENOISE_ALLOW_ALL_ORIGINS = True
 WHITENOISE_ADD_HEADERS_FUNCTION = add_custom_headers
-WHITENOISE_MEDIA_PREFIX = 'media'
-# ignore duplicates (see §2-A)
-WHITENOISE_IGNORE_PATTERNS = ['admin/js/popup_response.js', 'admin/js/cancel.js']
+WHITENOISE_IGNORE_PATTERNS = ["admin/js/popup_response.js", "admin/js/cancel.js"]
 
-# Use compressed-manifest storage only in prod
+# (Opcional) Este if puedes dejarlo, pero con STORAGES ya queda fijado.
+# Para no tocarte más, lo dejamos como lo tenías:
 if not DEBUG:
-    STATICFILES_STORAGE = (
-        'whitenoise.storage.CompressedManifestStaticFilesStorage'
-    )
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 
 
 # LOGGING CONFIGURATION
@@ -435,6 +453,9 @@ CONTENT_SECURITY_POLICY = {
         "img-src": (
             "'self'",
             "data:",
+            "https://res.cloudinary.com",
+            "https://*.cloudinary.com",
+            "https://*.cloudinaryusercontent.com",
             "https://www.instagram.com",
             "https://maps.gstatic.com",
             "https://maps.googleapis.com",

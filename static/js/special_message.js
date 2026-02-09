@@ -1,30 +1,51 @@
+document.addEventListener("DOMContentLoaded", () => {
+  const modalEl = document.getElementById("specialMessageModal");
+  if (!modalEl) return;
 
-document.addEventListener('DOMContentLoaded', () => {
-  const modalElement = document.getElementById('specialMessageModal');
-  if (modalElement) {
-      const messageId = modalElement.getAttribute('data-message-id');
-      console.log('Mensaje ID:', messageId);  // Depuración
+  const messageId = modalEl.getAttribute("data-message-id");
+  if (!messageId) return;
 
-      // Obtener la lista de mensajes ya mostrados de localStorage
-      let shownMessages = JSON.parse(localStorage.getItem('shownMessages')) || [];
-      console.log('Mensajes mostrados:', shownMessages);  // Depuración
+  // ✅ clave por ID (no lista infinita)
+  const storageKey = `special_message_closed_${messageId}`;
 
-      if (!shownMessages.includes(messageId)) {
-          // Crear la instancia del modal
-          const bsModal = new bootstrap.Modal(modalElement, {
-              backdrop: true,    // Permite cerrar el modal haciendo clic fuera
-              keyboard: true,    // Permite cerrar el modal con la tecla ESC
-              focus: true        // Enfoca el modal cuando se abre
-          });
-          bsModal.show();
-          console.log('Mostrando modal para el mensaje ID:', messageId);  // Depuración
+  // Si ya lo cerró una vez, no lo vuelvas a mostrar
+  if (localStorage.getItem(storageKey) === "1") return;
 
-          // Añadir el ID del mensaje a la lista de mostrados
-          shownMessages.push(messageId);
-          localStorage.setItem('shownMessages', JSON.stringify(shownMessages));
-          console.log('Actualizando shownMessages:', shownMessages);  // Depuración
-      } else {
-          console.log('El mensaje ya ha sido mostrado anteriormente.');
-      }
+  const bsModal = new bootstrap.Modal(modalEl, {
+    backdrop: true,
+    keyboard: true,
+    focus: true,
+  });
+
+  bsModal.show();
+
+  // ✅ solo marcamos como “visto” cuando realmente se cierra
+  modalEl.addEventListener("hidden.bs.modal", () => {
+    localStorage.setItem(storageKey, "1");
+  });
+
+  // ---------- LOTTIE (opcional) ----------
+  const showLottie = modalEl.getAttribute("data-show-lottie") === "1";
+  if (!showLottie) return;
+
+  const container = document.getElementById("specialMessageLottie");
+  if (!container) return;
+
+  const path = container.getAttribute("data-lottie-path");
+  if (!path) return;
+
+  // Si no está cargado lottie.min.js, no rompemos nada
+  if (typeof window.lottie === "undefined") return;
+
+  try {
+    window.lottie.loadAnimation({
+      container,
+      renderer: "svg",
+      loop: true,
+      autoplay: true,
+      path,
+    });
+  } catch (e) {
+    console.warn("Lottie load failed:", e);
   }
 });

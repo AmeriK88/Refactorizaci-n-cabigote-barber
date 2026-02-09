@@ -1,0 +1,75 @@
+/* Banner Lottie - modo vacaciones */
+.vacation-banner {
+  position: sticky;
+  top: 0;
+  z-index: 1030; /* encima del navbar */
+  backdrop-filter: blur(8px);
+  background: rgba(15, 17, 21, 0.78);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.vacation-banner__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.vacation-banner__anim {
+  width: 52px;
+  height: 52px;
+  flex: 0 0 auto;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.vacation-banner__text {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.vacation-banner__title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.vacation-banner__body {
+  margin: 2px 0 0 0;
+  font-size: 0.9rem;
+  line-height: 1.25;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.vacation-banner__actions {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 8px;
+}
+
+.vacation-banner__close {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.vacation-banner__close:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+@media (max-width: 520px) {
+  .vacation-banner__inner { gap: 10px; }
+  .vacation-banner__anim { width: 46px; height: 46px; border-radius: 12px; }
+  .vacation-banner__title { font-size: 0.92rem; }
+  .vacation-banner__body { font-size: 0.86rem; }
+}

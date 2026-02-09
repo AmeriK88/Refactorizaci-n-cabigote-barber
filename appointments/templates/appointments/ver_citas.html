@@ -71,7 +71,6 @@
     </div>
   {% endif %}
 
-  <!-- Historial -->
   <!-- ================= HISTORIAL DE CITAS ================= -->
   <div class="text-center mt-5">
     <h3 class="h4 fw-bold text-ink mb-1">Historial de Citas</h3>
@@ -100,8 +99,8 @@
 
     <div class="mt-4">
       {% for grupo in citas_por_mes %}
-        <details class="card card-glass mb-3 animate-on-load">
-          <summary class="card-header d-flex justify-content-between align-items-center cursor-pointer">
+        <details class="card card-glass mb-3 animate-on-load historial-mes details-anim">
+          <summary class="card-header d-flex justify-content-between align-items-center cursor-pointer"><i class="bi bi-chevron-down details-chevron"></i>
             <span class="text-ink fw-semibold">
               <i class="bi bi-folder2-open me-2"></i>
               {{ grupo.grouper }}
@@ -114,8 +113,7 @@
           <div class="card-body">
             <div class="row g-3">
               {% for cita in grupo.list %}
-                <!-- MOBILE: lista compacta / DESKTOP: card -->
-                <div class="col-12 col-md-6 col-lg-4 historial-item">
+                <div class="col-12 col-md-6 col-lg-4">
                   <div class="border rounded-3 p-3 h-100 bg-transparent">
 
                     <h6 class="mb-1 text-ink fw-semibold">
@@ -146,25 +144,26 @@
       {% endfor %}
     </div>
 
-    {% if citas_pasadas|length > 5 %}
+    {% if citas_pasadas %}
       <div class="text-center mt-3">
-        <button id="cargar-mas-btn" class="btn btn-outline-gold">
+        <button id="cargar-mas-btn" class="btn btn-outline-gold" style="display:none;">
           Cargar más
         </button>
       </div>
     {% endif %}
 
-  {% else %}
-    <div class="card card-glass text-center mt-4">
-      <div class="card-body">
-        <h5 class="card-title text-ink">No tienes citas pasadas</h5>
-        <p class="text-ink-muted mb-3">Pero no te preocupes, puedes ver nuestros servicios.</p>
-        <a href="{% url 'services:ver_servicios' %}" class="btn btn-outline-gold">
-          Ver servicios
-        </a>
+
+    {% else %}
+      <div class="card card-glass text-center mt-4 animate-on-load">
+        <div class="card-body">
+          <h5 class="card-title text-ink">No tienes citas pasadas</h5>
+          <p class="text-ink-muted mb-3">Pero no te preocupes, puedes ver nuestros servicios.</p>
+          <a href="{% url 'services:ver_servicios' %}" class="btn btn-outline-gold">
+            Ver servicios
+          </a>
+        </div>
       </div>
-    </div>
-  {% endif %}
+    {% endif %}
 
 {% endblock %}
 
