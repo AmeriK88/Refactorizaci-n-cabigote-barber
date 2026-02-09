@@ -3,35 +3,43 @@
 *.py[cod]
 *.pyo
 *.pyd
-
-# Entorno virtual
-venv/
 *.egg-info/
 
-# Base de datos SQLite (solo para desarrollo)
+# Virtualenv
+venv/
+
+# Database (dev only)
 db.sqlite3
 
-# Archivos de log
+# Logs
 logs/
 *.log
 *.error
 
-# Archivos de configuración sensibles
+# Env / secrets
 .env
-
-# Archivos generados
-registro_qr.png
-
-# Archivos de caché y cobertura
-*.cache
-.coverage
-
-# Archivos generados por Django
-staticfiles/
-media/
-
-
+.env.*
 client_cabigote_secret.json
 env.txt
 
+# Django generated
+staticfiles/
+media/
+
+# Generated files
+registro_qr.png
+
+# Cache / coverage
+*.cache
+.coverage
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/
+
+# Private docs
 DOCUMENTACION_COMPLETA.md
