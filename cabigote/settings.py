@@ -310,7 +310,6 @@ WHITENOISE_ADD_HEADERS_FUNCTION = add_custom_headers
 WHITENOISE_MANIFEST_STRICT = False
 
 
-
 # LOGGING CONFIGURATION
 LOG_FILE_DIR = os.path.join(BASE_DIR, 'logs')
 LOG_FILE_PATH = os.path.join(LOG_FILE_DIR, 'log.error')

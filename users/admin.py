@@ -86,7 +86,7 @@ class UserAdmin(BaseUserAdmin):
     class Media:
         css = {
             'all': (
-                'admin/css/adminCSS.css', 
+                'admin/css/adminDashboard.css', 
             )
         }
 
