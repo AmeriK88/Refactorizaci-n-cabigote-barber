@@ -1,4 +1,3 @@
-{% load static %}
 {% load static i18n %}
 
 <!DOCTYPE html>
@@ -142,13 +141,11 @@
                 {# Lottie (opcional) #}
                 {% if special_message.show_lottie and special_message.lottie_file %}
                 {% with f=special_message.lottie_file %}
-                    <div class="d-flex justify-content-center mb-3">
-                    <div
-                        id="specialMessageLottie"
-                        data-lottie-path="{% if f|slice:":7" == "static/" %}/{% else %}{% endif %}{% static f|cut:"static/" %}"
-                        style="width: 220px; height: 220px;">
-                    </div>
-                    </div>
+                <div
+                    id="specialMessageLottie"
+                    data-lottie-path="{% static f|cut:'static/' %}"
+                    style="width: 220px; height: 220px;">
+                </div>
                 {% endwith %}
                 {% endif %}
 
