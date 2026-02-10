@@ -307,10 +307,8 @@ else:
 # ───────── WHITENOISE ─────────
 WHITENOISE_ALLOW_ALL_ORIGINS = True
 WHITENOISE_ADD_HEADERS_FUNCTION = add_custom_headers
-WHITENOISE_IGNORE_PATTERNS = ["admin/js/popup_response.js", "admin/js/cancel.js"]
+WHITENOISE_MANIFEST_STRICT = False
 
-# ✅ Remove this if you are using STORAGES (Django 4.2+)
-# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 # LOGGING CONFIGURATION
