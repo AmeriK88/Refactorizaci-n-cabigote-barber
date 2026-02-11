@@ -160,7 +160,7 @@ Para desarrolladores y equipo técnico:
 
 **Heroku (Recomendado para empezar):**
 ```bash
-heroku create cabigote-app
+heroku create your-app-name
 heroku addons:create heroku-postgresql:hobby-dev
 heroku config:set SECRET_KEY="..."
 git push heroku main
