@@ -271,7 +271,7 @@ LOGIN_REDIRECT_URL = '/users/perfil/'
 LOGOUT_REDIRECT_URL = '/' 
 
 # ========== ENV ==========
-ENVIRONMENT = env("ENVIRONMENT", default="development").lower()
+ENVIRONMENT = env("ENVIRONMENT", default="development").lower() # type: ignore[arg-type]
 DEBUG = env.bool("DEBUG", default=False)
 
 
@@ -378,7 +378,13 @@ LOGGING = {
             "level": "ERROR",
             "propagate": False,
         },
-    },
+        # ✅ DB warnings/errors (timeouts, disconnects, etc.) sin meter DEBUG
+        "django.db.backends": {
+            "handlers": ["security_file", "console"],
+            "level": "WARNING",
+            "propagate": False,
+        },    },
+
 }
 
 
