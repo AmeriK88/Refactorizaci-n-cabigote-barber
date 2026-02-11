@@ -146,11 +146,11 @@ WSGI_APPLICATION = 'cabigote.wsgi.application'
 
 
 # ───────── DATABASE CONFIG ─────────
-db_url = env('DATABASE_URL', default='') 
+db_url = env('DATABASE_URL', default='')
 
 if db_url:
     # django-environ parsea la URL y devuelve un dict listo para Django
-    db_config = env.db('DATABASE_URL') 
+    db_config = env.db('DATABASE_URL')
 else:
     # Config local por variables sueltas
     db_config = {
@@ -166,19 +166,22 @@ else:
 opts = db_config.get('OPTIONS') or {}
 if not isinstance(opts, dict):
     opts = {}
+
 opts.update({
     'charset': 'utf8mb4',
     'init_command': "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci', time_zone = '+00:00'",
     'connect_timeout': 10,
-    'read_timeout': 20,
-    'write_timeout': 20,
+    'read_timeout': 60,
+    'write_timeout': 60,
 })
+
 db_config['OPTIONS'] = opts
 
-# Conexiones persistentes (segundos).
-db_config['CONN_MAX_AGE'] = 300
+# ✅ IMPORTANTE EN RAILWAY: evita conexiones zombis si MySQL reinicia
+db_config['CONN_MAX_AGE'] = 0
 
 DATABASES = {'default': db_config}
+
 
 
 
