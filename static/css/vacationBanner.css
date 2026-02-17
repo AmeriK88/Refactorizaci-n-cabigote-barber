@@ -67,6 +67,23 @@
   background: rgba(255, 255, 255, 0.06);
 }
 
+/* Contenedor del lottie */
+.special-lottie{
+  width: min(240px, 60vw);
+  aspect-ratio: 1 / 1;
+  min-height: 180px;
+  margin: 0 auto 12px;
+}
+
+
+/* Si quieres que en móvil sea más pequeño */
+@media (max-width: 480px){
+  .special-lottie{
+    width: min(200px, 70vw);
+  }
+}
+
+
 @media (max-width: 520px) {
   .vacation-banner__inner { gap: 10px; }
   .vacation-banner__anim { width: 46px; height: 46px; border-radius: 12px; }

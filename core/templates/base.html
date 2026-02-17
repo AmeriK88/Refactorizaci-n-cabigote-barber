@@ -141,11 +141,11 @@
                 {# Lottie (opcional) #}
                 {% if special_message.show_lottie and special_message.lottie_file %}
                 {% with f=special_message.lottie_file %}
-                <div
+                    <div
                     id="specialMessageLottie"
-                    data-lottie-path="{% static f|cut:'static/' %}"
-                    style="width: 220px; height: 220px;">
-                </div>
+                    data-lottie-path="{% static special_message.lottie_file %}"
+                    class="special-lottie">
+                    </div>
                 {% endwith %}
                 {% endif %}
 
