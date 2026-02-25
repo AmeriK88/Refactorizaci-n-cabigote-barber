@@ -1,6 +1,5 @@
-/* cookies-banner logic (legacy, safe mode) */
 document.addEventListener('DOMContentLoaded', () => {
-  // Si el sistema nuevo está presente, NO hacer nada
+  // PASS if new system
   if (document.getElementById('ck-modal')) return;
 
   const modalEl = document.getElementById('cookiesModal');
@@ -8,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const cookiesModal = bootstrap.Modal.getOrCreateInstance(modalEl, { backdrop: 'static' });
 
-  // Usa su propia clave (legacy) pero no interfieras con ck-consent-v1
+  // Own legacy key
   const KEY = 'cookiesPreference';
 
   const setPref = (pref) => {

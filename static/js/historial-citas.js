@@ -8,18 +8,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const content = details.querySelector(".card-body");
     if (!content) return;
 
-    // Estado inicial
+    // Initial state
     content.style.overflow = "hidden";
     content.style.height = details.open ? "auto" : "0px";
 
     details.addEventListener("toggle", () => {
-      // CANCELA transiciones raras anteriores
+      // CXL transitions
       content.style.transition = "height 220ms ease";
 
       if (details.open) {
-        // ABRIR: de 0 -> scrollHeight -> auto
+        // OPEN: 0 -> scrollHeight -> auto
         content.style.height = "0px";
-        content.offsetHeight; // reflow
+        content.offsetHeight;
         content.style.height = content.scrollHeight + "px";
 
         const onEnd = (e) => {
@@ -30,18 +30,16 @@ document.addEventListener("DOMContentLoaded", () => {
         content.addEventListener("transitionend", onEnd);
 
       } else {
-        // CERRAR: de auto/actual -> 0
-        // 1) fijar altura actual (si estaba auto)
+        // CLOSE: auto/actual -> 0
         content.style.height = content.scrollHeight + "px";
-        content.offsetHeight; // reflow
-        // 2) animar a 0
+        content.offsetHeight; 
         content.style.height = "0px";
       }
     });
   });
 
   // ==========================================
-  // 2) Historial: mostrar 5 meses + "Cargar más"
+  // 2) HISTORY: 5 months + "Load +"
   // ==========================================
   const meses = Array.from(document.querySelectorAll("details.historial-mes"));
   const btn = document.getElementById("cargar-mas-btn");

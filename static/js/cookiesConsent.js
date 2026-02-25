@@ -9,23 +9,23 @@
   const getVersion = () =>
     document.querySelector('meta[name="application-version"]')?.content || '1.0';
 
-  // 1ª capa (modal centrado) y banner (si existiera)
+  // 1ª layer & banner
   const firstLayerEl = document.getElementById('ck-modal');
   const firstLayer   = () =>
     (hasBootstrap && firstLayerEl)
       ? bootstrap.Modal.getOrCreateInstance(firstLayerEl, { backdrop: 'static', keyboard: false })
       : null;
 
-  const banner = document.getElementById('ck-banner'); // opcional/no usado ahora
+  const banner = document.getElementById('ck-banner');
 
-  // 2ª capa (panel)
+  // 2ª layer (panel)
   const panelEl = document.getElementById('ck-panel');
   const panel   = () =>
     (hasBootstrap && panelEl)
       ? bootstrap.Modal.getOrCreateInstance(panelEl)
       : null;
 
-  // ====== CONSENTIMIENTO ======
+  // ====== CONSENT ======
   const defaultConsent = () => ({
     necessary:   true,
     preferences: false,
@@ -48,7 +48,7 @@
     return data;
   };
 
-  // 1ª layer si no hay consentimiento previo / no mostrar en offline.html
+  // 1ª layer if no consent
   const showFirstLayerIfNeeded = () => {
     if (isOfflinePage) return;
     if (readConsent()) return;
@@ -56,7 +56,7 @@
     else if (banner) banner.removeAttribute('hidden');
   };
 
-  // ====== APLICAR CONSENTIMIENTO EN LA PÁGINA ======
+  // ====== APPLY CONSENT TO PAGE ======
   const applyConsent = (c) => {
     handleMap(c.thirdparty);
 
@@ -64,7 +64,7 @@
     if (c.thirdparty) loadInstagram();
     else removeInstagram();
 
-    // TODO: cargar analytics/pixel sólo si c.analytics / c.marketing
+    // TODO: load analytics/pixel
   };
 
   // ====== MAPS LOADER ======
@@ -98,7 +98,7 @@
     }
   };
 
-  // ====== Instagram embed (opcional) ======
+  // ====== Instagram embed (optional) ======
   const loadInstagram = () => {
     if (document.getElementById('ig-embed-js')) return;
     const s = document.createElement('script');
@@ -112,25 +112,24 @@
     if (s) s.remove();
   };
 
-  // ====== ACCESIBILIDAD: foco seguro al cerrar ======
+  // ====== ACCESIBILITY ======
   let lastTrigger = null;
   const defocusToSafePlace = () => (lastTrigger || document.body).focus();
 
-  // recuerda el disparador que abrió un modal/panel (o data-ck-open)
+  // TRIGGER MEMORY
   document.addEventListener('click', (e) => {
     const t = e.target.closest('[data-bs-toggle="modal"], [data-ck-open]');
     if (t) lastTrigger = t;
   });
 
-  // devuelve el foco al cerrar modales
   firstLayerEl?.addEventListener('hidden.bs.modal', defocusToSafePlace);
   panelEl?.addEventListener('hidden.bs.modal', defocusToSafePlace);
 
-  // ====== UI: abrir panel (2ª capa) ======
+  // ====== UI: OPEN PANEL (2ª LAYER ) ======
   const openPanel = (e) => {
     e?.preventDefault?.();
 
-    // sincroniza switches con el consentimiento guardado
+    // SYNC switches with consent
     const c = readConsent() || defaultConsent();
     const map = {
       '#ck-pref':       !!c.preferences,
@@ -143,7 +142,7 @@
       if (el) el.checked = val;
     });
 
-    // si la 1ª capa está visible, ciérrala y abre el panel tras hidden
+    // If 1ª layer visible - modal hidden
     if (firstLayerEl && firstLayerEl.classList.contains('show')) {
       firstLayerEl.addEventListener('hidden.bs.modal', () => panel()?.show(), { once: true });
       firstLayer()?.hide();
@@ -152,13 +151,13 @@
     }
   };
 
-  // delega clicks en data-ck-open
+  // DELEGATE CLICKS
   document.addEventListener('click', (e) => {
     const openBtn = e.target.closest('[data-ck-open]');
     if (openBtn) openPanel(e);
   });
 
-  // ====== Aceptar / Rechazar (1ª capa) ======
+  // ====== ACCEPT / REJECT (1ª layer) ======
   const onAccept = (e) => {
     saveConsent({ preferences: true, analytics: true, marketing: true, thirdparty: true });
     e?.target?.blur();
@@ -174,7 +173,7 @@
   q('#ck-accept')?.addEventListener('click', onAccept);
   q('#ck-reject')?.addEventListener('click', onReject);
 
-  // ====== Guardar desde 2ª capa ======
+  // ====== SAVE from - 2ª layer ======
   q('#ck-save')?.addEventListener('click', () => {
     const newC = {
       preferences: q('#ck-pref')?.checked || false,
@@ -186,7 +185,7 @@
     panel()?.hide();
   });
 
-  // botón “Permitir y cargar mapa” directo
+  // BTN “Allow Map” directo
   document.addEventListener('click', (e) => {
     if (e.target && e.target.id === 'enable-maps') {
       e.preventDefault();

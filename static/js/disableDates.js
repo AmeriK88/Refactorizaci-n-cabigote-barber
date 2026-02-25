@@ -22,24 +22,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const hasAnyEnabledHour = () =>
     Array.from(inputHora.options).some((opt) => opt.value && !opt.disabled);
 
-  // Data desde Django
+  // Django data
   const fechasOcupadas = safeJSON("fechas-ocupadas", []);
   const fechasBloqueadas = safeJSON("fechas-bloqueadas", []);
   const horasOcupadasPorFecha = safeJSON("horas-ocupadas-por-fecha", {});
   const bloqueosPorFecha = safeJSON("bloqueos-por-fecha", {});
 
-  // Normaliza fechas a ISO
+  // Normalise dates - ISO
   const reservedDates = fechasOcupadas.map((f) => String(f).slice(0, 10));
   const blockedDates = fechasBloqueadas.map((f) => String(f).slice(0, 10));
 
-  // Evitar fechas pasadas
+  // Avoid passed hours
   const minDateISO = new Date().toISOString().split("T")[0];
   inputFecha.setAttribute("min", minDateISO);
 
   // ===== AJAX availability =====
-  const AV_URL = window.AVAILABILITY_URL; // lo defines en el template
-  const EXCLUDE_ID = window.EXCLUDE_CITA_ID; // solo en editar
-  const cache = new Map(); // key: serviceId|date
+  const AV_URL = window.AVAILABILITY_URL; 
+  const EXCLUDE_ID = window.EXCLUDE_CITA_ID; 
+  const cache = new Map(); 
 
   const fetchSolapes = async (serviceId, dateISO) => {
     if (!AV_URL || !serviceId || !dateISO) return [];
@@ -109,25 +109,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!selectedDate) return;
 
-    // 1) Reset
+    // 1) RESET
     enableAllHourOptions();
 
-    // 2) Horas ya ocupadas
+    // 2) Occupied HRS
     disableHoursList(horasOcupadasPorFecha[selectedDate] || []);
 
-    // 3) Solapes por duración del servicio (AJAX)
+    // 3) Overlaping - AJAX
     if (serviceId) {
       const solapes = await fetchSolapes(serviceId, selectedDate);
       disableHoursList(solapes);
     }
 
-    // 4) Bloqueos del admin
+    // 4) Admin blocks
     disableBlockedHours(selectedDate);
 
-    // 5) Horas pasadas si es hoy
+    // 5) PASSED HOURS if today
     disablePastHoursIfToday(selectedDate);
 
-    // 6) Día sin ninguna hora disponible
+    // 6) DAY with no avaiblable dates
     if (!hasAnyEnabledHour()) {
       alert("Mi niño, este día ya no tiene hueco ni pa’ colar un café ☕. Elige otro.");
       inputFecha.value = "";
@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // Eventos
+  // EVENTS
   if (inputFecha.value) updateHours();
 
   inputFecha.addEventListener("input", async () => {
