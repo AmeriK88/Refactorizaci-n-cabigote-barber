@@ -7,7 +7,7 @@ class MensajeEspecial(models.Model):
     fecha_inicio = models.DateField(blank=True, null=True)
     fecha_fin = models.DateField(blank=True, null=True)
 
-    # NUEVO: Lottie opcional (modo vacaciones / banner animado)
+    # ANIMATION: Lottie (holiday mode / banner animado)
     show_lottie = models.BooleanField(default=False)
     lottie_file = models.CharField(
         max_length=200,

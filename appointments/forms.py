@@ -116,9 +116,8 @@ class CitaForm(forms.ModelForm):
         hora = cleaned.get("hora")
 
         if not fecha or not hora:
-            return cleaned  # otros errores ya reportados
+            return cleaned 
 
-        # Normaliza tipos
         dia = fecha.date() if isinstance(fecha, datetime) else fecha
         if isinstance(hora, str):
             try:
@@ -127,7 +126,7 @@ class CitaForm(forms.ModelForm):
                 self.add_error("hora", "Formato de hora inválido.")
                 return cleaned
 
-        # Combina a datetime aware en la TZ actual
+        # Combining datetime aware
         tz = timezone.get_current_timezone()
         seleccion = timezone.make_aware(datetime.combine(dia, hora), tz)
 

@@ -11,9 +11,10 @@ class RedirectionDomainMiddleware:
         self.new_host = getattr(settings, "NEW_HOST", "cabigotebarbershop.com")
 
     def __call__(self, request):
-        # Obtén host sin puerto. Si hay proxy, Django ya respeta X-Forwarded-Host con SECURE_PROXY_SSL_HEADER.
+        # Obtain without port. If PROXY, Django does X-Forwarded-Host / SECURE_PROXY_SSL_HEADER.
         host = request.get_host().split(':')[0]
         if host == self.old_host:
-            scheme = "https"  # fuerza https en redirección definitiva
+            # Forcing https
+            scheme = "https"  
             return HttpResponsePermanentRedirect(f"{scheme}://{self.new_host}{request.get_full_path()}")
         return self.get_response(request)

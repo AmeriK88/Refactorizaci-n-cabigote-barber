@@ -78,13 +78,13 @@ def reservar_cita(request, servicio_id=None):
                 cita.hora = hora
                 cita.save()
 
-                # OJO: esto puede ser lento si manda email síncrono
+                # TO-DO: may result in a slow process - pdt review test.
                 notify_booking_created(request.user.email, cita)
 
                 messages.success(request, "¡Viejito! Ya tienes tu cita confirmada. ¡Esa es niñote!")
                 return redirect("users:perfil_usuario")
 
-        # Solo si hay errores y hay que re-renderizar, calculamos payload
+        # Only if errors
         ctx = {"form": form, **calendar_payload()}
         return render(request, "appointments/reservar_cita.html", ctx)
 

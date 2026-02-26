@@ -8,7 +8,7 @@ from .models import MensajeEspecial, ContadorVisitas
 def mensaje_especial_context(request):
     hoy = timezone.now().date()
 
-    # Mensaje activo (1º capa)
+    # ACTIVE MSSG (1st layer)
     mensaje = (
         MensajeEspecial.objects
         .filter(
@@ -20,7 +20,7 @@ def mensaje_especial_context(request):
         .first()
     )
 
-    # Contador global (con fallback seguro)
+    # FALLBACK: global counter
     try:
         contador_global = (
             ContadorVisitas.objects
@@ -31,14 +31,14 @@ def mensaje_especial_context(request):
     except ContadorVisitas.DoesNotExist:
         contador_global = 0
 
-    # Usuarios totales (activos)
+    # ACTIVE - USERS
     User = get_user_model()
     try:
         total_usuarios = User.objects.filter(is_active=True).count()
     except Exception:
         total_usuarios = 0
 
-    # APP_VERSION (fallback por si no existe en settings)
+    # APP_VERSION: fallback
     app_version = getattr(settings, 'APP_VERSION', 'dev')
 
     return {

@@ -1,6 +1,6 @@
 """
-Notificaciones relacionadas con citas.
-Este módulo usará core.services.emailing
+BOOKING NOTIFICATIONS.
+Module used when core.services.emailing
 """
 from core.services.emailing import (
     enviar_confirmacion_cita,

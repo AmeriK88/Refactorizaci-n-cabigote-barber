@@ -26,7 +26,7 @@ def home(request):
 
     response = render(request, 'home.html', context)
 
-    # FORCE NO CACHÉ.
+    # FORCE NO CACHE.
     response['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
     response['Pragma'] = 'no-cache'
     response['Expires'] = '0'

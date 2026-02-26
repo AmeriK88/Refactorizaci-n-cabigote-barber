@@ -65,7 +65,7 @@ class TomorrowFilter(admin.SimpleListFilter):
 
 
 # ────────────────────────────────────────────────────────────────────────────────
-# FILTER: "Año" (dynamic list of years with appointments, no hardcoding)
+# FILTER: "YEAR" (dynamic list of years with appointments, no hardcoding)
 # Uses the admin queryset (respects permissions/search if you later add them).
 # ────────────────────────────────────────────────────────────────────────────────
 class YearFilter(admin.SimpleListFilter):
@@ -111,7 +111,7 @@ class CitaAdmin(admin.ModelAdmin):
 
     actions = ["marcar_como_vistas"]
 
-    # ✅ Default: show current year only (unless user already filtered)
+    # Default: show current year only (unless user already filtered)
     def changelist_view(self, request, extra_context=None):
         if "year" not in request.GET and not request.GET.get("_changelist_filters"):
             params = request.GET.copy()
@@ -205,7 +205,7 @@ class CitaAdmin(admin.ModelAdmin):
 
 
 # ────────────────────────────────────────────────────────────────────────────────
-# FECHA BLOQUEADA ADMIN
+# DATE BLOCKED - ADMIN
 # ────────────────────────────────────────────────────────────────────────────────
 @admin.register(FechaBloqueada)
 class FechaBloqueadaAdmin(admin.ModelAdmin):
@@ -238,7 +238,7 @@ class FechaBloqueadaAdmin(admin.ModelAdmin):
 
 
 # ────────────────────────────────────────────────────────────────────────────────
-# BLOQUEO HORA ADMIN
+# BLOCK HRS - ADMIN
 # ────────────────────────────────────────────────────────────────────────────────
 @admin.register(BloqueoHora)
 class BloqueoHoraAdmin(admin.ModelAdmin):
