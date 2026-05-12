@@ -1,4 +1,6 @@
 from django.contrib import admin
+
+from .forms import MensajeEspecialAdminForm
 from .models import MensajeEspecial, ContadorVisitas
 
 
@@ -7,6 +9,7 @@ class MensajeEspecialAdmin(admin.ModelAdmin):
     """
     Listado simple con icono de estado + soporte para banner Lottie.
     """
+    form = MensajeEspecialAdminForm
     list_display = ("titulo", "activo_icon", "lottie_icon", "fecha_inicio", "fecha_fin")
     list_filter = ("activo", "show_lottie")
     search_fields = ("titulo",)
