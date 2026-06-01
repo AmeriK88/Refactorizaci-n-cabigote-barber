@@ -13,6 +13,7 @@ from services.models import Servicio
 from decimal import Decimal
 from datetime import datetime, time, timedelta
 from django.contrib.auth import get_user_model
+from core.views import home, custom_404_view
 
 # --- VISTA QUE ENVUELVE EL ÍNDICE DEL ADMIN ---
 def admin_dashboard(request):
@@ -104,3 +105,4 @@ urlpatterns += i18n_patterns(
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+handler404 = custom_404_view
