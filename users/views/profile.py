@@ -35,9 +35,9 @@ def editar_perfil_usuario(request):
                 email=form.cleaned_data["email"],
                 telefono=form.cleaned_data["telefono"],
             )
-            messages.success(request, "!El que quiera lapas que se moje el culo¡. Perfil actualizado exitosamente.")
+            messages.success(request, "¡El que quiera lapas que se moje el culo!. Perfil actualizado exitosamente.")
             return redirect("users:perfil_usuario")
-        messages.error(request, "!Chacho¡ Tu o el servidor están en la parra. Prueba de nuevo.")
+        messages.error(request, "¡Chacho! Tu o el servidor están en la parra. Prueba de nuevo.")
     else:
         form = ProfileDataForm(
             user=request.user,

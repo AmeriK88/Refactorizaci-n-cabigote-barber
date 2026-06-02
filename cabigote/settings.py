@@ -530,17 +530,19 @@ else:
 
 
 # ───────── django-axes ─────────
-AXES_ENABLED = not DEBUG
+AXES_ENABLED = env.bool("AXES_ENABLED", default=not DEBUG)
 AXES_FAILURE_LIMIT = 5
-AXES_COOLOFF_TIME = 1  # horas
-AXES_LOCKOUT_TEMPLATE = 'errors/locked_out.html'
+AXES_COOLOFF_TIME = 1
+AXES_LOCKOUT_TEMPLATE = "errors/locked_out.html"
 
-if USE_REDIS and REDIS_URL:
-    AXES_HANDLER = 'axes.handlers.cache.AxesCacheHandler'
-    AXES_CACHE = 'default'
-else:
-    AXES_HANDLER = 'axes.handlers.database.AxesDatabaseHandler'
+# Queremos auditar desde el admin, así que guardamos Axes en DB.
+AXES_HANDLER = "axes.handlers.database.AxesDatabaseHandler"
 
+# Guardar histórico de fallos
+AXES_ENABLE_ACCESS_FAILURE_LOG = True
+
+# Si un usuario entra bien, limpiar sus intentos fallidos anteriores
+AXES_RESET_ON_SUCCESS = True
 
 # ───────── SESIONES (SIEMPRE ESTABLES) ─────────
 # ❗ Regla de oro: sesiones en DB en producción
