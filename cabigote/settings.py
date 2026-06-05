@@ -544,6 +544,13 @@ AXES_ENABLE_ACCESS_FAILURE_LOG = True
 # Si un usuario entra bien, limpiar sus intentos fallidos anteriores
 AXES_RESET_ON_SUCCESS = True
 
+# Railway/proxy: obtener IP real del cliente para django-axes
+AXES_IPWARE_PROXY_COUNT = 1
+AXES_IPWARE_META_PRECEDENCE_ORDER = [
+    "HTTP_X_FORWARDED_FOR",
+    "REMOTE_ADDR",
+]
+
 # ───────── SESIONES (SIEMPRE ESTABLES) ─────────
 # ❗ Regla de oro: sesiones en DB en producción
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
