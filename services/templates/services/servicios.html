@@ -19,7 +19,7 @@
 
     <div class="row g-4">
       {% if servicios|length == 1 %}
-        {# Caso 1 servicio — ancho cómodo centrado #}
+        <!-- Service case 1 -->
         {% with s=servicios.0 %}
         <div class="col-12 col-md-10 col-lg-8 mx-auto">
           <article class="card card-glass h-100 service-card animate-on-load" style="--a-delay:80ms">
@@ -48,7 +48,7 @@
         </div>
         {% endwith %}
       {% else %}
-        {# Varios servicios — grid con escalonado en la tarjeta #}
+        <!-- Multiple services — grid with staggered cards -->
         {% for servicio in servicios %}
         <div class="col-12 col-md-6 col-lg-4">
           <article class="card card-glass h-100 service-card animate-on-load"

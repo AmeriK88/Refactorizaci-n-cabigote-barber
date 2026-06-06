@@ -15,7 +15,7 @@ from datetime import datetime, time, timedelta
 from django.contrib.auth import get_user_model
 from core.views import home, custom_404_view
 
-# --- VISTA QUE ENVUELVE EL ÍNDICE DEL ADMIN ---
+# --- VIEW THAT WRAPS THE ADMIN INDEX ---
 def admin_dashboard(request):
     if not (request.user.is_authenticated and request.user.is_staff):
         return admin.site.login(request)
@@ -58,7 +58,7 @@ def admin_dashboard(request):
     return admin_index(request, extra_context=extra_context)
 
 # ──────────────────────────────────────────────────────────
-# Rutas sin prefijo de idioma
+# Routes without language prefix
 # ──────────────────────────────────────────────────────────
 urlpatterns = [
     # ─── SW.js ─────────────────────────────────────────────
@@ -83,7 +83,7 @@ urlpatterns = [
 ]
 
 # ──────────────────────────────────────────────────────────
-# Rutas traducibles
+# Routes with language prefix (i18n_patterns)
 # ──────────────────────────────────────────────────────────
 urlpatterns += i18n_patterns(
     path("offline.html", TemplateView.as_view(template_name="offline.html"), name="offline_i18n"),

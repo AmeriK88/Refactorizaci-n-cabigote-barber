@@ -3,7 +3,7 @@ from django.conf import settings
 
 class RedirectionDomainMiddleware:
     """
-    Redirige del dominio antiguo al nuevo con 301, preservando path y querystring.
+    Redirect 301, preserving path and querystring.
     """
     def __init__(self, get_response):
         self.get_response = get_response

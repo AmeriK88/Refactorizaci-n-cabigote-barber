@@ -11,8 +11,8 @@ class ServicioAdmin(admin.ModelAdmin):
 
     def imagen_preview(self, obj):
         if obj.imagen:
-            # la miniatura es un <img> con clases CSS para redondear, sombra y hover,
-            # y envuelto en un <a> que abre la imagen completa en una pestaña nueva
+            # miniature <img> with CSS classes for rounding, shadow, and hover,
+            # wrapped in an <a> that opens the full image in a new tab
             return format_html(
                 '<a href="{0}" target="_blank">'
                 '  <img src="{0}" class="admin-thumb" alt="{1}" />'

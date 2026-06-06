@@ -360,25 +360,25 @@ LOGGING = {
     },
 
     "loggers": {
-        # Intentos y bloqueos de django-axes
+        # Attempts and locks of django-axes
         "axes": {
             "handlers": ["security_file", "console"],
             "level": "INFO",
             "propagate": False,
         },
-        # Avisos de seguridad de Django (CSRF, etc.)
+        # Security warnings of Django (CSRF, etc.)
         "django.security": {
             "handlers": ["security_file", "console"],
             "level": "WARNING",
             "propagate": False,
         },
-        # Errores 500 en peticiones
+        # 500 errors in requests
         "django.request": {
             "handlers": ["security_file", "console"],
             "level": "ERROR",
             "propagate": False,
         },
-        # ✅ DB warnings/errors (timeouts, disconnects, etc.) sin meter DEBUG
+        # DB warnings/errors (timeouts, disconnects, etc.) sin meter DEBUG
         "django.db.backends": {
             "handlers": ["security_file", "console"],
             "level": "WARNING",
@@ -444,7 +444,7 @@ CONTENT_SECURITY_POLICY = {
             "https://www.instagram.com",
         ),
 
-        # ───────── ESTILOS ─────────
+        # ───────── STYLES ─────────
         "style-src": (
             "'self'",
             "'unsafe-inline'",
@@ -455,7 +455,7 @@ CONTENT_SECURITY_POLICY = {
             "https://www.gstatic.com",
         ),
 
-        # ───────── FUENTES ─────────
+        # ───────── FONTS ─────────
         "font-src": (
             "'self'",
             "data:",
@@ -463,7 +463,7 @@ CONTENT_SECURITY_POLICY = {
             "https://cdnjs.cloudflare.com",
         ),
 
-        # ───────── IMÁGENES ─────────
+        # ───────── IMGS ─────────
         "img-src": (
             "'self'",
             "data:",
@@ -485,7 +485,7 @@ CONTENT_SECURITY_POLICY = {
         ),
 
         # ───────── AJAX / FETCH ─────────
-        # Añadidos jsDelivr y cdnjs para evitar el error del .map de Bootstrap
+        # Added jsDelivr and cdnjs to avoid the .map error of Bootstrap
         "connect-src": (
             "'self'",
             "https://www.google.com",
@@ -494,7 +494,7 @@ CONTENT_SECURITY_POLICY = {
             "https://cdnjs.cloudflare.com",
         ),
 
-        # Proteger contra clickjacking
+        # Protect against clickjacking
         "frame-ancestors": ("'self'",),
     }
 }
@@ -516,7 +516,7 @@ if USE_REDIS and REDIS_URL:
                 "socket_timeout": 5,
                 "retry_on_timeout": True,
             },
-            "TIMEOUT": 60 * 10,  # 10 minutos
+            "TIMEOUT": 60 * 10,  # 10 min
         }
     }
 else:
@@ -535,24 +535,24 @@ AXES_FAILURE_LIMIT = 5
 AXES_COOLOFF_TIME = 1
 AXES_LOCKOUT_TEMPLATE = "errors/locked_out.html"
 
-# Queremos auditar desde el admin, así que guardamos Axes en DB.
+# Audit from admin, save Axes in DB.
 AXES_HANDLER = "axes.handlers.database.AxesDatabaseHandler"
 
-# Guardar histórico de fallos
+# Save access failures in the log (INFO) and DB (AxesDatabaseHandler)
 AXES_ENABLE_ACCESS_FAILURE_LOG = True
 
-# Si un usuario entra bien, limpiar sus intentos fallidos anteriores
+# If a user logs in successfully, reset their previous failed attempts
 AXES_RESET_ON_SUCCESS = True
 
-# Railway/proxy: obtener IP real del cliente para django-axes
+# Railway/proxy: get the real client IP for django-axes
 AXES_IPWARE_PROXY_COUNT = 1
 AXES_IPWARE_META_PRECEDENCE_ORDER = [
     "HTTP_X_FORWARDED_FOR",
     "REMOTE_ADDR",
 ]
 
-# ───────── SESIONES (SIEMPRE ESTABLES) ─────────
-# ❗ Regla de oro: sesiones en DB en producción
+# ───────── Sessions ─────────
+# ❗ Golden rule: DB sessions production
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 SESSION_COOKIE_AGE = 7 * 24 * 60 * 60
 

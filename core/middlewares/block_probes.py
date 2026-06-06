@@ -1,4 +1,3 @@
-# core/middlewares/block_probes.py
 import logging
 import re
 from dataclasses import dataclass
@@ -11,7 +10,7 @@ class ProbeRule:
     name: str
     regex: str
 
-# Reglas explícitas y fáciles de leer
+# Rules / patterns
 PROBE_RULES: List[ProbeRule] = [
     ProbeRule(name="wordpress_php_files",      regex=r"\.php($|\?)"),
     ProbeRule(name="wordpress_prefix_wp_dash", regex=r"^/wp-"),

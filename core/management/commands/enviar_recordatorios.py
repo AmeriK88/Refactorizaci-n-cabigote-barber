@@ -6,7 +6,7 @@ from datetime import timedelta
 
 # CRON JOB: REMINDER FOR APPOINTMENTS TOMORROW
 class Command(BaseCommand):
-    help = 'Envía recordatorios por correo a los usuarios con citas para mañana.'
+    help = 'Sends email reminders for appointments scheduled for tomorrow.'
 
     def handle(self, *args, **kwargs):
         mañana_inicio = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)

@@ -1,4 +1,3 @@
-# services/models.py
 from django.db import models
 
 class Servicio(models.Model):
