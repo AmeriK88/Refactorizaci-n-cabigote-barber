@@ -16,7 +16,6 @@ from services.models import Servicio
 
 # Valid hours
 VALID_HOURS_CHOICES = [
-    ("08:00", "08:00 AM"),
     ("08:30", "08:30 AM"),
     ("09:00", "09:00 AM"),
     ("09:30", "09:30 AM"),
