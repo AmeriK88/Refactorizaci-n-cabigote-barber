@@ -282,6 +282,18 @@ select, .form-select {
   transform: none !important;
 }
 
+/* iOS/Safari progressive enhancement for booking hour picker */
+select[name="hora"] {
+  color-scheme: dark;
+}
+
+/* Some browsers ignore option styling in native pickers (notably iOS) */
+select[name="hora"] option:disabled,
+select[name="hora"] option[disabled] {
+  color: rgba(232,236,243,.58);
+  opacity: 1;
+}
+
 
 /* Sutileza en botones danger (opcional) */
 .btn-danger { border-radius: 12px; }

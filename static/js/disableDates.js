@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!inputFecha || !inputHora) return;
 
+  const UNAVAILABLE_SUFFIX = " — No disponible";
+  const ORIGINAL_LABEL_KEY = "originalLabel";
+
   const pad = (n) => String(n).padStart(2, "0");
   const normalizeTime = (v) => (v || "").trim().slice(0, 5);
 
@@ -69,19 +72,43 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  const rememberOriginalLabel = (option) => {
+    if (!option.value) return;
+    if (!option.dataset[ORIGINAL_LABEL_KEY]) {
+      option.dataset[ORIGINAL_LABEL_KEY] = (option.textContent || "").trim();
+    }
+  };
+
+  const setHourOptionUnavailable = (option, isUnavailable) => {
+    if (!option.value) return;
+    rememberOriginalLabel(option);
+
+    const originalLabel =
+      option.dataset[ORIGINAL_LABEL_KEY] ?? (option.textContent || "");
+
+    if (isUnavailable) {
+      option.disabled = true;
+      option.textContent = `${originalLabel}${UNAVAILABLE_SUFFIX}`;
+      return;
+    }
+
+    option.disabled = false;
+    option.textContent = originalLabel;
+  };
+
+  Array.from(inputHora.options).forEach(rememberOriginalLabel);
+
   // Helpers options
   const enableAllHourOptions = () => {
     Array.from(inputHora.options).forEach((option) => {
-      if (!option.value) return;
-      option.disabled = false;
+      setHourOptionUnavailable(option, false);
     });
   };
 
   const disableHoursList = (hoursList) => {
     const set = new Set((hoursList || []).map(normalizeTime));
     Array.from(inputHora.options).forEach((option) => {
-      const opt = normalizeTime(option.value);
-      if (opt && set.has(opt)) option.disabled = true;
+      if (set.has(normalizeTime(option.value))) setHourOptionUnavailable(option, true);
     });
   };
 
@@ -98,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     Array.from(inputHora.options).forEach((option) => {
       const opt = normalizeTime(option.value);
-      if (opt && opt <= horaActual) option.disabled = true;
+      if (opt && opt <= horaActual) setHourOptionUnavailable(option, true);
     });
   };
 
