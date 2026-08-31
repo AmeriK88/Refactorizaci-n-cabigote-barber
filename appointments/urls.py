@@ -5,6 +5,7 @@ app_name = 'appointments'
 
 urlpatterns = [
     path('reservar/<int:servicio_id>/', views.reservar_cita, name='reservar_cita'),
+    path('reservar/<int:servicio_id>/', views.reservar_cita, name='reservar_cita_servicio'),
     path('reservar/', views.reservar_cita, name='reservar_cita'),
     path('ver/', views.ver_citas, name='ver_citas'),
     path('descargar-ics/<int:cita_id>/', views.descargar_cita_ics, name='descargar_cita_ics'),

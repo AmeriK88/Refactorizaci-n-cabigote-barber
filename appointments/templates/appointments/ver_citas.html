@@ -147,6 +147,12 @@
                       </p>
                     {% endif %}
 
+                    <a href="{% url 'appointments:reservar_cita_servicio' cita.servicio.id %}"
+                       class="btn btn-outline-gold btn-sm mt-3">
+                      <i class="bi bi-arrow-repeat me-1"></i>
+                      Reservar de nuevo
+                    </a>
+
                   </div>
                 </div>
               {% endfor %}
