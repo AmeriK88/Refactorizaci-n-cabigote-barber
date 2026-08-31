@@ -14,6 +14,7 @@
   const rm  = (el, cls) => el.classList.remove(cls);
 
   let showTimer = null;
+  let suppressBeforeUnloadOnce = false;
 
   function showLoader() {
     // Soft delay - avaid “flash”
@@ -30,6 +31,14 @@
     rm(overlay, 'is-visible');
     rm(loader, 'visible');
     overlay.setAttribute('aria-hidden', 'true');
+  }
+
+  function markSuppressBeforeUnloadOnce() {
+    suppressBeforeUnloadOnce = true;
+  }
+
+  function clearSuppressBeforeUnload() {
+    suppressBeforeUnloadOnce = false;
   }
 
   // SHOW loader
@@ -59,6 +68,10 @@
     }
   }
 
+  function shouldSuppressBeforeUnloadForLink(link) {
+    return !shouldShowForLink(link);
+  }
+
   // Loader show o nforms
   function shouldShowForForm(form) {
     // Opt-out manual
@@ -77,34 +90,51 @@
       form.dataset.loaderBound = '1';
 
       form.addEventListener('submit', () => {
+        clearSuppressBeforeUnload();
         if (shouldShowForForm(form)) showLoader();
       });
     });
 
-    // Links → show when accessing
-    document.querySelectorAll('a[href]').forEach(link => {
-      if (link.dataset.loaderBound) return;
-      link.dataset.loaderBound = '1';
+    // Links → delegated click handles current + future links
+    document.addEventListener('click', (event) => {
+      const link = event.target.closest('a[href]');
+      if (!link) return;
 
-      link.addEventListener('click', () => {
-        if (shouldShowForLink(link)) showLoader();
-      });
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+        markSuppressBeforeUnloadOnce();
+        return;
+      }
+
+      if (shouldSuppressBeforeUnloadForLink(link)) {
+        markSuppressBeforeUnloadOnce();
+        return;
+      }
+
+      clearSuppressBeforeUnload();
+      showLoader();
     });
   });
 
   // Leave page
   window.addEventListener('beforeunload', () => {
-    showLoader();
+      if (suppressBeforeUnloadOnce) {
+        clearSuppressBeforeUnload();
+        return;
+      }
+      showLoader();
   });
 
   // On laod / back from bfcache
   window.addEventListener('load', hideLoader);
   window.addEventListener('pageshow', (e) => {
+    clearSuppressBeforeUnload();
     if (e.persisted) hideLoader();
   });
 
   // Hide if back to page
   document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') return;
+    clearSuppressBeforeUnload();
     if (document.visibilityState === 'visible') hideLoader();
   });
 
