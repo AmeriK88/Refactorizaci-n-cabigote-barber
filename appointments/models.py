@@ -24,6 +24,19 @@ class Cita(models.Model):
     def some_method_using_report(self):
         from reports.utils import calcular_reporte
 
+    @property
+    def dias_restantes(self):
+        cita_local = timezone.localtime(self.fecha)
+        return (cita_local.date() - timezone.localdate()).days
+
+    @property
+    def texto_dias_restantes(self):
+        if self.dias_restantes <= 0:
+            return "Tu cita es hoy"
+        if self.dias_restantes == 1:
+            return "Tu cita es mañana"
+        return f"Faltan {self.dias_restantes} días"
+
 
 class FechaBloqueada(models.Model):
     fecha = models.DateField(unique=True, verbose_name=_("Fecha Bloqueada"))

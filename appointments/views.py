@@ -3,11 +3,14 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db.models import Sum
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.conf import settings
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 from django.views.decorators.http import require_GET
+from datetime import timedelta, timezone as dt_timezone
+from uuid import uuid4
 
 from core.decorators import handle_exceptions
 from services.models import Servicio
@@ -26,6 +29,63 @@ from .services.notifications import (
     notify_booking_deleted,
     notify_booking_updated,
 )
+
+
+def _escape_ics_text(value):
+    text = (value or "").replace("\\", "\\\\")
+    text = text.replace(";", "\\;").replace(",", "\\,")
+    return text.replace("\r\n", "\\n").replace("\n", "\\n")
+
+
+def _format_ics_local_datetime(value):
+    dt = timezone.localtime(value)
+    return dt.strftime("%Y%m%dT%H%M%S")
+
+
+def _build_cita_ics(cita):
+    start = timezone.localtime(cita.fecha)
+    duration_minutes = int(getattr(cita.servicio, "duracion", 30) or 30)
+    end = start + timedelta(minutes=duration_minutes)
+
+    uid = f"cita-{cita.id}-{uuid4().hex}@cabigotebarbershop"
+    dtstamp = timezone.now().astimezone(dt_timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    tz_name = settings.TIME_ZONE
+
+    summary = _escape_ics_text(cita.servicio.nombre or "Cita en Cabigote Barbershop")
+
+    description_lines = [
+        f"Servicio: {cita.servicio.nombre}",
+    ]
+    if cita.comentario:
+        description_lines.append(f"Comentario: {cita.comentario}")
+
+    location = getattr(settings, "BUSINESS_LOCATION", "")
+
+    lines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Cabigote Barbershop//Citas//ES",
+        "CALSCALE:GREGORIAN",
+        "METHOD:PUBLISH",
+        "BEGIN:VEVENT",
+        f"UID:{uid}",
+        f"DTSTAMP:{dtstamp}",
+        f"DTSTART;TZID={tz_name}:{_format_ics_local_datetime(start)}",
+        f"DTEND;TZID={tz_name}:{_format_ics_local_datetime(end)}",
+        f"SUMMARY:{summary}",
+        f"DESCRIPTION:{_escape_ics_text(chr(10).join(description_lines))}",
+    ]
+
+    if location:
+        lines.append(f"LOCATION:{_escape_ics_text(location)}")
+
+    lines.extend([
+        "END:VEVENT",
+        "END:VCALENDAR",
+        "",
+    ])
+
+    return "\r\n".join(lines)
 
 
 
@@ -282,6 +342,21 @@ def availability_for_date(request):
         exclude_cita_id=exclude_cita_id,
     )
     return JsonResponse({"unavailable": unavailable})
+
+
+@login_required
+@require_GET
+def descargar_cita_ics(request, cita_id):
+    cita = get_object_or_404(
+        Cita.objects.select_related("servicio"),
+        id=cita_id,
+        usuario=request.user,
+    )
+
+    ics_content = _build_cita_ics(cita)
+    response = HttpResponse(ics_content, content_type="text/calendar; charset=utf-8")
+    response["Content-Disposition"] = f'attachment; filename="cita-{cita.id}.ics"'
+    return response
 
 
 # Autor: José Félix Gordo Castaño
