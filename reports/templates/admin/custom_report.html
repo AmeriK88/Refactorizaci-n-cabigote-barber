@@ -1,14 +1,10 @@
 {# templates/admin/custom_report.html #}
 {% extends "admin/base_site.html" %}
-{% load static i18n %}
-
-{% block extrahead %}
-  {{ block.super }}
-  <link rel="stylesheet" href="{% static 'admin/css/adminCSS.css' %}">
-{% endblock %}
+{% load i18n %}
 
 {% block content %}
-<div class="content">
+<div class="cb-admin-container">
+  <section class="cb-admin-card">
     <h1>{% trans "Monthly Report" %}</h1>
 
     <a href="{% url 'admin:descargar_reporte' %}" class="btn-admin-action">
@@ -25,8 +21,9 @@
 
     <br>
     <a href="{% url 'admin:reports_reportemensual_changelist' %}"
-       class="btn btn-secondary">
+       class="btn-admin-action">
         {% trans "Back" %}
     </a>
+  </section>
 </div>
 {% endblock %}

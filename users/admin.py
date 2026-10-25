@@ -82,14 +82,5 @@ class UserAdmin(BaseUserAdmin):
     def get_inline_instances(self, request, obj=None):
         return super().get_inline_instances(request, obj) if obj else []
 
-    # ── CSS específico ───────────────────────────────────────
-    class Media:
-        css = {
-            'all': (
-                'admin/css/adminDashboard.css', 
-            )
-        }
-
-
 # ─── 4) Registrar la versión mejorada ───────────────────────
 admin.site.register(User, UserAdmin)

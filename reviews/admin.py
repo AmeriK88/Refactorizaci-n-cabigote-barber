@@ -41,9 +41,3 @@ class ResenaAdmin(admin.ModelAdmin):
         )
         color = '#ffc107' if obj.puntuacion else '#dc3545'
         return mark_safe(f'<span style="color:{color}; font-size:18px">{estrellas}</span>')
-
-    # ───────── CSS extra para el listado ─────
-    class Media:
-        css = {
-            'all': ('admin/css/adminDashboard.css',),  
-        }

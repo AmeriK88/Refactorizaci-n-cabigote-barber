@@ -35,11 +35,6 @@ class MensajeEspecialAdmin(admin.ModelAdmin):
     def lottie_icon(self, obj):
         return "🎞️" if obj.show_lottie else "—"
 
-    class Media:
-        css = {"all": ("admin/css/adminDashboard.css",)}
-
-
 @admin.register(ContadorVisitas)
 class ContadorVisitasAdmin(admin.ModelAdmin):
-    class Media:
-        css = {"all": ("admin/css/adminDashboard.css",)}
+    pass

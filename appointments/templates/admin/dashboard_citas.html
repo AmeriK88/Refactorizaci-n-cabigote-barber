@@ -4,7 +4,6 @@
 
 {% block extrahead %}
   {{ block.super }}
-  <link rel="stylesheet" href="{% static 'admin/css/adminDashboard.css' %}">
   <script defer src="{% static 'admin/js/citas_dashboard_chart.js' %}"></script>
 {% endblock %}
 
@@ -51,8 +50,19 @@
         <section class="cb-admin-card">
           <h2 class="cb-admin-card-title">Citas por mes (últimos 12 meses)</h2>
 
-          <div class="cb-admin-chart-wrap">
-            <canvas id="chart-citas" data-endpoint="{% url 'admin:cita_graph_data' %}"></canvas>
+          <div class="cb-admin-chart-wrap is-loading" id="chart-citas-wrap" aria-busy="true">
+            <p class="cb-admin-status" id="chart-citas-loading" role="status" aria-live="polite">
+              Cargando gráfico de citas…
+            </p>
+            <p class="cb-admin-status cb-admin-status--error" id="chart-citas-error" role="alert" hidden>
+              No se pudo cargar el gráfico. Vuelve a intentarlo más tarde.
+            </p>
+            <canvas
+              id="chart-citas"
+              data-endpoint="{% url 'admin:cita_graph_data' %}"
+              role="img"
+              aria-label="Gráfico de citas por mes durante los últimos doce meses"
+            ></canvas>
           </div>
         </section>
 

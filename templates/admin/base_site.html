@@ -1,0 +1,10 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+{% comment %}
+Extensión recursiva de la plantilla homónima de django-admin-interface (no la copia ni la sustituye).
+Las páginas con cabecera reciben el CSS desde admin/color_theme_toggle.html; los popups no renderizan
+cabecera, así que solo ellos cargan aquí la hoja compartida (sin duplicados).
+{% endcomment %}
+{% block extrastyle %}{{ block.super }}{% if is_popup %}
+<link rel="stylesheet" href="{% static 'admin/css/adminDashboard.css' %}">
+{% endif %}{% endblock %}

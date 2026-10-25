@@ -1,10 +1,11 @@
 {% extends "admin/base_site.html" %}
 {% load tz %}
-{% load static %}
 
 {% block extrahead %}
-  <link rel="stylesheet" href="{% static 'admin/css/adminDashboard.css' %}">
+  {{ block.super }}
 {% endblock %}
+
+{% block bodyclass %}{{ block.super }} cb-admin-dashboard{% endblock %}
 
 {% block content %}
 <div id="content-main">
@@ -28,6 +29,7 @@
             <div class="cb-hero-meta">
               📅 {% now "l, d F Y" %}
             </div>
+
           </div>
 
           <div class="cb-hero-brand">

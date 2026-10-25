@@ -200,10 +200,6 @@ class CitaAdmin(admin.ModelAdmin):
         labels, counts = count_appointments_by_month(months_back=12)
         return JsonResponse({"labels": labels, "counts": counts})
 
-    class Media:
-        css = {"all": ("admin/css/adminDashboard.css",)}
-
-
 # ────────────────────────────────────────────────────────────────────────────────
 # DATE BLOCKED - ADMIN
 # ────────────────────────────────────────────────────────────────────────────────
@@ -233,10 +229,6 @@ class FechaBloqueadaAdmin(admin.ModelAdmin):
         )
     ver_bloqueos_link.short_description = "Franjas horarias"
 
-    class Media:
-        css = {"all": ("admin/css/adminDashboard.css",)}
-
-
 # ────────────────────────────────────────────────────────────────────────────────
 # BLOCK HRS - ADMIN
 # ────────────────────────────────────────────────────────────────────────────────
@@ -247,6 +239,3 @@ class BloqueoHoraAdmin(admin.ModelAdmin):
     list_display = ("fecha", "hora_inicio", "hora_fin", "razon")
     list_filter = ("fecha",)
     search_fields = ("fecha", "razon")
-
-    class Media:
-        css = {"all": ("admin/css/adminDashboard.css",)}

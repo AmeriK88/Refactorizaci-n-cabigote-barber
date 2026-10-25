@@ -24,8 +24,3 @@ class ImagenAdmin(admin.ModelAdmin):
             )
         return format_html('<span class="text-muted">(no image)</span>')
     imagen_preview.short_description = 'Imagen'
-
-    class Media:
-        css = {
-            'all': ('admin/css/adminDashboard.css',)
-        }

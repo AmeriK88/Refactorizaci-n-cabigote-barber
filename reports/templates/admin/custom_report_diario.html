@@ -3,23 +3,24 @@
 {% load i18n %}
 
 {% block content %}
-<div class="content">
-    <h1>📅 {% trans "Generate Daily Report" %}</h1>
+<div class="cb-admin-container">
+  <section class="cb-admin-card">
+    <h1 class="cb-admin-card-title">📅 {% trans "Generate Daily Report" %}</h1>
 
-    <form method="post" class="mt-3">
+    <form method="post">
         {% csrf_token %}
         <label for="id_fecha"><strong>{% trans "Select a date:" %}</strong></label>
         {{ form.fecha }}
 
-        <button type="submit" class="btn btn-success mt-2">
+        <button type="submit" class="btn-admin-action">
             {% trans "Generate report" %}
         </button>
     </form>
 
-    <br>
     <a href="{% url 'admin:reports_reportediario_changelist' %}"
-       class="btn btn-secondary">
+       class="btn-admin-action">
         {% trans "Back" %}
     </a>
+  </section>
 </div>
 {% endblock %}

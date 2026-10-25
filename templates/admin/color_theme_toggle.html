@@ -1,0 +1,26 @@
+{% load i18n static %}
+<link rel="stylesheet" href="{% static 'admin/css/adminDashboard.css' %}">
+<label class="cb-theme-control" for="cb-admin-theme">
+  Tema
+  <select id="cb-admin-theme" class="cb-theme-select">
+    <option value="light">Claro</option>
+    <option value="dark">Oscuro</option>
+    <option value="auto">Sistema</option>
+  </select>
+</label>
+<button class="theme-toggle">
+  <span class="visually-hidden theme-label-when-auto">{% translate 'Toggle theme (current theme: auto)' %}</span>
+  <span class="visually-hidden theme-label-when-light">{% translate 'Toggle theme (current theme: light)' %}</span>
+  <span class="visually-hidden theme-label-when-dark">{% translate 'Toggle theme (current theme: dark)' %}</span>
+  <svg aria-hidden="true" class="theme-icon-when-auto">
+    <use xlink:href="#icon-auto" />
+  </svg>
+  <svg aria-hidden="true" class="theme-icon-when-dark">
+    <use xlink:href="#icon-moon" />
+  </svg>
+  <svg aria-hidden="true" class="theme-icon-when-light">
+    <use xlink:href="#icon-sun" />
+  </svg>
+</button>
+<script src="{% static 'admin/js/admin-theme.js' %}"></script>
+<script src="{% static 'admin/js/admin-nav.js' %}" defer></script>

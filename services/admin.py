@@ -23,12 +23,6 @@ class ServicioAdmin(admin.ModelAdmin):
         return format_html('<span class="text-muted">(sin imagen)</span>')
     imagen_preview.short_description = 'Imagen'
 
-    class Media:
-        css = {
-            'all': ('admin/css/adminDashboard.css',)
-        }
-
-
 # Autor: José Félix Gordo Castaño
 # Copyright (C) 2024 José Félix Gordo Castaño
 # Este archivo está licenciado para uso exclusivo con fines educativos y de aprendizaje. 

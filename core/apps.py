@@ -6,4 +6,5 @@ class CoreConfig(AppConfig):
     name = "core"
 
     def ready(self):
-        admin.site.index_template = "admin/index.html"
+        admin.site.index_template = "admin/cabigote_dashboard.html"
+        admin.site.login_template = "admin/cabigote_login.html"
