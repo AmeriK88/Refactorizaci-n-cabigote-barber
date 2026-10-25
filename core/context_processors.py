@@ -6,10 +6,33 @@ from .models import MensajeEspecial, ContadorVisitas
 
 
 def mensaje_especial_context(request):
-    hoy = timezone.now().date()
+    """
+    Datos del sitio público (banner, visitas, usuarios activos). Se calculan de
+    forma perezosa: solo se consulta la BD si la plantilla usa el valor, de modo
+    que el admin (que no los usa) no paga 3 consultas por petición.
+    """
+    return {
+        'special_message': _memoize(_active_message),
+        'contador_global': _memoize(_global_counter),
+        'total_usuarios': _memoize(_active_users),
+        'APP_VERSION': getattr(settings, 'APP_VERSION', 'dev'),
+    }
 
-    # ACTIVE MSSG (1st layer)
-    mensaje = (
+
+def _memoize(func):
+    cache = []
+
+    def wrapper():
+        if not cache:
+            cache.append(func())
+        return cache[0]
+
+    return wrapper
+
+
+def _active_message():
+    hoy = timezone.now().date()
+    return (
         MensajeEspecial.objects
         .filter(
             activo=True,
@@ -20,30 +43,16 @@ def mensaje_especial_context(request):
         .first()
     )
 
-    # FALLBACK: global counter
+
+def _global_counter():
     try:
-        contador_global = (
-            ContadorVisitas.objects
-            .only('total')
-            .get(pk=1)
-            .total
-        )
+        return ContadorVisitas.objects.only('total').get(pk=1).total
     except ContadorVisitas.DoesNotExist:
-        contador_global = 0
+        return 0
 
-    # ACTIVE - USERS
-    User = get_user_model()
+
+def _active_users():
     try:
-        total_usuarios = User.objects.filter(is_active=True).count()
+        return get_user_model().objects.filter(is_active=True).count()
     except Exception:
-        total_usuarios = 0
-
-    # APP_VERSION: fallback
-    app_version = getattr(settings, 'APP_VERSION', 'dev')
-
-    return {
-        'special_message': mensaje,
-        'contador_global': contador_global,
-        'total_usuarios': total_usuarios,
-        'APP_VERSION': app_version,
-    }
+        return 0

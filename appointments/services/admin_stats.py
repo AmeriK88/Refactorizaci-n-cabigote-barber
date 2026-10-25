@@ -1,5 +1,3 @@
-from collections import defaultdict
-from datetime import timedelta
 import base64
 import io
 
@@ -7,37 +5,15 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from django.utils import timezone
-from django.utils.timezone import localtime
-
-from appointments.models import Cita
+from .dashboard_stats import monthly_appointment_counts
 
 
 def count_appointments_by_month(*, months_back: int = 12):
     """
-    Return (labels, counts) for last `months_back` months.
-    Labels format: YYYY-MM
+    Return (labels, counts) for the last `months_back` natural months, current
+    month included. Every month is present (count 0 when empty). Labels: YYYY-MM
     """
-    start = timezone.now() - timedelta(days=30 * months_back)
-
-    fechas = (
-        Cita.objects.filter(fecha__gte=start, fecha__isnull=False)
-        .values_list("fecha", flat=True)
-    )
-
-    counter = defaultdict(int)
-    for dt in fechas:
-        dt_local = localtime(dt)
-        label = f"{dt_local.year}-{dt_local.month:02d}"
-        counter[label] += 1
-
-    labels = sorted(counter.keys())
-    counts = [counter[l] for l in labels]
-
-    if not labels:
-        return ["No data"], [0]
-
-    return labels, counts
+    return monthly_appointment_counts(months_back)
 
 
 def render_monthly_chart_png_base64(*, months_back: int = 12):

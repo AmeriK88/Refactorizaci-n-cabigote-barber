@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from django.utils.safestring import mark_safe
 from django.urls import reverse
+
+from core.admin_badges import rating_badge
 
 from .models import Resena
 
@@ -35,9 +36,4 @@ class ResenaAdmin(admin.ModelAdmin):
 
     @admin.display(description='Puntuación', ordering='puntuacion')
     def puntuacion_icon(self, obj):
-        # 5 estrellas doradas, las vacías en gris
-        estrellas = ''.join(
-            '⭐' if i < obj.puntuacion else '☆' for i in range(5)
-        )
-        color = '#ffc107' if obj.puntuacion else '#dc3545'
-        return mark_safe(f'<span style="color:{color}; font-size:18px">{estrellas}</span>')
+        return rating_badge(obj.puntuacion)

@@ -235,3 +235,75 @@ class VerCitasEnhancementsTests(TestCase):
         response = self.client.get(reverse("appointments:reservar_cita"))
         self.assertEqual(response.status_code, 200)
         self.assertIn(response.context["form"]["servicio"].value(), (None, "", []))
+
+
+from django.test import override_settings as _override_settings
+
+
+@_override_settings(
+    STORAGES={
+        "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+        "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+    },
+    SECURE_SSL_REDIRECT=False,
+)
+class YearFilterTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        User = get_user_model()
+        cls.admin = User.objects.create_superuser("root", "r@example.com", "Test-pass-12345")
+        servicio = Servicio.objects.create(nombre="Corte", descripcion="x", precio=10, duracion=30)
+        cls.year = timezone.localtime().year
+        for offset, name in ((0, "actual"), (1, "anterior"), (3, "antiguo")):
+            user = User.objects.create_user(f"cli_{name}", password="Test-pass-12345")
+            Cita.objects.create(
+                usuario=user, servicio=servicio, hora=time(10, 0),
+                fecha=timezone.make_aware(datetime(cls.year - offset, 6, 15, 10, 0)),
+            )
+        cls.url = reverse("admin:appointments_cita_changelist")
+
+    def users_in(self, query):
+        self.client.force_login(self.admin)
+        response = self.client.get(self.url + query)
+        self.assertEqual(response.status_code, 200, query)
+        return {c.usuario.username for c in response.context["cl"].result_list}
+
+    def test_default_shows_current_year_only(self):
+        self.assertEqual(self.users_in(""), {"cli_actual"})
+
+    def test_explicit_current_and_previous_years(self):
+        self.assertEqual(self.users_in(f"?year={self.year}"), {"cli_actual"})
+        self.assertEqual(self.users_in(f"?year={self.year - 1}"), {"cli_anterior"})
+        self.assertEqual(self.users_in(f"?year={self.year - 3}"), {"cli_antiguo"})
+
+    def test_all_shows_every_year_without_error(self):
+        self.assertEqual(self.users_in("?year=all"), {"cli_actual", "cli_anterior", "cli_antiguo"})
+
+    def test_invalid_values_do_not_raise_and_do_not_filter(self):
+        for value in ("abc", "-5", "0", "99999", "2e3", "%20", "١٢٣", "1; DROP"):
+            with self.subTest(value=value):
+                self.assertEqual(
+                    self.users_in(f"?year={value}"), {"cli_actual", "cli_anterior", "cli_antiguo"}
+                )
+
+    def test_all_option_is_listed_and_selected_without_native_all(self):
+        self.client.force_login(self.admin)
+        cl = self.client.get(self.url + "?year=all").context["cl"]
+        spec = next(f for f in cl.filter_specs if f.parameter_name == "year")
+        choices = list(spec.choices(cl))
+        self.assertEqual([c["display"] for c in choices][0], "Todos")
+        self.assertEqual([c["selected"] for c in choices if c["selected"]], [True])
+        self.assertEqual(len(choices), 4)
+
+    def test_filter_does_not_add_queries_per_row(self):
+        self.client.force_login(self.admin)
+        self.client.get(self.url)
+        with self.assertNumQueries(len(self._queries_for("?year=all"))):
+            self.client.get(self.url + "?year=all")
+
+    def _queries_for(self, query):
+        from django.db import connection
+        from django.test.utils import CaptureQueriesContext
+        with CaptureQueriesContext(connection) as ctx:
+            self.client.get(self.url + query)
+        return ctx.captured_queries

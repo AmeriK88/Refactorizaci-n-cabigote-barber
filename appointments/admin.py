@@ -12,6 +12,7 @@ Includes:
 from datetime import timedelta
 
 from django.contrib import admin
+from django.core.exceptions import PermissionDenied
 from django.db.models.functions import ExtractYear
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
@@ -72,6 +73,8 @@ class YearFilter(admin.SimpleListFilter):
     title = "Año"
     parameter_name = "year"
 
+    ALL = "all"
+
     def lookups(self, request, model_admin):
         qs = model_admin.get_queryset(request)
         years = (
@@ -80,11 +83,23 @@ class YearFilter(admin.SimpleListFilter):
             .distinct()
             .order_by("-y")
         )
-        return [(str(y), str(y)) for y in years if y is not None]
+        return [(self.ALL, "Todos")] + [(str(y), str(y)) for y in years if y is not None]
+
+    def choices(self, changelist):
+        # "Todos" es explícito: sin parámetro, CitaAdmin.changelist_view fuerza el año actual,
+        # así que la opción nativa "All" nunca podría mostrar todas las citas.
+        for lookup, title in self.lookup_choices:
+            yield {
+                "selected": self.value() == str(lookup),
+                "query_string": changelist.get_query_string({self.parameter_name: lookup}),
+                "display": title,
+            }
 
     def queryset(self, request, queryset):
-        if self.value():
-            return queryset.filter(fecha__year=int(self.value()))
+        value = self.value()
+        if value and value.isdecimal() and value.isascii() and 1 <= int(value) <= 9999:
+            return queryset.filter(fecha__year=int(value))
+        # "all" y cualquier valor no válido no filtran, sin provocar errores 500.
         return queryset
 
 
@@ -146,16 +161,33 @@ class CitaAdmin(admin.ModelAdmin):
     ver_grafico_link.short_description = "Gráfico"
 
     # -------- SHORTCUTS: "Today / Tomorrow" redirect --------
+    def _require_view(self, request):
+        if not self.has_view_permission(request):
+            raise PermissionDenied
+
     def citas_hoy_redirect(self, request):
+        self._require_view(request)
         changelist_url = reverse("admin:appointments_cita_changelist")
         return redirect(f"{changelist_url}?hoy=1")
 
     def citas_manana_redirect(self, request):
+        self._require_view(request)
         changelist_url = reverse("admin:appointments_cita_changelist")
         return redirect(f"{changelist_url}?manana=1")
 
     def dashboard_citas(self, request):
-        return render(request, "admin/dashboard_citas.html", {})
+        self._require_view(request)
+        return render(request, "admin/dashboard_citas.html", self._page_context(request, "Dashboard de citas"))
+
+    def _page_context(self, request, title, **extra):
+        # Sin each_context() la plantilla no recibe has_permission y la cabecera
+        # (selector de tema, hoja adminDashboard.css) no se renderiza.
+        return {
+            **self.admin_site.each_context(request),
+            "opts": self.model._meta,
+            "title": title,
+            **extra,
+        }
 
     # -------- EXTRA ADMIN URLs --------
     def get_urls(self):
@@ -192,11 +224,17 @@ class CitaAdmin(admin.ModelAdmin):
     # -------- Admin views (HTML + JSON) --------
     def graficar_citas(self, request):
         """Render a template with the base64-embedded chart."""
-        context = {"grafico": render_monthly_chart_png_base64(months_back=12)}
+        self._require_view(request)
+        context = self._page_context(
+            request,
+            "Citas del último año",
+            grafico=render_monthly_chart_png_base64(months_back=12),
+        )
         return render(request, "admin/grafico_citas.html", context)
 
     def graficar_citas_data(self, request):
         """Return JSON with labels/counts for Chart.js."""
+        self._require_view(request)
         labels, counts = count_appointments_by_month(months_back=12)
         return JsonResponse({"labels": labels, "counts": counts})
 

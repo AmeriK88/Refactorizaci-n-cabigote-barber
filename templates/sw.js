@@ -2,7 +2,7 @@
 // feat(pwa,offline,ux): stable offline navigation, safe updates, and auth-safe routing
 
 // 🔁 Bump this on every deploy that changes SW logic or offline.html
-const SW_VERSION = "v4.2.0";
+const SW_VERSION = "v4.2.1";
 const CACHE_NAME = `cabigote-offline-${SW_VERSION}`;
 
 // Offline fallback page (same-origin, predictable scope)

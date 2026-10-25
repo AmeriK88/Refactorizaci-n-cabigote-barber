@@ -11,6 +11,14 @@
         📥 {% trans "Download report" %}
     </a>
 
+    {% if can_generate %}
+    <form method="post" action="{% url 'admin:reporte_personalizado' %}">
+        {% csrf_token %}
+        <input type="hidden" name="months" value="{{ default_months }}">
+        <button type="submit" class="btn-admin-action">{% trans "Generate and save reports" %}</button>
+    </form>
+    {% endif %}
+
     {% for reporte in reportes %}
         <h2>{% trans "Report for" %} {{ reporte.mes|date:"F Y" }}</h2>
         <p><strong>{% trans "Total appointments:" %}</strong> {{ reporte.total_citas }}</p>

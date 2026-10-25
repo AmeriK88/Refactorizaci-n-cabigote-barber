@@ -3,9 +3,12 @@ from pathlib import Path
 import admin_interface
 from django.contrib import admin
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.template.loader import get_template
-from django.test import SimpleTestCase, TestCase, override_settings
+from django.test import Client, SimpleTestCase, TestCase, override_settings
 from django.urls import reverse
+
+from services.models import Servicio
 
 
 class AdminThemeIntegrationTests(SimpleTestCase):
@@ -155,12 +158,12 @@ class AdminRenderedPagesTests(TestCase):
             html.index("admin/css/adminDashboard.css"),
         )
 
-    def test_hero_only_on_the_admin_home(self):
+    def test_dashboard_only_on_the_admin_home(self):
         home = self.get(self.superuser, reverse("admin:index"))
         app_index = self.get(self.superuser, reverse("admin:app_list", args=["auth"]))
-        self.assertIn("cb-hero", home)
+        self.assertIn("cb-dash-hero", home)
         self.assertIn("cb-admin-dashboard", home)
-        self.assertNotIn("cb-hero", app_index)
+        self.assertNotIn("cb-dash-hero", app_index)
         self.assertNotIn("cb-admin-dashboard", app_index)
         self.assertIn("app-auth", app_index)
 
@@ -213,3 +216,283 @@ class AdminResponsiveNavigationSourceTests(SimpleTestCase):
         self.assertIn("mask: url(\"../img/icon-addlink.svg\")", self.css)
         self.assertIn("background-color: var(--cb-accent);", self.css)
         self.assertIn("forced-colors: active", self.css)
+
+
+class AdminChangelistStylesheetTests(SimpleTestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        path = Path(__file__).resolve().parents[1] / "static" / "admin" / "css" / "adminDashboard.css"
+        cls.css = path.read_text(encoding="utf-8")
+        cls.block = cls.css.split("TABLAS Y LISTADOS (fase 3B)", 1)[1].split("@keyframes cb-spin", 1)[0]
+
+    def test_changelist_selectors_target_native_django_markup(self):
+        for selector in (
+            "body.admin-interface #result_list",
+            "body.admin-interface #toolbar",
+            "body.admin-interface #changelist .actions",
+            "body.admin-interface #changelist .paginator",
+            "body.admin-interface #changelist-filter",
+            "td.num",
+            "tr.selected",
+            "th.sorted",
+        ):
+            with self.subTest(selector=selector):
+                self.assertIn(selector, self.block)
+
+    def test_changelist_block_uses_tokens_only(self):
+        self.assertNotRegex(self.block, r"#[0-9a-fA-F]{3,6}\b")
+        self.assertNotIn("!important", self.block)
+        self.assertNotIn("@import", self.block)
+
+    def test_changelist_block_covers_accessibility_and_responsive(self):
+        for needle in (":focus-visible", "prefers-reduced-motion", "forced-colors: active",
+                       "max-width: 1023px", "max-width: 767px", "overflow-x: auto", "accent-color"):
+            with self.subTest(needle=needle):
+                self.assertIn(needle, self.block)
+
+    def test_changelist_does_not_hide_native_controls(self):
+        self.assertNotRegex(self.block, r"display:\s*none;[^}]*\}\s*$")
+        for hidden in ("#changelist-filter {\n  display: none", ".actions {\n  display: none"):
+            self.assertNotIn(hidden, self.block)
+
+
+@override_settings(STORAGES=STATIC_STORAGES, SECURE_SSL_REDIRECT=False)
+class AdminChangelistRenderingTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        user_model = get_user_model()
+        cls.superuser = user_model.objects.create_superuser(
+            username="root", email="root@example.com", password="Test-pass-12345"
+        )
+        cls.staff_without_perms = user_model.objects.create_user(
+            username="staff", email="staff@example.com", password="Test-pass-12345", is_staff=True
+        )
+        for i in range(45):
+            user_model.objects.create_user(
+                username=f"cliente{i:02d}", email=f"c{i}@example.com", password="Test-pass-12345"
+            )
+
+    def get(self, user, url, status=200):
+        self.client.force_login(user)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status)
+        return response.content.decode()
+
+    def test_native_changelist_structure_is_preserved_for_users(self):
+        html = self.get(self.superuser, reverse("admin:auth_user_changelist"))
+        for marker in ('id="result_list"', 'id="changelist-search"', 'id="changelist-filter"',
+                       'class="actions"', 'class="paginator"', 'id="searchbar"', "action-select"):
+            with self.subTest(marker=marker):
+                self.assertIn(marker, html)
+        self.assertEqual(html.count("admin/css/adminDashboard.css"), 1)
+        self.assertIn("admin/css/changelists.css", html)
+
+    def test_search_ordering_and_pagination_keep_working(self):
+        base = reverse("admin:auth_user_changelist")
+        self.assertIn("cliente07", self.get(self.superuser, base + "?q=cliente07"))
+        self.assertIn("sorted ascending", self.get(self.superuser, base + "?o=1"))
+        self.assertIn("sorted descending", self.get(self.superuser, base + "?o=-1"))
+        self.assertIn('class="this-page"', self.get(self.superuser, base + "?p=1"))
+
+    def test_filters_and_empty_state_render(self):
+        base = reverse("admin:auth_user_changelist")
+        html = self.get(self.superuser, base + "?is_staff__exact=1")
+        self.assertRegex(html, r'<option[^>]*selected|class="selected"')
+        empty = self.get(self.superuser, base + "?q=zzz-no-existe")
+        self.assertNotIn('id="result_list"', empty)
+        self.assertIn('class="paginator"', empty)
+        self.assertNotIn("action-select", empty)
+
+    def test_group_changelist_renders_for_superuser(self):
+        html = self.get(self.superuser, reverse("admin:auth_group_changelist"))
+        self.assertIn('id="changelist"', html)
+        self.assertEqual(html.count("admin/js/admin-theme.js"), 1)
+
+    def test_staff_without_permissions_cannot_see_changelists(self):
+        self.get(self.staff_without_perms, reverse("admin:auth_user_changelist"), status=403)
+
+
+class StatusBadgeTests(SimpleTestCase):
+    def test_status_badge_has_text_icon_and_classes(self):
+        from core.admin_badges import status_badge
+        yes, no = str(status_badge(True)), str(status_badge(False))
+        self.assertIn("cb-badge--yes", yes)
+        self.assertIn("cb-badge--no", no)
+        self.assertIn('aria-hidden="true"', yes)
+        self.assertNotIn("style=", yes + no)
+        self.assertNotEqual(yes, no)
+        self.assertRegex(yes, r"</span>\w+</span>$")
+
+    def test_rating_badge_is_textual_and_clamped(self):
+        from core.admin_badges import rating_badge
+        html = str(rating_badge(4))
+        self.assertIn("4/5", html)
+        self.assertIn("★★★★☆", html)
+        self.assertIn("5/5", str(rating_badge(99)))
+        self.assertIn("0/5", str(rating_badge(None)))
+
+    def test_badges_escape_user_data(self):
+        from core.admin_badges import neutral_badge
+        html = str(neutral_badge("<script>alert(1)</script>"))
+        self.assertNotIn("<script>", html)
+        self.assertIn("&lt;script&gt;", html)
+
+    def test_admins_no_longer_use_emojis_or_literal_colors(self):
+        root = Path(__file__).resolve().parents[1]
+        for rel in ("users/admin.py", "reviews/admin.py"):
+            source = (root / rel).read_text(encoding="utf-8")
+            with self.subTest(file=rel):
+                self.assertNotIn("mark_safe", source)
+                self.assertNotRegex(source, r"#[0-9a-fA-F]{6}")
+                self.assertNotIn("⭐", source)
+
+
+class AdminBadgeAndDestructiveActionStylesTests(SimpleTestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        path = Path(__file__).resolve().parents[1] / "static" / "admin" / "css" / "adminDashboard.css"
+        cls.css = path.read_text(encoding="utf-8")
+
+    def test_badge_variants_use_tokens(self):
+        for variant in ("yes", "no", "rating", "neutral"):
+            self.assertIn(f".cb-badge--{variant}", self.css)
+
+    def test_destructive_action_detected_by_technical_value_not_translated_text(self):
+        self.assertIn('option[value="delete_selected"]:checked', self.css)
+        self.assertNotIn("Delete selected", self.css)
+        self.assertNotIn("Eliminar", self.css)
+
+
+@override_settings(STORAGES=STATIC_STORAGES, SECURE_SSL_REDIRECT=False)
+class AdminBadgeRenderingTests(TestCase):
+    def test_user_and_review_changelists_render_badges(self):
+        user_model = get_user_model()
+        root = user_model.objects.create_superuser("root", "r@example.com", "Test-pass-12345")
+        self.client.force_login(root)
+        html = self.client.get(reverse("admin:auth_user_changelist")).content.decode()
+        self.assertIn("cb-badge--yes", html)
+        self.assertNotIn("color:#28a745", html)
+        self.assertEqual(self.client.get(reverse("admin:reviews_resena_changelist")).status_code, 200)
+
+
+class AdminFormsStylesheetTests(SimpleTestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        path = Path(__file__).resolve().parents[1] / "static" / "admin" / "css" / "adminDashboard.css"
+        cls.block = path.read_text(encoding="utf-8").split("FORMULARIOS (fase 3C)", 1)[1].split("@keyframes cb-spin", 1)[0]
+
+    def test_forms_block_uses_tokens_only(self):
+        self.assertNotRegex(self.block, r"#[0-9a-fA-F]{3,6}\b")
+        self.assertNotIn("!important", self.block)
+        self.assertNotIn("@import", self.block)
+
+    def test_forms_block_targets_native_markup(self):
+        for selector in ("fieldset.module", ".form-row", ".submit-row", "a.deletelink",
+                         ".errornote", "ul.errorlist", ".selector", ".calendarbox", ".inline-group",
+                         "delete-confirmation"):
+            with self.subTest(selector=selector):
+                self.assertIn(selector, self.block)
+
+    def test_forms_block_covers_accessibility_and_responsive(self):
+        for needle in (":focus-visible", "prefers-reduced-motion", "forced-colors: active",
+                       "max-width: 767px", "min-height: 44px", "accent-color"):
+            with self.subTest(needle=needle):
+                self.assertIn(needle, self.block)
+
+    def test_errors_do_not_rely_on_color_alone(self):
+        self.assertIn("ul.errorlist li::before", self.block)
+        self.assertIn("label.required::after", self.block)
+
+    def test_delete_confirmation_targets_form_under_content(self):
+        # En Django 5.2 el formulario cuelga de #content, no de #content-main.
+        self.assertIn("delete-confirmation #content > form", self.block)
+        self.assertNotIn("delete-confirmation #content-main", self.block)
+
+    def test_dual_selector_can_shrink_and_lookup_is_touch_sized(self):
+        self.assertRegex(self.block, r"\.selector select\s*\{\s*min-width: 0;")
+        self.assertIn("a.related-lookup", self.block)
+        self.assertIn("width: 28px", self.block)
+
+
+@override_settings(STORAGES=STATIC_STORAGES, SECURE_SSL_REDIRECT=False)
+class AdminFormsRenderingTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.superuser = get_user_model().objects.create_superuser("root", "r@example.com", "Test-pass-12345")
+
+    def get(self, url, status=200):
+        self.client.force_login(self.superuser)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status)
+        return response.content.decode()
+
+    def test_add_forms_keep_native_structure_and_load_css_once(self):
+        for name in ("auth_user_add", "auth_group_add", "services_servicio_add", "products_imagen_add",
+                     "appointments_cita_add", "reviews_resena_add"):
+            with self.subTest(name=name):
+                html = self.get(reverse(f"admin:{name}"))
+                for marker in ("csrfmiddlewaretoken", 'class="submit-row"', "<fieldset", 'class="form-row'):
+                    self.assertIn(marker, html)
+                self.assertEqual(html.count("admin/css/adminDashboard.css"), 1)
+                self.assertEqual(html.count("admin/js/admin-theme.js"), 1)
+
+    def test_change_form_with_inline_renders(self):
+        html = self.get(reverse("admin:auth_user_change", args=[self.superuser.pk]))
+        self.assertIn("inline-group", html)
+        self.assertIn('class="submit-row"', html)
+
+    def test_validation_errors_are_rendered_with_text(self):
+        self.client.force_login(self.superuser)
+        response = self.client.post(reverse("admin:auth_group_add"), {"name": ""})
+        self.assertEqual(response.status_code, 200)
+        html = response.content.decode()
+        self.assertIn("errornote", html)
+        self.assertIn("errorlist", html)
+
+    def test_delete_confirmation_renders(self):
+        html = self.get(reverse("admin:auth_user_delete", args=[self.superuser.pk]))
+        self.assertIn("delete-confirmation", html)
+        self.assertIn("csrfmiddlewaretoken", html)
+        self.assertNotIn('id="content-main"', html)
+
+    def test_date_and_time_widgets_use_native_django_calendar(self):
+        html = self.get(reverse("admin:appointments_cita_add"))
+        for script in ("admin/js/calendar.js", "admin/js/admin/DateTimeShortcuts.js"):
+            self.assertEqual(html.count(script), 1)
+        self.assertIn('class="vDateField"', html)
+        self.assertIn('class="vTimeField"', html)
+
+    def test_forms_require_csrf_token(self):
+        client = Client(enforce_csrf_checks=True)
+        client.force_login(self.superuser)
+        response = client.post(reverse("admin:auth_group_add"), {"name": "x"})
+        self.assertEqual(response.status_code, 403)
+        self.assertFalse(Group.objects.filter(name="x").exists())
+
+    def test_staff_without_permissions_cannot_open_or_post_forms(self):
+        staff = get_user_model().objects.create_user("staff", "s@example.com", "Test-pass-12345", is_staff=True)
+        self.client.force_login(staff)
+        for name in ("auth_group_add", "services_servicio_add"):
+            url = reverse(f"admin:{name}")
+            self.assertEqual(self.client.get(url).status_code, 403)
+            self.assertEqual(self.client.post(url, {"name": "y"}).status_code, 403)
+        self.assertFalse(Group.objects.filter(name="y").exists())
+
+    def test_invalid_post_shows_errors_and_saves_nothing(self):
+        self.client.force_login(self.superuser)
+        response = self.client.post(reverse("admin:services_servicio_add"), {"nombre": "", "precio": "-5"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "errornote")
+        self.assertFalse(Servicio.objects.exists())
+
+    def test_valid_service_saves_with_each_save_button(self):
+        self.client.force_login(self.superuser)
+        for i, button in enumerate(("_save", "_continue", "_addanother")):
+            response = self.client.post(reverse("admin:services_servicio_add"), {
+                "nombre": f"S{i}", "descripcion": "d", "precio": "10.00", "duracion": "30", button: "1",
+            })
+            self.assertEqual(response.status_code, 302, button)
+        self.assertEqual(Servicio.objects.count(), 3)

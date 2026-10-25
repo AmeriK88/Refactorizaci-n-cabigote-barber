@@ -1,10 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from django.utils.html import format_html
-from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
+from core.admin_badges import neutral_badge, status_badge
 from .models import UserProfile
 
 # ─── 0) Des‐registrar el admin por defecto ───────────────────
@@ -24,16 +23,7 @@ class UserProfileInline(admin.StackedInline):
     )
 
 
-# ─── 2) Helper para iconos booleanos ✔/✖ ────────────────────
-def bool_icon(flag: bool,
-              yes='✔️', no='❌',
-              color_yes='#28a745', color_no='#dc3545') -> str:
-    char  = yes if flag else no
-    color = color_yes if flag else color_no
-    return mark_safe(f'<span style="color:{color}; font-weight:bold">{char}</span>')
-
-
-# ─── 3) Admin personalizado ─────────────────────────────────
+# ─── 2) Admin personalizado ─────────────────────────────────
 class UserAdmin(BaseUserAdmin):
     list_display = (
         'username', 'email', 'first_name', 'last_name',
@@ -58,19 +48,19 @@ class UserAdmin(BaseUserAdmin):
     @admin.display(description='Teléfono', ordering='userprofile__telefono')
     def tel_badge(self, obj):
         tel = getattr(obj.userprofile, 'telefono', '') or '—'
-        return format_html('<span class="badge bg-secondary">{}</span>', tel[:15])
+        return neutral_badge(tel[:15])
 
     @admin.display(description='Staff', ordering='is_staff')
     def staff_icon(self, obj):
-        return bool_icon(obj.is_staff)
+        return status_badge(obj.is_staff)
 
     @admin.display(description='Activo', ordering='is_active')
     def active_icon(self, obj):
-        return bool_icon(obj.is_active)
+        return status_badge(obj.is_active)
 
     @admin.display(description='Super', ordering='is_superuser')
     def super_icon(self, obj):
-        return bool_icon(obj.is_superuser, yes='★')
+        return status_badge(obj.is_superuser, glyph_yes='★')
 
     # ── acción masiva ────────────────────────────────────────
     @admin.action(description='Activar usuarios seleccionados')

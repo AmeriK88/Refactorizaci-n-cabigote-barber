@@ -1,5 +1,5 @@
 {% load i18n static %}
-<link rel="stylesheet" href="{% static 'admin/css/adminDashboard.css' %}">
+{% if not cb_css_loaded %}<link rel="stylesheet" href="{% static 'admin/css/adminDashboard.css' %}">{% endif %}
 <label class="cb-theme-control" for="cb-admin-theme">
   Tema
   <select id="cb-admin-theme" class="cb-theme-select">

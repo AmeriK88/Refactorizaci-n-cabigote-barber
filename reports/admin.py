@@ -1,13 +1,30 @@
 from django.urls import path, reverse
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.contrib import admin
-from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import now
 from django.utils.html import format_html
 from django import forms
+from dateutil.relativedelta import relativedelta
 from .models import ReporteMensual, ReporteDiario
-from .utils import calcular_reporte, calcular_reporte_diario
+from .utils import calcular_reporte, calcular_reporte_diario, totales_mes
+
+DEFAULT_MONTHS = 5
+MAX_MONTHS = 24
+
+
+def _parse_months(raw, default=None):
+    """Devuelve un entero 1..MAX_MONTHS, `default` si falta, o None si es inválido."""
+    if raw in (None, ""):
+        return default
+    try:
+        n = int(raw)
+    except (TypeError, ValueError):
+        return None
+    return n if 1 <= n <= MAX_MONTHS else None
 
 # ------------------------------------------------------------------------------
 # Formulario personalizado para ReporteMensual
@@ -51,7 +68,7 @@ class ReporteMensualAdmin(admin.ModelAdmin):
     )
 
     def descargar_reporte_link(self, obj):
-        url = reverse('admin:descargar_reporte') + '?force=1'
+        url = reverse('admin:descargar_reporte')
         return format_html(
             '<a class="btn-admin-action" href="{}" download>📥 Descargar</a>',
             url
@@ -79,86 +96,75 @@ class ReporteMensualAdmin(admin.ModelAdmin):
         ]
         return custom_urls + urls
 
+    def _can_generate(self, request):
+        return self.has_add_permission(request) and self.has_change_permission(request)
+
     def custom_report_view(self, request):
         """
-        Genera/actualiza 5 meses a partir del primero del mes actual (SIN borrar).
+        GET: muestra los informes ya guardados (solo lectura, permiso de consulta).
+        POST: genera/actualiza y guarda N meses (permiso de alta y modificación, CSRF).
         """
-        base = now().date().replace(day=1)
-        reports = calcular_reporte(base, meses_ahead=5)
-        context = dict(self.admin_site.each_context(request), reportes=reports)
-        return TemplateResponse(request, "admin/custom_report.html", context)
+        if not self.has_view_permission(request):
+            raise PermissionDenied
+        if request.method not in ("GET", "HEAD", "POST"):
+            return HttpResponseNotAllowed(["GET", "HEAD", "POST"])
 
+        base = now().date().replace(day=1)
+
+        if request.method == "POST":
+            if not self._can_generate(request):
+                raise PermissionDenied
+            months = _parse_months(request.POST.get("months"), default=DEFAULT_MONTHS)
+            if months is None:
+                return HttpResponseBadRequest("Invalid 'months' parameter.")
+            calcular_reporte(base, meses_ahead=months)
+            self.message_user(request, _("Reports generated for %(n)s month(s).") % {"n": months})
+            return redirect(request.path)
+
+        fin = base + relativedelta(months=DEFAULT_MONTHS)
+        reports = ReporteMensual.objects.filter(mes__gte=base, mes__lt=fin).order_by("mes")
+        context = dict(
+            self.admin_site.each_context(request),
+            reportes=reports,
+            can_generate=self._can_generate(request),
+            default_months=DEFAULT_MONTHS,
+        )
+        return TemplateResponse(request, "admin/custom_report.html", context)
 
     def descargar_reporte(self, request):
         """
-        Genera/actualiza reportes antes de descargar.
-        - ?force=1  -> recalcula TODOS los meses existentes + mes actual
-        - ?months=N -> recalcula N meses desde el mes actual (incluido)
-        - sin params -> asegura el mes actual (crea si no existe)
+        Descarga de solo lectura (GET/HEAD): calcula los totales al vuelo y NO escribe en la BD.
+        - Meses incluidos: los guardados + el actual.
+        - ?months=N (1..MAX_MONTHS) -> N meses desde el actual en lugar de los guardados.
+        Guardar informes se hace con POST en 'reporte-personalizado/'.
         """
-        force = request.GET.get("force") == "1"
+        if not self.has_view_permission(request):
+            raise PermissionDenied
+        if request.method not in ("GET", "HEAD"):
+            return HttpResponseNotAllowed(["GET", "HEAD"])
+
+        mes_actual = now().date().replace(day=1)
         months_param = request.GET.get("months")
-        hoy = now().date()
-        mes_actual = hoy.replace(day=1)
-
-        def add_month(d, n):
-            y, m = d.year, d.month + n
-            y += (m - 1) // 12
-            m = ((m - 1) % 12) + 1
-            return d.replace(year=y, month=m, day=1)
-
-        qs = ReporteMensual.objects.all().order_by("mes")
-        existe_algo = qs.exists()
-
         if months_param:
-            # Recalcula un rango explícito N meses desde el actual
-            try:
-                n = max(1, int(months_param))
-            except ValueError:
-                n = 1
-            calcular_reporte(mes_actual, meses_ahead=n)
-
-        elif force and existe_algo:
-            # Recalcula cada mes ya presente en BD y garantiza el actual
-            meses_db = list(qs.values_list("mes", flat=True))
-            for m in meses_db:
-                calcular_reporte(m.replace(day=1), meses_ahead=1)
-            if mes_actual not in meses_db:
-                calcular_reporte(mes_actual, meses_ahead=1)
-
+            n = _parse_months(months_param)
+            if n is None:
+                return HttpResponseBadRequest("Invalid 'months' parameter.")
+            meses = [mes_actual + relativedelta(months=i) for i in range(n)]
         else:
-            # Modo normal: asegura el mes actual; si no hay nada en BD, crea al menos éste
-            if not qs.filter(mes=mes_actual).exists():
-                calcular_reporte(mes_actual, meses_ahead=1)
+            meses = set(ReporteMensual.objects.values_list("mes", flat=True))
+            meses.add(mes_actual)
+            meses = sorted(m.replace(day=1) for m in meses)
 
-        # Refresca y compone el TXT
-        reports = ReporteMensual.objects.all().order_by("mes")
         resp = HttpResponse(content_type="text/plain; charset=utf-8")
         resp["Content-Disposition"] = f'attachment; filename="reporte_mensual_{now().date():%Y_%m_%d}.txt"'
-        if not reports.exists():
-            resp.write("Sin datos de ReporteMensual.\n")
-            return resp
-
-        for report in reports:
-            resp.write(f"Mes: {report.mes.strftime('%B %Y')}\n")
-            resp.write(f"Total de Citas: {report.total_citas}\n")
-            resp.write(f"Ingresos Totales: {report.ingresos_totales}\n")
-            resp.write(f"Ingresos Proyectados: {report.ingresos_proyectados}\n")
+        for mes in meses:
+            total_citas, ingresos = totales_mes(mes)
+            resp.write(f"Mes: {mes.strftime('%B %Y')}\n")
+            resp.write(f"Total de Citas: {total_citas}\n")
+            resp.write(f"Ingresos Totales: {ingresos}\n")
+            resp.write(f"Ingresos Proyectados: {ingresos}\n")
             resp.write("-" * 40 + "\n")
         return resp
-
-
-    def has_add_permission(self, request):
-        """
-        Permitir crear nuevos reportes mensuales manualmente.
-        """
-        return True
-
-    def has_delete_permission(self, request, obj=None):
-        """
-        Permitir eliminar reportes mensuales manualmente.
-        """
-        return True
 
     def save_model(self, request, obj, form, change):
         """
@@ -231,12 +237,6 @@ class ReporteDiarioAdmin(admin.ModelAdmin):
     form = ReporteDiarioForm
     list_display = ('dia', 'total_citas', 'ingresos_totales', 'creado_el')
     readonly_fields = ('total_citas', 'ingresos_totales', 'creado_el')  # Solo se edita la fecha
-
-    def has_add_permission(self, request):
-        return True  # Permitir añadir reportes manualmente
-
-    def has_delete_permission(self, request, obj=None):
-        return True  # Permitir eliminar reportes
 
     def save_model(self, request, obj, form, change):
         """

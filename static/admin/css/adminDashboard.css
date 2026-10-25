@@ -1097,6 +1097,1377 @@ body.admin-interface .skip-to-content-link {
   }
 }
 
+/* ───────────────── TABLAS Y LISTADOS (fase 3B) ─────────────────
+   Solo tokens. Los selectores cuelgan de #changelist / body.admin-interface para
+   ganar a las hojas de Django y de django-admin-interface sin forzar prioridades. */
+
+body.admin-interface #changelist {
+  gap: 24px;
+}
+
+body.admin-interface #changelist .changelist-form-container {
+  min-width: 0;
+}
+
+/* Barra de herramientas y búsqueda */
+body.admin-interface #toolbar {
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  border: 1px solid var(--cb-border);
+  border-radius: 12px;
+  background: var(--cb-panel);
+  box-shadow: var(--cb-shadow-sm);
+  color: var(--cb-muted);
+}
+
+body.admin-interface #changelist-search > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+body.admin-interface #changelist-search label[for="searchbar"] {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+}
+
+body.admin-interface #changelist-search label img {
+  display: none;
+}
+
+body.admin-interface #changelist-search label::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  background: var(--cb-muted);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+body.admin-interface #toolbar #searchbar {
+  flex: 1 1 260px;
+  height: 40px;
+  min-width: 0;
+  max-width: 420px;
+  padding: 0 12px;
+  border: 1px solid var(--cb-border);
+  border-radius: 10px;
+  background: var(--cb-bg);
+  color: var(--cb-text);
+  font-size: .9rem;
+}
+
+body.admin-interface #toolbar #searchbar::placeholder {
+  color: var(--cb-muted);
+}
+
+body.admin-interface #toolbar #searchbar:focus-visible,
+body.admin-interface #changelist .actions select:focus-visible,
+body.admin-interface #changelist-filter select:focus-visible {
+  outline: none;
+  border-color: var(--cb-accent);
+  box-shadow: var(--cb-ring);
+}
+
+body.admin-interface #toolbar form input[type="submit"],
+body.admin-interface #changelist .actions .button,
+body.admin-interface #changelist-filter .changelist-filter-clear a.button {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--cb-accent);
+  border-radius: 10px;
+  background: var(--cb-accent);
+  box-shadow: none;
+  color: var(--cb-action-text);
+  font-size: .85rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+body.admin-interface #toolbar form input[type="submit"]:hover,
+body.admin-interface #toolbar form input[type="submit"]:focus-visible,
+body.admin-interface #changelist .actions .button:hover,
+body.admin-interface #changelist .actions .button:focus-visible {
+  border-color: var(--cb-accent-hover);
+  background: var(--cb-accent-hover);
+  color: var(--cb-action-text);
+}
+
+body.admin-interface #toolbar form input[type="submit"]:focus-visible,
+body.admin-interface #changelist .actions .button:focus-visible {
+  outline: none;
+  box-shadow: var(--cb-ring);
+}
+
+body.admin-interface #changelist .actions .button[disabled] {
+  background: var(--cb-panel-selected);
+  border-color: var(--cb-border);
+  color: var(--cb-muted);
+  cursor: not-allowed;
+  opacity: .72;
+}
+
+body.admin-interface #changelist-search .quiet,
+body.admin-interface #changelist-search .help {
+  color: var(--cb-muted);
+  font-size: .8rem;
+}
+
+/* Acciones masivas */
+body.admin-interface #changelist .actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--cb-border);
+  border-radius: 12px;
+  background: var(--cb-panel);
+  color: var(--cb-muted);
+}
+
+body.admin-interface #changelist .actions label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--cb-text);
+  font-size: .85rem;
+  font-weight: 600;
+}
+
+body.admin-interface #changelist .actions select {
+  height: 40px;
+  min-width: 200px;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 10px;
+  border: 1px solid var(--cb-border);
+  border-radius: 10px;
+  background-color: var(--cb-bg);
+  color: var(--cb-text);
+  font-size: .85rem;
+}
+
+body.admin-interface #changelist .actions span.action-counter,
+body.admin-interface #changelist .actions span.all,
+body.admin-interface #changelist .actions span.question,
+body.admin-interface #changelist .actions span.clear {
+  margin: 0;
+  color: var(--cb-muted);
+  font-size: .82rem;
+}
+
+body.admin-interface #changelist .actions span.action-counter {
+  font-weight: 700;
+  color: var(--cb-text);
+}
+
+body.admin-interface #changelist .actions a[role="button"] {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  color: var(--cb-accent);
+  font-weight: 600;
+}
+
+body.admin-interface #changelist .actions a[role="button"]:hover {
+  color: var(--cb-accent-hover);
+}
+
+body.admin-interface #changelist .actions a[role="button"]:focus-visible {
+  outline: none;
+  border-radius: 6px;
+  box-shadow: var(--cb-ring);
+}
+
+/* Tabla de resultados */
+body.admin-interface #changelist .results {
+  border: 1px solid var(--cb-border);
+  border-radius: 12px;
+  background: var(--cb-panel);
+  box-shadow: var(--cb-shadow-sm);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+body.admin-interface #result_list {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+body.admin-interface #result_list thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 0;
+  border: 0;
+  border-bottom: 2px solid var(--cb-accent);
+  background: var(--cb-panel-selected);
+  color: var(--cb-muted);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+body.admin-interface #result_list thead th .text > a,
+body.admin-interface #result_list thead th .text > span {
+  padding: 13px 14px;
+}
+
+body.admin-interface #result_list thead th a,
+body.admin-interface #result_list thead th a:link,
+body.admin-interface #result_list thead th a:visited {
+  color: var(--cb-muted);
+  text-decoration: none;
+}
+
+body.admin-interface #result_list thead th .text a:hover,
+body.admin-interface #result_list thead th .text a:focus-visible {
+  background: var(--cb-panel);
+  color: var(--cb-text);
+}
+
+body.admin-interface #result_list thead th .text a:focus-visible {
+  outline: none;
+  box-shadow: inset var(--cb-ring);
+}
+
+body.admin-interface #result_list thead th.sorted {
+  background: var(--cb-panel-selected);
+  box-shadow: inset 0 -2px 0 var(--cb-accent);
+}
+
+body.admin-interface #result_list thead th.sorted a,
+body.admin-interface #result_list thead th.sorted .text > span {
+  color: var(--cb-text);
+}
+
+body.admin-interface #result_list thead th.sorted .sortoptions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 13px 10px 0 0;
+}
+
+body.admin-interface #result_list thead th.sorted .sortoptions a {
+  flex: none;
+  filter: none;
+}
+
+body.admin-interface #result_list thead th.sorted .sortpriority {
+  color: var(--cb-accent);
+  font-weight: 700;
+}
+
+html[data-theme="dark"] body.admin-interface #result_list thead th.sorted .sortoptions a {
+  filter: invert(1);
+}
+
+@media (prefers-color-scheme: dark) {
+  html[data-theme="auto"] body.admin-interface #result_list thead th.sorted .sortoptions a {
+    filter: invert(1);
+  }
+}
+
+body.admin-interface #result_list thead th.action-checkbox-column {
+  width: 44px;
+  text-align: center;
+}
+
+body.admin-interface #result_list tbody th,
+body.admin-interface #result_list tbody td {
+  padding: 14px;
+  border-bottom: 1px solid var(--cb-border);
+  background: var(--cb-panel);
+  color: var(--cb-text);
+  font-size: .875rem;
+  line-height: 1.4;
+  vertical-align: middle;
+}
+
+body.admin-interface #result_list tbody tr:nth-child(even) th,
+body.admin-interface #result_list tbody tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--cb-panel-selected) 35%, var(--cb-panel));
+}
+
+body.admin-interface #result_list tbody tr:last-child th,
+body.admin-interface #result_list tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+body.admin-interface #result_list tbody tr:hover th,
+body.admin-interface #result_list tbody tr:hover td,
+body.admin-interface #result_list tbody tr:focus-within th,
+body.admin-interface #result_list tbody tr:focus-within td {
+  background: var(--cb-panel-selected);
+}
+
+body.admin-interface #result_list tbody tr.selected th,
+body.admin-interface #result_list tbody tr.selected td,
+body.admin-interface #result_list tbody tr:has(.action-select:checked) th,
+body.admin-interface #result_list tbody tr:has(.action-select:checked) td {
+  background: color-mix(in srgb, var(--cb-accent) 16%, var(--cb-panel));
+}
+
+body.admin-interface #result_list tbody tr.selected td.action-checkbox,
+body.admin-interface #result_list tbody tr:has(.action-select:checked) td.action-checkbox {
+  box-shadow: inset 4px 0 0 var(--cb-accent);
+}
+
+body.admin-interface #result_list tbody th a {
+  color: var(--cb-accent);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+body.admin-interface #result_list tbody a:hover {
+  color: var(--cb-accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+body.admin-interface #result_list tbody a:focus-visible {
+  outline: none;
+  border-radius: 4px;
+  box-shadow: var(--cb-ring);
+}
+
+body.admin-interface #result_list td.action-checkbox,
+body.admin-interface #result_list thead th.action-checkbox-column {
+  text-align: center;
+}
+
+body.admin-interface #result_list input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--cb-accent);
+  cursor: pointer;
+}
+
+body.admin-interface #result_list input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--cb-accent);
+  outline-offset: 2px;
+}
+
+body.admin-interface #result_list td.num,
+body.admin-interface #result_list th.num,
+body.admin-interface #result_list td.nowrap {
+  font-variant-numeric: tabular-nums;
+}
+
+body.admin-interface #result_list td.num {
+  text-align: right;
+}
+
+body.admin-interface #result_list .text-muted {
+  color: var(--cb-muted);
+}
+
+body.admin-interface #result_list img {
+  vertical-align: middle;
+}
+
+/* Insignias de estado (core/admin_badges.py): texto + glifo, el color solo refuerza */
+body.admin-interface .cb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border: 1px solid var(--cb-border);
+  border-radius: 999px;
+  background: var(--cb-panel-selected);
+  color: var(--cb-text);
+  font-size: .78rem;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+body.admin-interface .cb-badge__icon {
+  font-weight: 700;
+  line-height: 1;
+}
+
+body.admin-interface .cb-badge--yes {
+  border-color: var(--cb-accent-2);
+  background: color-mix(in srgb, var(--cb-accent-2) 14%, var(--cb-panel));
+}
+
+body.admin-interface .cb-badge--yes .cb-badge__icon {
+  color: var(--cb-accent-2);
+}
+
+body.admin-interface .cb-badge--no {
+  border-color: var(--cb-danger);
+  background: color-mix(in srgb, var(--cb-danger) 12%, var(--cb-panel));
+}
+
+body.admin-interface .cb-badge--no .cb-badge__icon {
+  color: var(--cb-danger);
+}
+
+body.admin-interface .cb-badge--rating {
+  border-color: var(--cb-accent);
+  background: color-mix(in srgb, var(--cb-accent) 12%, var(--cb-panel));
+}
+
+body.admin-interface .cb-badge--rating .cb-badge__icon {
+  color: var(--cb-accent);
+  letter-spacing: .08em;
+}
+
+body.admin-interface .cb-badge--neutral {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Acción destructiva: se detecta por el valor técnico de la opción, nunca por su texto traducido */
+body.admin-interface #changelist .actions:has(option[value="delete_selected"]:checked) select {
+  border-color: var(--cb-danger);
+  box-shadow: inset 4px 0 0 var(--cb-danger);
+}
+
+body.admin-interface #changelist .actions:has(option[value="delete_selected"]:checked) .button {
+  border-color: var(--cb-danger);
+  background: var(--cb-danger);
+  color: var(--cb-action-text);
+}
+
+body.admin-interface #changelist .actions:has(option[value="delete_selected"]:checked) .button:hover,
+body.admin-interface #changelist .actions:has(option[value="delete_selected"]:checked) .button:focus-visible {
+  border-color: var(--cb-danger-hover);
+  background: var(--cb-danger-hover);
+}
+
+body.admin-interface #changelist .actions:has(option[value="delete_selected"]:checked) .button::before {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 8px;
+  vertical-align: -2px;
+  background: currentcolor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+body.admin-interface #result_list a.btn-admin-action {
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: .8rem;
+  white-space: nowrap;
+}
+
+/* Paginación */
+body.admin-interface #changelist .paginator {
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--cb-border);
+  border-radius: 12px;
+  background: var(--cb-panel);
+  color: var(--cb-muted);
+  font-size: .85rem;
+  overflow: visible;
+}
+
+body.admin-interface #changelist .paginator a:link,
+body.admin-interface #changelist .paginator a:visited,
+body.admin-interface #changelist .paginator .this-page {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 36px;
+  margin: 0;
+  padding: 0 10px;
+  border: 1px solid var(--cb-border);
+  border-radius: 10px;
+  line-height: 1;
+  text-decoration: none;
+}
+
+body.admin-interface #changelist .paginator a:link,
+body.admin-interface #changelist .paginator a:visited {
+  background: var(--cb-bg);
+  color: var(--cb-text);
+}
+
+body.admin-interface #changelist .paginator a:hover,
+body.admin-interface #changelist .paginator a:focus-visible {
+  border-color: var(--cb-accent);
+  background: var(--cb-panel-selected);
+  color: var(--cb-accent);
+}
+
+body.admin-interface #changelist .paginator a:focus-visible {
+  outline: none;
+  box-shadow: var(--cb-ring);
+}
+
+body.admin-interface #changelist .paginator .this-page {
+  border-color: var(--cb-accent);
+  background: var(--cb-accent);
+  color: var(--cb-action-text);
+  font-weight: 700;
+}
+
+body.admin-interface #changelist .paginator a.showall:link,
+body.admin-interface #changelist .paginator a.showall:visited {
+  border-color: transparent;
+  background: transparent;
+  color: var(--cb-accent);
+  font-weight: 600;
+}
+
+body.admin-interface #changelist .paginator a.end,
+body.admin-interface #changelist .paginator .this-page {
+  margin-right: 0;
+}
+
+body.admin-interface #changelist .paginator input[type="submit"] {
+  min-height: 36px;
+}
+
+/* Filtros laterales */
+body.admin-interface #changelist-filter {
+  flex: 0 0 260px;
+  border: 1px solid var(--cb-border);
+  border-radius: 12px;
+  background: var(--cb-panel);
+  box-shadow: var(--cb-shadow-sm);
+  color: var(--cb-text);
+  overflow: hidden;
+}
+
+body.admin-interface #changelist-filter h2 {
+  margin: 0 0 8px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--cb-border);
+  background: var(--cb-panel-selected);
+  color: var(--cb-text);
+  font-size: .75rem;
+  letter-spacing: .08em;
+}
+
+body.admin-interface #changelist-filter details {
+  border-bottom: 1px solid var(--cb-border);
+}
+
+body.admin-interface #changelist-filter details:last-child {
+  border-bottom: 0;
+}
+
+body.admin-interface #changelist-filter details > summary {
+  display: block;
+  margin: 0;
+  padding: 10px 16px;
+  color: var(--cb-text);
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+body.admin-interface #changelist-filter details > summary:hover {
+  background: var(--cb-panel-selected);
+}
+
+body.admin-interface #changelist-filter details > summary:focus-visible {
+  outline: none;
+  box-shadow: inset var(--cb-ring);
+}
+
+body.admin-interface #changelist-filter details > summary::before {
+  color: var(--cb-accent);
+}
+
+body.admin-interface #changelist-filter ul {
+  margin: 0;
+  padding: 0 8px 10px;
+  border: 0;
+}
+
+body.admin-interface #changelist-filter li {
+  margin: 0;
+}
+
+body.admin-interface #changelist-filter li a,
+body.admin-interface #changelist-filter li a:link,
+body.admin-interface #changelist-filter li a:visited {
+  padding: 7px 10px;
+  border-radius: 8px;
+  color: var(--cb-muted);
+  font-size: .85rem;
+  text-decoration: none;
+}
+
+body.admin-interface #changelist-filter li a:hover,
+body.admin-interface #changelist-filter li a:focus-visible {
+  background: var(--cb-panel-selected);
+  color: var(--cb-text);
+}
+
+body.admin-interface #changelist-filter li a:focus-visible {
+  outline: none;
+  box-shadow: var(--cb-ring);
+}
+
+body.admin-interface #changelist-filter li.selected {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+body.admin-interface #changelist-filter li.selected a,
+body.admin-interface #changelist-filter li.selected a:link,
+body.admin-interface #changelist-filter li.selected a:visited {
+  background: color-mix(in srgb, var(--cb-accent) 16%, var(--cb-panel));
+  box-shadow: inset 3px 0 0 var(--cb-accent);
+  color: var(--cb-text);
+  font-weight: 700;
+}
+
+body.admin-interface #changelist-filter #changelist-filter-extra-actions {
+  margin: 0;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--cb-border);
+}
+
+body.admin-interface #changelist-filter #changelist-filter-extra-actions a,
+body.admin-interface #changelist-filter .changelist-filter-clear a {
+  color: var(--cb-accent);
+  font-weight: 600;
+}
+
+body.admin-interface #changelist-filter select,
+body.admin-interface #changelist-filter .list-filter-dropdown select {
+  width: calc(100% - 32px);
+  min-height: 40px;
+  margin: 0 16px 10px;
+  border: 1px solid var(--cb-border);
+  border-radius: 10px;
+  background-color: var(--cb-bg);
+  color: var(--cb-text);
+}
+
+body.admin-interface #changelist-filter .list-filter-dropdown h3 {
+  margin: 0 0 6px;
+  padding: 0 16px;
+  color: var(--cb-muted);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+body.admin-interface.list-filter-highlight #changelist-filter .list-filter-dropdown h3.active {
+  color: var(--cb-accent);
+}
+
+body.admin-interface.list-filter-highlight #changelist-filter .list-filter-dropdown h3.active + div select {
+  border-color: var(--cb-accent);
+}
+
+/* Date hierarchy */
+body.admin-interface .change-list .toplinks {
+  margin-bottom: 12px;
+  padding: 8px 4px;
+}
+
+/* Herramientas del objeto (Añadir…) y mensajes */
+body.admin-interface .object-tools a:link,
+body.admin-interface .object-tools a:visited {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: var(--cb-accent);
+  color: var(--cb-action-text);
+  font-weight: 700;
+}
+
+body.admin-interface .object-tools a:hover,
+body.admin-interface .object-tools a:focus-visible {
+  background: var(--cb-accent-hover);
+  color: var(--cb-action-text);
+}
+
+body.admin-interface .object-tools a:focus-visible {
+  outline: none;
+  box-shadow: var(--cb-ring);
+}
+
+body.admin-interface ul.messagelist li {
+  border: 1px solid var(--cb-border);
+  border-left: 4px solid var(--cb-accent-2);
+  border-radius: 10px;
+  color: var(--cb-text);
+}
+
+body.admin-interface ul.messagelist li.warning {
+  border-left-color: var(--cb-accent);
+}
+
+body.admin-interface ul.messagelist li.error {
+  border-left-color: var(--cb-danger);
+}
+
+body.admin-interface .errornote {
+  border-radius: 10px;
+}
+
+/* Responsive */
+@media (max-width: 1023px) {
+  body.admin-interface #changelist {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  body.admin-interface #changelist-filter {
+    order: 2;
+    flex: none;
+    width: 100%;
+    margin: 0;
+  }
+
+  body.admin-interface #changelist .changelist-form-container {
+    order: 1;
+    width: 100%;
+  }
+
+  body.admin-interface #toolbar {
+    border: 1px solid var(--cb-border);
+  }
+}
+
+@media (max-width: 767px) {
+  body.admin-interface #toolbar #searchbar {
+    flex-basis: 100%;
+    max-width: none;
+  }
+
+  body.admin-interface #changelist .actions {
+    align-items: stretch;
+  }
+
+  body.admin-interface #changelist .actions label,
+  body.admin-interface #changelist .actions select {
+    width: 100%;
+  }
+
+  body.admin-interface #result_list tbody th,
+  body.admin-interface #result_list tbody td {
+    padding: 12px;
+  }
+
+  body.admin-interface #changelist .paginator a:link,
+  body.admin-interface #changelist .paginator a:visited,
+  body.admin-interface #changelist .paginator .this-page {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+@media (forced-colors: active) {
+  body.admin-interface #result_list tbody tr.selected td,
+  body.admin-interface #result_list tbody tr:has(.action-select:checked) td {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+
+  body.admin-interface #changelist .paginator .this-page {
+    border: 2px solid Highlight;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.admin-interface #changelist *,
+  body.admin-interface .object-tools a {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   FORMULARIOS (fase 3C)
+   Solo tokens. Sin sobrescrituras forzadas: se gana por especificidad (body.admin-interface).
+   ========================================================================== */
+body.admin-interface #content-main form > div > fieldset.module,
+body.admin-interface #content-main form fieldset.module {
+  background: var(--cb-panel);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-radius);
+  box-shadow: var(--cb-shadow-sm);
+  margin: 0 0 20px;
+  max-width: 1000px;
+  overflow: hidden;
+}
+
+body.admin-interface #content-main form fieldset.module > h2,
+body.admin-interface #content-main form .fieldset-heading,
+body.admin-interface #content-main form .inline-heading {
+  background: var(--cb-panel-selected);
+  color: var(--cb-text);
+  border-bottom: 1px solid var(--cb-border);
+  font-size: .8125rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 12px 18px;
+}
+
+body.admin-interface .form-row {
+  border-bottom: 1px solid var(--cb-border);
+  padding: 14px 18px;
+}
+
+body.admin-interface .form-row:last-child {
+  border-bottom: 0;
+}
+
+body.admin-interface .aligned label {
+  color: var(--cb-text);
+  font-weight: 600;
+  line-height: 1.4;
+  padding-top: 8px;
+}
+
+body.admin-interface .aligned label.required::after {
+  content: " *";
+  color: var(--cb-accent);
+}
+
+body.admin-interface .form-row .help,
+body.admin-interface .form-row .help-tooltip {
+  color: var(--cb-muted);
+  font-size: .8125rem;
+  line-height: 1.5;
+}
+
+body.admin-interface .form-row input[type="text"],
+body.admin-interface .form-row input[type="password"],
+body.admin-interface .form-row input[type="email"],
+body.admin-interface .form-row input[type="url"],
+body.admin-interface .form-row input[type="number"],
+body.admin-interface .form-row input[type="tel"],
+body.admin-interface .form-row input[type="date"],
+body.admin-interface .form-row input[type="time"],
+body.admin-interface .form-row textarea,
+body.admin-interface .form-row select {
+  background: var(--cb-bg);
+  color: var(--cb-text);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-radius);
+  min-height: 44px;
+  padding: 8px 12px;
+  box-sizing: border-box;
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+body.admin-interface .form-row textarea {
+  min-height: 96px;
+}
+
+body.admin-interface .form-row input:hover,
+body.admin-interface .form-row textarea:hover,
+body.admin-interface .form-row select:hover {
+  border-color: var(--cb-accent);
+}
+
+body.admin-interface .form-row input:focus-visible,
+body.admin-interface .form-row textarea:focus-visible,
+body.admin-interface .form-row select:focus-visible {
+  border-color: var(--cb-accent);
+  box-shadow: var(--cb-ring);
+  outline: 2px solid var(--cb-accent);
+  outline-offset: 1px;
+}
+
+body.admin-interface .form-row input:disabled,
+body.admin-interface .form-row textarea:disabled,
+body.admin-interface .form-row select:disabled {
+  border-style: dashed;
+  cursor: not-allowed;
+  opacity: .7;
+}
+
+body.admin-interface .form-row input[type="checkbox"],
+body.admin-interface .form-row input[type="radio"] {
+  accent-color: var(--cb-accent);
+  inline-size: 20px;
+  block-size: 20px;
+  min-height: 0;
+}
+
+body.admin-interface .form-row .readonly {
+  background: var(--cb-panel-selected);
+  border: 1px dashed var(--cb-border);
+  border-radius: var(--cb-radius);
+  color: var(--cb-text);
+  display: inline-block;
+  min-height: 24px;
+  padding: 8px 12px;
+}
+
+body.admin-interface .form-row .file-upload {
+  color: var(--cb-muted);
+}
+
+body.admin-interface .form-row input[type="file"] {
+  color: var(--cb-text);
+  max-width: 100%;
+}
+
+body.admin-interface .form-row input[type="file"]::file-selector-button {
+  background: var(--cb-panel-selected);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-radius);
+  color: var(--cb-text);
+  cursor: pointer;
+  margin-inline-end: 10px;
+  min-height: 36px;
+  padding: 6px 12px;
+}
+
+/* Validación: borde, fondo y texto, no solo color */
+body.admin-interface .errornote {
+  background: color-mix(in srgb, var(--cb-danger) 12%, var(--cb-panel));
+  border: 1px solid var(--cb-danger);
+  border-inline-start-width: 5px;
+  border-radius: var(--cb-radius);
+  color: var(--cb-text);
+  font-weight: 600;
+  padding: 12px 16px;
+}
+
+body.admin-interface .form-row.errors {
+  background: color-mix(in srgb, var(--cb-danger) 7%, var(--cb-panel));
+  border-inline-start: 4px solid var(--cb-danger);
+}
+
+body.admin-interface .form-row.errors input,
+body.admin-interface .form-row.errors textarea,
+body.admin-interface .form-row.errors select {
+  border-color: var(--cb-danger);
+}
+
+body.admin-interface ul.errorlist {
+  color: var(--cb-danger);
+  font-weight: 600;
+}
+
+body.admin-interface ul.errorlist li::before {
+  content: "\26A0\00a0";
+}
+
+/* Barra de acciones */
+body.admin-interface .submit-row {
+  align-items: center;
+  background: var(--cb-panel);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-radius);
+  box-shadow: var(--cb-shadow-sm);
+  gap: 10px;
+  padding: 14px 18px;
+}
+
+body.admin-interface .submit-row input[type="submit"],
+body.admin-interface .submit-row a.closelink,
+body.admin-interface .submit-row a.deletelink {
+  align-items: center;
+  border-radius: var(--cb-radius);
+  display: inline-flex;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 18px;
+  text-decoration: none;
+  transition: background-color .15s ease, border-color .15s ease;
+}
+
+body.admin-interface .submit-row input[type="submit"] {
+  background: var(--cb-panel-selected);
+  border: 1px solid var(--cb-border);
+  color: var(--cb-text);
+}
+
+body.admin-interface .submit-row input[type="submit"]:hover {
+  border-color: var(--cb-accent);
+}
+
+body.admin-interface .submit-row input[type="submit"].default {
+  background: var(--cb-accent);
+  border-color: var(--cb-accent);
+  color: var(--cb-action-text);
+}
+
+body.admin-interface .submit-row input[type="submit"].default:hover {
+  background: var(--cb-accent-hover);
+  border-color: var(--cb-accent-hover);
+}
+
+body.admin-interface .submit-row a.deletelink,
+body.admin-interface .submit-row a.deletelink:link,
+body.admin-interface .submit-row a.deletelink:visited {
+  background: transparent;
+  border: 1px solid var(--cb-danger);
+  color: var(--cb-danger);
+}
+
+body.admin-interface .submit-row a.deletelink:hover {
+  background: var(--cb-danger);
+  color: var(--cb-action-text);
+}
+
+body.admin-interface .submit-row a.closelink {
+  background: transparent;
+  border: 1px solid var(--cb-border);
+  color: var(--cb-muted);
+}
+
+body.admin-interface .submit-row input:focus-visible,
+body.admin-interface .submit-row a:focus-visible {
+  outline: 2px solid var(--cb-accent);
+  outline-offset: 2px;
+}
+
+/* Widgets */
+body.admin-interface .form-row .related-widget-wrapper,
+body.admin-interface .form-row .selector,
+body.admin-interface .selector .selector-available,
+body.admin-interface .selector .selector-chosen,
+body.admin-interface .selector select {
+  min-width: 0;
+}
+
+body.admin-interface .form-row .related-widget-wrapper,
+body.admin-interface .form-row .selector {
+  max-width: 100%;
+}
+
+body.admin-interface .selector .selector-available h2,
+body.admin-interface .selector .selector-chosen h2 {
+  background: var(--cb-panel-selected);
+  color: var(--cb-text);
+  border: 1px solid var(--cb-border);
+}
+
+body.admin-interface .selector select,
+body.admin-interface .selector input[type="text"] {
+  background: var(--cb-bg);
+  border: 1px solid var(--cb-border);
+  color: var(--cb-text);
+}
+
+body.admin-interface .calendarbox,
+body.admin-interface .clockbox {
+  background: var(--cb-panel);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-radius);
+  box-shadow: var(--cb-shadow);
+  color: var(--cb-text);
+}
+
+body.admin-interface .calendar caption,
+body.admin-interface .calendarbox h2,
+body.admin-interface .clockbox h2 {
+  background: var(--cb-panel-selected);
+  color: var(--cb-text);
+}
+
+body.admin-interface .calendar td,
+body.admin-interface .calendar th {
+  background: var(--cb-panel);
+  border-color: var(--cb-border);
+  color: var(--cb-text);
+}
+
+body.admin-interface .calendar td a,
+body.admin-interface .timelist a {
+  color: var(--cb-text);
+}
+
+body.admin-interface .calendar td.selected a,
+body.admin-interface .calendar td a:hover,
+body.admin-interface .calendar td a:focus-visible,
+body.admin-interface .timelist a:hover {
+  background: var(--cb-accent);
+  color: var(--cb-action-text);
+}
+
+body.admin-interface .form-row a.related-lookup {
+  background-position: center;
+  height: 28px;
+  min-width: 28px;
+  width: 28px;
+}
+
+body.admin-interface .form-row .related-widget-wrapper-link:focus-visible,
+body.admin-interface .form-row a.related-lookup:focus-visible {
+  outline: 2px solid var(--cb-accent);
+  outline-offset: 2px;
+}
+
+body.admin-interface .select2-container--admin-autocomplete .select2-selection,
+body.admin-interface .select2-dropdown {
+  background: var(--cb-bg);
+  border-color: var(--cb-border);
+  color: var(--cb-text);
+}
+
+/* Inlines */
+body.admin-interface .inline-group {
+  background: var(--cb-panel);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-radius);
+  max-width: 1000px;
+  overflow-x: auto;
+}
+
+body.admin-interface .inline-group .tabular td,
+body.admin-interface .inline-group .tabular th {
+  border-color: var(--cb-border);
+}
+
+/* Confirmación de eliminación: en esta vista el formulario cuelga de #content, no de #content-main */
+body.admin-interface.delete-confirmation #content > form {
+  background: var(--cb-panel);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-radius);
+  max-width: 1000px;
+  padding: 20px;
+}
+
+body.admin-interface.delete-confirmation #content > form input[type="submit"] {
+  min-height: 44px;
+}
+
+body.admin-interface.delete-confirmation #content > form a.button {
+  align-items: center;
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-radius);
+  display: inline-flex;
+  margin-inline-start: 10px;
+  min-height: 44px;
+  padding: 0 18px;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  body.admin-interface .aligned label {
+    display: block;
+    float: none;
+    padding-top: 0;
+    width: auto;
+  }
+
+  body.admin-interface .aligned .form-row .help,
+  body.admin-interface .aligned .form-row ul,
+  body.admin-interface .aligned .form-row .readonly {
+    margin-left: 0;
+  }
+
+  body.admin-interface .form-row {
+    padding: 12px 14px;
+  }
+
+  body.admin-interface .submit-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  body.admin-interface .submit-row input[type="submit"],
+  body.admin-interface .submit-row a.closelink,
+  body.admin-interface .submit-row a.deletelink {
+    width: 100%;
+  }
+}
+
+@media (forced-colors: active) {
+  body.admin-interface .form-row.errors {
+    border-inline-start: 4px solid Highlight;
+  }
+
+  body.admin-interface .form-row input:focus-visible,
+  body.admin-interface .form-row textarea:focus-visible,
+  body.admin-interface .form-row select:focus-visible {
+    outline: 2px solid Highlight;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.admin-interface .form-row input,
+  body.admin-interface .form-row textarea,
+  body.admin-interface .form-row select,
+  body.admin-interface .submit-row input,
+  body.admin-interface .submit-row a {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   AUTENTICACIÓN (fase 3D.2.1): recuperación de contraseña
+   Tarjeta centrada sobre el shell común. Solo tokens.
+   ========================================================================== */
+body.cb-auth #content {
+  width: 100%;
+  max-width: 34rem;
+  margin-inline: auto;
+  padding: clamp(16px, 5vw, 40px) clamp(12px, 3vw, 24px);
+}
+
+body.cb-auth #content > h1 {
+  margin: 14px 0 14px;
+  color: var(--cb-text);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+body.cb-auth .cb-theme-control {
+  margin-top: 0;
+  color: var(--cb-text);
+}
+
+body.cb-auth .cb-auth-card {
+  padding: clamp(18px, 4vw, 28px);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-radius);
+  background: var(--cb-panel);
+  box-shadow: var(--cb-shadow);
+  color: var(--cb-text);
+  line-height: 1.6;
+}
+
+body.cb-auth .cb-auth-card p {
+  margin: 0 0 14px;
+  color: var(--cb-text);
+}
+
+body.cb-auth .cb-auth-card a {
+  color: var(--cb-accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+body.cb-auth .cb-auth-card a:hover {
+  color: var(--cb-accent-hover);
+}
+
+body.cb-auth .cb-auth-card a:focus-visible {
+  outline: 2px solid var(--cb-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+body.cb-auth #content-main form fieldset.module {
+  margin: 0 0 16px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+
+body.cb-auth .cb-auth-card .form-row {
+  padding: 0 0 14px;
+  border-bottom: 0;
+}
+
+body.cb-auth .cb-auth-card .flex-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+body.cb-auth .cb-auth-card .aligned label {
+  float: none;
+  width: auto;
+  min-width: 0;
+  padding-top: 0;
+}
+
+body.cb-auth .cb-auth-card .form-row input {
+  width: 100%;
+}
+
+body.cb-auth .cb-auth-card ul.errorlist {
+  margin: 0 0 6px;
+  padding: 0;
+  list-style: none;
+}
+
+body.cb-auth .cb-auth-card .submit-row {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+body.cb-auth .cb-auth-card .submit-row input[type="submit"] {
+  width: 100%;
+  border-color: var(--cb-accent);
+  background: var(--cb-accent);
+  color: var(--cb-action-text);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+body.cb-auth .cb-auth-card .submit-row input[type="submit"]:hover {
+  border-color: var(--cb-accent-hover);
+  background: var(--cb-accent-hover);
+}
+
+body.cb-auth .cb-auth-card .help {
+  margin-top: 8px;
+  color: var(--cb-muted);
+  font-size: .8125rem;
+  line-height: 1.5;
+}
+
+body.cb-auth .cb-auth-card .help ul {
+  margin: 0;
+  padding-inline-start: 1.2em;
+}
+
+body.cb-auth .cb-auth-card a.cb-auth-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--cb-accent);
+  border-radius: var(--cb-radius);
+  background: var(--cb-accent);
+  color: var(--cb-action-text);
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+
+body.cb-auth .cb-auth-card a.cb-auth-button:hover {
+  border-color: var(--cb-accent-hover);
+  background: var(--cb-accent-hover);
+  color: var(--cb-action-text);
+}
+
+body.cb-auth .cb-auth-card--invalid {
+  border-inline-start: 5px solid var(--cb-danger);
+}
+
 @keyframes cb-spin {
   to { transform: rotate(360deg); }
 }
@@ -1114,5 +2485,413 @@ body.admin-interface .skip-to-content-link {
   .metric-card,
   .cb-admin-container a.btn-admin-action {
     transition: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PORTADA DEL ADMINISTRADOR (fase 3D.4)
+   Solo tokens --cb-*. Prefijo cb-dash-*: no comparte clases con las gráficas.
+   ═══════════════════════════════════════════════════════════ */
+body.admin-interface #content-main.cb-dash {
+  display: grid;
+  gap: clamp(16px, 2.2vw, 24px);
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+}
+
+.cb-dash-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding: clamp(18px, 2.4vw, 28px);
+  border: 1px solid var(--cb-border);
+  border-top: 3px solid var(--cb-accent);
+  border-radius: var(--cb-radius);
+  background:
+    linear-gradient(120deg, color-mix(in srgb, var(--cb-accent) 9%, transparent), transparent 55%),
+    var(--cb-panel);
+  box-shadow: var(--cb-shadow-sm);
+}
+
+.cb-dash-kicker {
+  margin: 0 0 6px;
+  color: var(--cb-accent);
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+body.admin-interface #content .cb-dash-title {
+  margin: 0 0 6px;
+  font-size: clamp(1.6rem, 2.8vw, 2.3rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -.02em;
+}
+
+.cb-dash-title span {
+  color: var(--cb-accent);
+}
+
+.cb-dash-subtitle {
+  margin: 0;
+  color: var(--cb-muted);
+  font-size: 1rem;
+}
+
+.cb-dash-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 8px 14px;
+  border: 1px solid var(--cb-border);
+  border-radius: 999px;
+  background: var(--cb-bg);
+  color: var(--cb-muted);
+  font-size: .9rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.cb-dash-icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cb-dash-section {
+  min-width: 0;
+}
+
+.cb-dash-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin-bottom: 12px;
+}
+
+body.admin-interface #content .cb-dash-heading {
+  margin: 0 0 12px;
+  color: var(--cb-text);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: .01em;
+  text-transform: none;
+}
+
+.cb-dash-section-head .cb-dash-heading {
+  margin-bottom: 0;
+}
+
+body.admin-interface .cb-dash a.cb-dash-link {
+  color: var(--cb-accent);
+  font-size: .9rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+body.admin-interface .cb-dash a.cb-dash-link:hover {
+  color: var(--cb-accent-hover);
+  text-decoration: underline;
+}
+
+.cb-dash-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.cb-dash-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: 16px 18px;
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-radius);
+  background: var(--cb-panel);
+  box-shadow: var(--cb-shadow-sm);
+  transition: border-color .16s ease, box-shadow .16s ease;
+}
+
+.cb-dash-kpi:hover {
+  border-color: var(--cb-accent);
+  box-shadow: var(--cb-shadow);
+}
+
+.cb-dash-kpi dt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--cb-muted);
+  font-size: .9rem;
+  font-weight: 600;
+}
+
+.cb-dash-kpi dt .cb-dash-icon {
+  color: var(--cb-accent);
+}
+
+.cb-dash-kpi dd {
+  margin: 0;
+  color: var(--cb-text);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -.02em;
+  overflow-wrap: anywhere;
+}
+
+.cb-dash-kpi dd.cb-dash-kpi-note {
+  color: var(--cb-muted);
+  font-size: .8125rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.4;
+}
+
+.cb-dash-secondary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cb-dash-secondary li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--cb-muted);
+  font-size: .9rem;
+}
+
+.cb-dash-secondary .cb-dash-icon {
+  color: var(--cb-accent);
+}
+
+.cb-dash-secondary strong {
+  color: var(--cb-text);
+  font-size: 1rem;
+}
+
+.cb-dash-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  gap: clamp(16px, 2.2vw, 24px);
+  align-items: start;
+}
+
+.cb-dash-upcoming {
+  padding: 18px;
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-radius);
+  background: var(--cb-panel);
+  box-shadow: var(--cb-shadow-sm);
+}
+
+.cb-dash-appointments {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cb-dash-appointments li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+body.admin-interface .cb-dash a.cb-dash-appointment {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--cb-border);
+  border-radius: 12px;
+  background: var(--cb-bg);
+  color: var(--cb-text);
+  text-decoration: none;
+  transition: border-color .16s ease, background-color .16s ease;
+}
+
+body.admin-interface .cb-dash a.cb-dash-appointment:hover {
+  border-color: var(--cb-accent);
+  background: var(--cb-panel-selected);
+}
+
+.cb-dash-when {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  padding: 6px 0;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--cb-accent) 14%, var(--cb-panel));
+  color: var(--cb-accent);
+  line-height: 1.1;
+}
+
+.cb-dash-when-day {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.cb-dash-when-month {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.cb-dash-appointment-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cb-dash-appointment-client {
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cb-dash-appointment-meta {
+  color: var(--cb-muted);
+  font-size: .875rem;
+  overflow-wrap: anywhere;
+}
+
+.cb-dash-badge {
+  flex: none;
+  padding: 3px 10px;
+  border: 1px solid var(--cb-accent);
+  border-radius: 999px;
+  color: var(--cb-accent);
+  font-size: .75rem;
+  font-weight: 700;
+}
+
+.cb-dash-empty {
+  padding: 24px 16px;
+  border: 1px dashed var(--cb-border);
+  border-radius: 12px;
+  color: var(--cb-muted);
+  text-align: center;
+}
+
+.cb-dash-empty p {
+  margin: 0;
+}
+
+.cb-dash-empty .cb-dash-empty-title {
+  margin-bottom: 4px;
+  color: var(--cb-text);
+  font-weight: 700;
+}
+
+.cb-dash-aside {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.cb-dash-actions {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cb-dash-actions li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+body.admin-interface .cb-dash a.cb-dash-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--cb-border);
+  border-radius: 12px;
+  background: var(--cb-panel);
+  color: var(--cb-text);
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color .16s ease, background-color .16s ease;
+}
+
+body.admin-interface .cb-dash a.cb-dash-action::after {
+  color: var(--cb-accent);
+  content: "\2192";
+}
+
+body.admin-interface .cb-dash a.cb-dash-action:hover {
+  border-color: var(--cb-accent);
+  background: var(--cb-panel-selected);
+}
+
+body.admin-interface .cb-dash a.cb-dash-appointment:focus-visible,
+body.admin-interface .cb-dash a.cb-dash-action:focus-visible,
+body.admin-interface .cb-dash a.cb-dash-link:focus-visible {
+  outline: none;
+  box-shadow: var(--cb-ring);
+}
+
+.cb-dash-hint {
+  margin: 0;
+  color: var(--cb-muted);
+  font-size: .875rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 1024px) {
+  .cb-dash-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .cb-dash-kpi dd {
+    font-size: 1.75rem;
+  }
+
+  .cb-dash-appointment {
+    flex-wrap: wrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cb-dash-kpi,
+  body.admin-interface .cb-dash a.cb-dash-appointment,
+  body.admin-interface .cb-dash a.cb-dash-action {
+    transition: none;
   }
 }

@@ -13,6 +13,27 @@ logger = logging.getLogger(__name__)
 TZ = get_current_timezone()
 
 # ---------- MENSUAL -------------------------------------------------
+def totales_mes(inicio_mes):
+    """
+    Devuelve (total_citas, ingresos) de un mes (date con día 1). Solo lectura:
+    no crea ni modifica ningún registro.
+    """
+    fin_mes = inicio_mes + relativedelta(months=1)
+    inicio_aware = make_aware(datetime.combine(inicio_mes, datetime.min.time()), TZ)
+    fin_aware = make_aware(datetime.combine(fin_mes, datetime.min.time()), TZ)
+
+    citas = Cita.objects.filter(fecha__gte=inicio_aware, fecha__lt=fin_aware)
+    total_citas = citas.count()
+    total_ingresos = (
+        citas.annotate(
+            precio_total=F("servicio__precio")
+            + Coalesce(F("producto__precio"), Value(0), output_field=DecimalField())
+        )
+        .aggregate(total=Coalesce(Sum("precio_total"), Value(0), output_field=DecimalField()))["total"]
+    )
+    return total_citas, total_ingresos
+
+
 def calcular_reporte(mes_actual, meses_ahead: int = 1):
     """
     Crea/actualiza ReporteMensual para `mes_actual` (date) y los N meses siguientes.
@@ -24,29 +45,10 @@ def calcular_reporte(mes_actual, meses_ahead: int = 1):
 
     for i in range(meses_ahead):
         inicio_mes = mes_base + relativedelta(months=i)
-        fin_mes    = inicio_mes + relativedelta(months=1)
-
-        inicio_aware = make_aware(datetime.combine(inicio_mes, datetime.min.time()), TZ)
-        fin_aware    = make_aware(datetime.combine(fin_mes,   datetime.min.time()), TZ)
-
-        # Evitar N+1 al calcular precios
-        citas = (
-            Cita.objects
-            .filter(fecha__gte=inicio_aware, fecha__lt=fin_aware)
-            .select_related("servicio", "producto")
-        )
-
-        total_citas = citas.count()
-        total_ingresos = (
-            citas.annotate(
-                precio_total=F("servicio__precio")
-                + Coalesce(F("producto__precio"), Value(0), output_field=DecimalField())
-            )
-            .aggregate(total=Coalesce(Sum("precio_total"), Value(0), output_field=DecimalField()))["total"]
-        )
+        total_citas, total_ingresos = totales_mes(inicio_mes)
 
         report, _ = ReporteMensual.objects.update_or_create(
-            mes=inicio_aware.date(),
+            mes=inicio_mes,
             defaults={
                 "total_citas": total_citas,
                 "ingresos_totales": total_ingresos,
