@@ -20,7 +20,6 @@ logs/
 .env
 .env.*
 client_cabigote_secret.json
-env.txt
 
 # Django generated
 staticfiles/
@@ -40,7 +39,3 @@ Thumbs.db
 # Build
 dist/
 build/
-
-# Private docs
-DOCUMENTACION_COMPLETA.md
-ESTRUCTURA_PROYECTO.md
