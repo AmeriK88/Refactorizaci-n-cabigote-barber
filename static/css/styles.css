@@ -32,8 +32,9 @@ body{ display:flex; flex-direction:column; margin:0;background:var(--bg-900); co
 .site-header{ background: transparent; box-shadow: none; }
 /* Barber + micro‑anim */
 .site-header .icon{ height:46px; margin:0 .25rem; border:0!important; outline:none; filter: drop-shadow(0 1px 0 rgba(0,0,0,.2)); animation: spin-icon 6s linear infinite; }
-.animate-on-load{ opacity: 0; transform: translateY(12px); transition: opacity .5s ease-out, transform .5s ease-out; transition-delay: var(--a-delay, 0ms); will-change: opacity, transform;}
-.animate-on-load.loaded{ opacity: 1; transform: none;}
+/* Visible by default. Hidden states apply only once Animations.js adds html.anim-js. */
+html.anim-js .animate-on-load{ transition: opacity .5s ease-out, transform .5s ease-out; transition-delay: var(--a-delay, 0ms);}
+html.anim-js .animate-on-load:not(.loaded){ opacity: 0; transform: translateY(12px); will-change: opacity, transform;}
 .card-header :is(h2,h3,h4,h5,h6,.h1,.h2,.h3,.h4,.h5,.h6){ letter-spacing: .02em; font-family:var(--title-font-family-alt);}
 
 /* Keyframes */
@@ -527,7 +528,8 @@ details[open] .details-chevron{
   .footer-heading{ margin-bottom:.5rem; }
   .map-container{ padding-bottom:60%; }
   .odometer{ font-size:1.5rem; }
-  .animate-on-load{ transition-duration:.4s; transform: translateY(10px); }
+  html.anim-js .animate-on-load{ transition-duration:.4s; }
+  html.anim-js .animate-on-load:not(.loaded){ transform: translateY(10px); }
   .hide-xs{ display:none !important; }
   .show-xs{ display:none !important; }
   /* Logo */
@@ -551,7 +553,7 @@ details[open] .details-chevron{
 
 
 @media (prefers-reduced-motion: reduce){ 
-  .animate-on-load{ transition:none; transform:none !important; opacity:1 !important; }
+  html.anim-js .animate-on-load, html.anim-js .animate-on-load:not(.loaded){ transition:none; transition-delay:0ms; transform:none !important; opacity:1 !important; will-change:auto; }
   .dot{ animation:none; opacity:.7; }
  }
 
