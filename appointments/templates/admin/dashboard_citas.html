@@ -1,6 +1,8 @@
+
 {% extends "admin/base_site.html" %}
-{% load tz %}
 {% load static %}
+
+{% block bodyclass %}{{ block.super }} cb-admin-dashboard{% endblock %}
 
 {% block extrahead %}
   {{ block.super }}
@@ -10,66 +12,107 @@
 {% block content_title %}{% endblock %}
 
 {% block content %}
-<div id="content-main">
-  <div class="cb-admin-container">
-    <div class="cb-admin-layout">
-      <main class="cb-admin-main">
+<div id="content-main" class="cb-dash">
 
-        {# ───────────── HERO ───────────── #}
-        <section class="cb-hero">
-          <div class="cb-hero-content">
-            <div class="cb-hero-kicker">📊 Panel · Citas</div>
+  {# ───────────── CABECERA ───────────── #}
+  <section class="cb-dash-hero" aria-labelledby="cb-chart-title">
+    <div>
+      <p class="cb-dash-kicker">Panel de control · Ca’Bigote</p>
 
-            <h1 class="cb-hero-title">
-              Dashboard <strong>Citas</strong>
-            </h1>
+      <h1 id="cb-chart-title" class="cb-dash-title">
+        Estadísticas de <span>citas</span>
+      </h1>
 
-            <p class="cb-hero-subtitle">
-              Resumen del último año y accesos rápidos.
-            </p>
-
-            <div class="cb-hero-meta">
-              📅 {% now "l, d F Y" %}
-            </div>
-          </div>
-
-          <div class="cb-hero-brand">
-            <div class="cb-hero-logo" aria-label="Logo Ca'Bigote"></div>
-          </div>
-        </section>
-
-        {# ───────────── ACCIONES ───────────── #}
-        <div class="admin-actions-wrap">
-          <div class="cb-admin-actions-grid">
-            <a class="btn-admin-action" href="{% url 'admin:appointments_cita_changelist_hoy' %}">✅ Citas Hoy</a>
-            <a class="btn-admin-action" href="{% url 'admin:appointments_cita_changelist_manana' %}">📅 Citas Mañana</a>
-            <a class="btn-admin-action" href="{% url 'admin:appointments_cita_changelist' %}">📋 Todas las Citas</a>
-            <a class="btn-admin-action" href="{% url 'admin:cita_graph' %}">🖼️ Vista Imagen</a>
-          </div>
-        </div>
-
-        {# ───────────── CARD (reutilizada) ───────────── #}
-        <section class="cb-admin-card">
-          <h2 class="cb-admin-card-title">Citas por mes (últimos 12 meses)</h2>
-
-          <div class="cb-admin-chart-wrap is-loading" id="chart-citas-wrap" aria-busy="true">
-            <p class="cb-admin-status" id="chart-citas-loading" role="status" aria-live="polite">
-              Cargando gráfico de citas…
-            </p>
-            <p class="cb-admin-status cb-admin-status--error" id="chart-citas-error" role="alert" hidden>
-              No se pudo cargar el gráfico. Vuelve a intentarlo más tarde.
-            </p>
-            <canvas
-              id="chart-citas"
-              data-endpoint="{% url 'admin:cita_graph_data' %}"
-              role="img"
-              aria-label="Gráfico de citas por mes durante los últimos doce meses"
-            ></canvas>
-          </div>
-        </section>
-
-      </main>
+      <p class="cb-dash-subtitle">
+        Consulta la evolución de las reservas durante los últimos doce meses.
+      </p>
     </div>
-  </div>
+
+    <p class="cb-dash-date">
+      <svg class="cb-dash-icon" viewBox="0 0 24 24"
+           aria-hidden="true" focusable="false">
+        <rect x="3.5" y="5" width="17" height="15" rx="2.5"/>
+        <path d="M3.5 10h17M8 3.5v3M16 3.5v3"/>
+      </svg>
+      <span>{% now "l, j F Y" %}</span>
+    </p>
+  </section>
+
+  {# ───────────── GRÁFICO ───────────── #}
+  <section class="cb-dash-section" aria-labelledby="cb-chart-heading">
+    <div class="cb-dash-section-head">
+      <h2 id="cb-chart-heading" class="cb-dash-heading">
+        Citas por mes · Últimos 12 meses
+      </h2>
+      <a class="cb-dash-link"
+         href="{% url 'admin:cita_graph' %}">
+        Ver como imagen
+      </a>
+    </div>
+
+    <div class="cb-admin-chart-wrap is-loading"
+         id="chart-citas-wrap"
+         aria-busy="true">
+
+      <p class="cb-admin-status"
+         id="chart-citas-loading"
+         role="status"
+         aria-live="polite">
+        Cargando gráfico de citas…
+      </p>
+
+      <p class="cb-admin-status cb-admin-status--error"
+         id="chart-citas-error"
+         role="alert"
+         hidden>
+        No se pudo cargar el gráfico. Vuelve a intentarlo más tarde.
+      </p>
+
+      <canvas
+        id="chart-citas"
+        data-endpoint="{% url 'admin:cita_graph_data' %}"
+        role="img"
+        aria-label="Gráfico de citas por mes durante los últimos doce meses"
+      ></canvas>
+    </div>
+  </section>
+
+  {# ───────────── ACCESOS RÁPIDOS ───────────── #}
+  <section class="cb-dash-section" aria-labelledby="cb-chart-actions">
+    <h2 id="cb-chart-actions" class="cb-dash-heading">
+      Accesos rápidos
+    </h2>
+
+    <ul class="cb-dash-actions">
+      <li>
+        <a class="cb-dash-action"
+           href="{% url 'admin:appointments_cita_changelist_hoy' %}">
+          Citas de hoy
+        </a>
+      </li>
+
+      <li>
+        <a class="cb-dash-action"
+           href="{% url 'admin:appointments_cita_changelist_manana' %}">
+          Citas de mañana
+        </a>
+      </li>
+
+      <li>
+        <a class="cb-dash-action"
+           href="{% url 'admin:appointments_cita_changelist' %}">
+          Todas las citas
+        </a>
+      </li>
+
+      <li>
+        <a class="cb-dash-action"
+           href="{% url 'admin:index' %}">
+          Volver al panel
+        </a>
+      </li>
+    </ul>
+  </section>
+
 </div>
 {% endblock %}

@@ -1,6 +1,15 @@
+
 {% extends "admin/base_site.html" %}
+{% load static %}
 
 {% block bodyclass %}{{ block.super }} cb-admin-dashboard{% endblock %}
+
+{% block extrahead %}
+  {{ block.super }}
+  {% if can_view_citas %}
+  <script defer src="{% static 'admin/js/citas_dashboard_chart.js' %}"></script>
+  {% endif %}
+{% endblock %}
 
 {% block content_title %}{% endblock %}
 
@@ -11,13 +20,22 @@
   <section class="cb-dash-hero" aria-labelledby="cb-dash-title">
     <div>
       <p class="cb-dash-kicker">Panel de control · Ca’Bigote</p>
+
       <h1 id="cb-dash-title" class="cb-dash-title">
         Hola, <span>{{ request.user.get_full_name|default:request.user.username }}</span>
       </h1>
-      <p class="cb-dash-subtitle">Esto es lo que necesita tu atención en la barbería.</p>
+
+      <p class="cb-dash-subtitle">
+        Esto es lo que necesita tu atención en la barbería.
+      </p>
     </div>
+
     <p class="cb-dash-date">
-      <svg class="cb-dash-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3.5v3M16 3.5v3"/></svg>
+      <svg class="cb-dash-icon" viewBox="0 0 24 24"
+           aria-hidden="true" focusable="false">
+        <rect x="3.5" y="5" width="17" height="15" rx="2.5"/>
+        <path d="M3.5 10h17M8 3.5v3M16 3.5v3"/>
+      </svg>
       <span>{% now "l, j F Y" %}</span>
     </p>
   </section>
@@ -25,121 +43,284 @@
   {# ───────────── RESUMEN OPERATIVO ───────────── #}
   {% if show_kpis %}
   <section class="cb-dash-section" aria-labelledby="cb-dash-summary">
-    <h2 id="cb-dash-summary" class="cb-dash-heading">Resumen operativo</h2>
+    <h2 id="cb-dash-summary" class="cb-dash-heading">
+      Resumen operativo
+    </h2>
 
     {% if citas_hoy is not None %}
     <dl class="cb-dash-kpis">
+
       <div class="cb-dash-kpi">
         <dt>
-          <svg class="cb-dash-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3.5v3M16 3.5v3"/></svg>
+          <svg class="cb-dash-icon" viewBox="0 0 24 24"
+               aria-hidden="true" focusable="false">
+            <rect x="3.5" y="5" width="17" height="15" rx="2.5"/>
+            <path d="M3.5 10h17M8 3.5v3M16 3.5v3"/>
+          </svg>
           Citas de hoy
         </dt>
         <dd>{{ citas_hoy }}</dd>
       </div>
+
       <div class="cb-dash-kpi">
         <dt>
-          <svg class="cb-dash-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 7.5A6.5 6.5 0 1 0 18 16.5M4 10.5h9M4 13.5h9"/></svg>
+          <svg class="cb-dash-icon" viewBox="0 0 24 24"
+               aria-hidden="true" focusable="false">
+            <path d="M18 7.5A6.5 6.5 0 1 0 18 16.5M4 10.5h9M4 13.5h9"/>
+          </svg>
           Valor estimado de reservas
         </dt>
         <dd>€{{ valor_estimado_hoy|floatformat:2 }}</dd>
-        <dd class="cb-dash-kpi-note">Citas de hoy, servicio y producto. No es dinero cobrado.</dd>
+        <dd class="cb-dash-kpi-note">
+          Citas de hoy, servicio y producto. No es dinero cobrado.
+        </dd>
       </div>
+
       <div class="cb-dash-kpi">
         <dt>
-          <svg class="cb-dash-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.8"/></svg>
+          <svg class="cb-dash-icon" viewBox="0 0 24 24"
+               aria-hidden="true" focusable="false">
+            <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/>
+            <circle cx="12" cy="12" r="2.8"/>
+          </svg>
           Próximas sin revisar
         </dt>
         <dd>{{ citas_sin_ver }}</dd>
-        <dd class="cb-dash-kpi-note">Citas futuras aún no marcadas como vistas.</dd>
+        <dd class="cb-dash-kpi-note">
+          Citas futuras aún no marcadas como vistas.
+        </dd>
       </div>
+
     </dl>
     {% endif %}
 
     {% if servicios_total is not None or usuarios_total is not None %}
     <ul class="cb-dash-secondary">
+
       {% if servicios_total is not None %}
       <li>
-        <svg class="cb-dash-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="6.5" cy="6.5" r="2.8"/><circle cx="6.5" cy="17.5" r="2.8"/><path d="m8.7 8.5 11 8.5M8.7 15.5l11-8.5"/></svg>
+        <svg class="cb-dash-icon" viewBox="0 0 24 24"
+             aria-hidden="true" focusable="false">
+          <circle cx="6.5" cy="6.5" r="2.8"/>
+          <circle cx="6.5" cy="17.5" r="2.8"/>
+          <path d="m8.7 8.5 11 8.5M8.7 15.5l11-8.5"/>
+        </svg>
         <span>Servicios en catálogo</span>
         <strong>{{ servicios_total }}</strong>
       </li>
       {% endif %}
+
       {% if usuarios_total is not None %}
       <li>
-        <svg class="cb-dash-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="9" cy="8.5" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 5.2a3.5 3.5 0 0 1 0 6.6M18 14.8c1.9.7 3.2 2.4 3.5 5.2"/></svg>
+        <svg class="cb-dash-icon" viewBox="0 0 24 24"
+             aria-hidden="true" focusable="false">
+          <circle cx="9" cy="8.5" r="3.5"/>
+          <path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 5.2a3.5 3.5 0 0 1 0 6.6M18 14.8c1.9.7 3.2 2.4 3.5 5.2"/>
+        </svg>
         <span>Usuarios registrados</span>
         <strong>{{ usuarios_total }}</strong>
       </li>
       {% endif %}
+
     </ul>
     {% endif %}
   </section>
   {% endif %}
 
+  {# ───────────── EVOLUCIÓN DE CITAS ───────────── #}
+  {% if can_view_citas %}
+  <section class="cb-dash-section" aria-labelledby="cb-dash-chart-heading">
+
+    <div class="cb-dash-section-head">
+      <h2 id="cb-dash-chart-heading" class="cb-dash-heading">
+        Evolución de citas · Últimos 12 meses
+      </h2>
+
+      <a class="cb-dash-link" href="{% url 'admin:cita_graph' %}">
+        Ver gráfico completo
+      </a>
+    </div>
+
+    <div
+      class="cb-admin-chart-wrap is-loading"
+      id="chart-citas-wrap"
+      aria-busy="true"
+    >
+      <p
+        class="cb-admin-status"
+        id="chart-citas-loading"
+        role="status"
+        aria-live="polite"
+      >
+        Cargando gráfico de citas…
+      </p>
+
+      <p
+        class="cb-admin-status cb-admin-status--error"
+        id="chart-citas-error"
+        role="alert"
+        hidden
+      >
+        No se pudo cargar el gráfico.
+        Vuelve a intentarlo más tarde.
+      </p>
+
+      <canvas
+        id="chart-citas"
+        data-endpoint="{% url 'admin:cita_graph_data' %}"
+        role="img"
+        aria-label="Gráfico de citas por mes durante los últimos doce meses"
+      ></canvas>
+    </div>
+
+  </section>
+  {% endif %}
+
+  {# ───────────── PRÓXIMAS CITAS Y ACCESOS RÁPIDOS ───────────── #}
   <div class="cb-dash-grid">
 
-    {# ───────────── PRÓXIMAS CITAS ───────────── #}
     {% if can_view_citas %}
-    <section class="cb-dash-section cb-dash-upcoming" aria-labelledby="cb-dash-upcoming">
+    <section
+      class="cb-dash-section cb-dash-upcoming"
+      aria-labelledby="cb-dash-upcoming"
+    >
+
       <div class="cb-dash-section-head">
-        <h2 id="cb-dash-upcoming" class="cb-dash-heading">Próximas citas</h2>
-        <a class="cb-dash-link" href="{% url 'admin:appointments_cita_changelist' %}?year=all">Ver todas las citas</a>
+        <h2 id="cb-dash-upcoming" class="cb-dash-heading">
+          Próximas citas
+        </h2>
+
+        <a
+          class="cb-dash-link"
+          href="{% url 'admin:appointments_cita_changelist' %}?year=all"
+        >
+          Ver todas las citas
+        </a>
       </div>
 
       {% if proximas_citas %}
       <ol class="cb-dash-appointments">
+
         {% for cita in proximas_citas %}
         <li>
-          <a class="cb-dash-appointment" href="{% url 'admin:appointments_cita_change' cita.pk %}">
+          <a
+            class="cb-dash-appointment"
+            href="{% url 'admin:appointments_cita_change' cita.pk %}"
+          >
             <time class="cb-dash-when" datetime="{{ cita.fecha|date:'c' }}">
-              <span class="cb-dash-when-day">{{ cita.fecha|date:"j" }}</span>
-              <span class="cb-dash-when-month">{{ cita.fecha|date:"M" }}</span>
+              <span class="cb-dash-when-day">
+                {{ cita.fecha|date:"j" }}
+              </span>
+              <span class="cb-dash-when-month">
+                {{ cita.fecha|date:"M" }}
+              </span>
             </time>
+
             <span class="cb-dash-appointment-body">
-              <span class="cb-dash-appointment-client">{{ cita.usuario.get_full_name|default:cita.usuario.username }}</span>
-              <span class="cb-dash-appointment-meta">{{ cita.fecha|date:"l, H:i" }} · {{ cita.servicio.nombre }}</span>
+              <span class="cb-dash-appointment-client">
+                {{ cita.usuario.get_full_name|default:cita.usuario.username }}
+              </span>
+
+              <span class="cb-dash-appointment-meta">
+                {{ cita.fecha|date:"l, H:i" }} · {{ cita.servicio.nombre }}
+              </span>
             </span>
-            {% if not cita.vista %}<span class="cb-dash-badge">Sin revisar</span>{% endif %}
+
+            {% if not cita.vista %}
+            <span class="cb-dash-badge">
+              Sin revisar
+            </span>
+            {% endif %}
+
           </a>
         </li>
         {% endfor %}
+
       </ol>
       {% else %}
       <div class="cb-dash-empty">
-        <p class="cb-dash-empty-title">No hay citas próximas</p>
-        <p>Cuando se reserve una nueva cita aparecerá aquí, ordenada por fecha.</p>
+        <p class="cb-dash-empty-title">
+          No hay citas próximas
+        </p>
+
+        <p>
+          Cuando se reserve una nueva cita aparecerá aquí,
+          ordenada por fecha.
+        </p>
       </div>
       {% endif %}
+
     </section>
     {% endif %}
 
     {# ───────────── ACCESOS RÁPIDOS ───────────── #}
     <aside class="cb-dash-aside" aria-label="Accesos rápidos">
+
       {% if show_quick_actions %}
       <section class="cb-dash-section" aria-labelledby="cb-dash-actions">
-        <h2 id="cb-dash-actions" class="cb-dash-heading">Accesos rápidos</h2>
+
+        <h2 id="cb-dash-actions" class="cb-dash-heading">
+          Accesos rápidos
+        </h2>
+
         <ul class="cb-dash-actions">
+
           {% if can_view_citas %}
-          <li><a class="cb-dash-action" href="{% url 'admin:appointments_cita_changelist_hoy' %}">Citas de hoy</a></li>
-          <li><a class="cb-dash-action" href="{% url 'admin:appointments_cita_changelist_manana' %}">Citas de mañana</a></li>
+          <li>
+            <a
+              class="cb-dash-action"
+              href="{% url 'admin:appointments_cita_changelist_hoy' %}"
+            >
+              Citas de hoy
+            </a>
+          </li>
+
+          <li>
+            <a
+              class="cb-dash-action"
+              href="{% url 'admin:appointments_cita_changelist_manana' %}"
+            >
+              Citas de mañana
+            </a>
+          </li>
           {% endif %}
+
           {% if can_view_usuarios %}
-          <li><a class="cb-dash-action" href="{% url 'admin:auth_user_changelist' %}">Usuarios</a></li>
+          <li>
+            <a
+              class="cb-dash-action"
+              href="{% url 'admin:auth_user_changelist' %}"
+            >
+              Usuarios
+            </a>
+          </li>
           {% endif %}
+
           {% if can_view_reportes %}
-          <li><a class="cb-dash-action" href="{% url 'admin:descargar_reporte' %}">Informes</a></li>
+          <li>
+            <a
+              class="cb-dash-action"
+              href="{% url 'admin:descargar_reporte' %}"
+            >
+              Informes
+            </a>
+          </li>
           {% endif %}
+
         </ul>
       </section>
       {% endif %}
 
       <p class="cb-dash-hint">
         {% if app_list %}
-          El resto de apartados están en el menú lateral; en pantallas pequeñas, en el botón de menú de la cabecera.
+          El resto de apartados están en el menú lateral;
+          en pantallas pequeñas, en el botón de menú de la cabecera.
         {% else %}
-          Tu cuenta no tiene apartados asignados. Contacta con un administrador.
+          Tu cuenta no tiene apartados asignados.
+          Contacta con un administrador.
         {% endif %}
       </p>
+
     </aside>
 
   </div>

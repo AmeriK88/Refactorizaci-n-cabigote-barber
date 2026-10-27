@@ -473,7 +473,10 @@ details[open] .details-chevron{
 .btn-google.disabled{ opacity:.7; filter:none; box-shadow:none; cursor:not-allowed;}
 
 /* WhatsApp FAB */
-.whatsapp-float{ position:fixed; width:60px; height:60px; bottom:20px; right:20px; background:#25d366; color:white; border-radius:50%; text-align:center; font-size:30px; z-index:1000; box-shadow:var(--shadow-2); transition: transform .2s ease, box-shadow .2s ease; }
+
+/* WhatsApp FAB — esquina inferior izquierda */
+.whatsapp-float { position: fixed; width: 60px; height: 60px; bottom: 20px; left: 20px; right: auto; background: #25d366; color: white; border-radius: 50%; text-align: center; font-size: 30px; z-index: 1000; box-shadow: var(--shadow-2); transition: transform .2s ease, box-shadow .2s ease; }
+
 .whatsapp-float:hover{ transform: translateY(-2px); box-shadow:var(--shadow-1); }
 .whatsapp-icon{ margin-top:15px; }
 
@@ -497,7 +500,7 @@ details[open] .details-chevron{
   .mockup-laptop{ max-width:180px; }
   .mockup-phone { max-width:100px; }
   .container{ padding-inline: 16px; }
-  .whatsapp-float{ right: calc(20px + env(safe-area-inset-right)); bottom: calc(20px + env(safe-area-inset-bottom));}
+  .whatsapp-float { left: calc(20px + env(safe-area-inset-left)); right: auto; bottom: calc(20px + env(safe-area-inset-bottom)); }
   .hero-image{ max-width:220px; }
   .table-responsive table{ border:0; }
   .table-responsive thead{ display:none; }

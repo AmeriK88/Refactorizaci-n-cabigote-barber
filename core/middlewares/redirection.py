@@ -1,14 +1,18 @@
-from django.http import HttpResponsePermanentRedirect
+
 from django.conf import settings
+from django.http import (
+    HttpResponsePermanentRedirect,
+    HttpResponse,
+)
 
 
 class RedirectionDomainMiddleware:
     """
-    Redirect legacy Railway domain and www subdomain
-    to the canonical domain.
+    Redirige dominios antiguos y www al dominio canónico.
 
-    Preserves path and query string.
-    Returns HTTP 301.
+    - GET y HEAD: redirección permanente 301.
+    - POST, PUT, PATCH y DELETE: no redirige automáticamente.
+    - Conserva la ruta y los parámetros de consulta.
     """
 
     def __init__(self, get_response):
@@ -35,6 +39,12 @@ class RedirectionDomainMiddleware:
         }
 
         if host in redirect_hosts:
+            if request.method not in ("GET", "HEAD"):
+                return HttpResponse(
+                    "Utiliza el dominio canónico para enviar formularios.",
+                    status=400,
+                )
+
             return HttpResponsePermanentRedirect(
                 f"https://{self.new_host}{request.get_full_path()}"
             )

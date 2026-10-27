@@ -1,143 +1,477 @@
+
 {% extends 'base.html' %}
 {% load static %}
-{% load crispy_forms_tags %}
 
-{% block title %}Inicio · CaʼBigote Barber Shop{% endblock %}
+{% block title %}CaʼBigote Barber Shop · Barbería en Arrecife{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<main class="cb-home">
 
-  <!-- HERO -->
-  <div class="row align-items-center mb-5 flex-column flex-lg-row">
-    <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
-      <h2 class="display-4 fw-bold text-ink animate-on-load hero-title">Bienvenido a CaʼBigote</h2>
-      <p class="lead mb-4 text-ink-muted">
-        Donde el estilo se encuentra con la tradición. Ubicados en el corazón de Arrecife,
-        ofrecemos cortes de cabello y arreglos de barba con la máxima calidad.
-      </p>
-      <div class="d-flex gap-3 justify-content-center justify-content-lg-start">
-        <a href="{% url 'appointments:reservar_cita' %}" class="btn btn-gold btn-lg">Reservar cita</a>
-        <a href="{% url 'services:ver_servicios' %}" class="btn btn-outline-gold btn-lg">Ver servicios</a>
+  {# ───────────── HERO ───────────── #}
+  <section
+    class="container py-5"
+    aria-labelledby="home-hero-title"
+  >
+    <div class="row align-items-center g-5 py-lg-4">
+
+      <div class="col-lg-6 text-center text-lg-start">
+
+        <p class="text-gold fw-semibold text-uppercase small
+                  mb-3 animate-on-load">
+          Barbería en Arrecife · Lanzarote
+        </p>
+
+        <h1
+          id="home-hero-title"
+          class="display-3 fw-bold text-ink hero-title
+                 animate-on-load mb-4"
+        >
+          Tu estilo.
+          <span class="text-gold d-block">
+            Nuestra tradición.
+          </span>
+        </h1>
+
+        <p class="lead text-ink-muted mb-4 animate-on-load">
+          Cortes con personalidad, barbas cuidadas al detalle
+          y una experiencia hecha para ti.
+          Bienvenido a CaʼBigote.
+        </p>
+
+        <div
+          class="d-flex flex-wrap gap-3
+                 justify-content-center
+                 justify-content-lg-start
+                 animate-on-load"
+        >
+          <a
+            href="{% url 'appointments:reservar_cita' %}"
+            class="btn btn-gold btn-lg"
+          >
+            <i class="bi bi-calendar-check me-2"
+               aria-hidden="true"></i>
+            Reservar cita
+          </a>
+
+          <a
+            href="{% url 'services:ver_servicios' %}"
+            class="btn btn-outline-gold btn-lg"
+          >
+            Explorar servicios
+          </a>
+        </div>
+
+        <p class="small text-ink-muted mt-4 mb-0 animate-on-load">
+          <i class="bi bi-geo-alt text-gold me-1"
+             aria-hidden="true"></i>
+          Arrecife, Lanzarote
+        </p>
+
       </div>
-    </div>
 
-    <div class="col-lg-6 text-center position-relative hero-glow">
-      <!-- NUEVO WRAPPER -->
-      <div class="hero-frame rounded-4">
-        <img
-          src="{% static 'imagenes/cabigote.webp' %}"
-          alt="Logo CaʼBigote"
-          class="hero-image img-fluid mx-auto animate-on-load rounded-4 shadow-none border-0"
-          loading="lazy">
-      </div>
-    </div>
-  </div>
-
-
-  <!-- TARIFA -->
-  <section class="my-5" aria-labelledby="tarifa-title">
-    <div class="card-user-profile animate-on-load">
-      <div class="mb-4 card-header gradiente-header shadow-0 bg-transparent text-center p-2 border-0">
-        <h2 id="tarifa-title" class="h4 fw-bold mb-0 text-ink">
-          <i class="fas fa-scissors me-2 text-gold" aria-hidden="true"></i>
-          Tarifa de Servicios
-        </h2>
-      </div>
-
-      <div class="row justify-content-center">
-        <div class="col-md-8">
-          <div class="card card-glass overflow-hidden animate-on-load">
-            <div class="price-card-head text-center py-2 text-ink-muted small">Lista de Precios</div>
-            <ul class="list-unstyled m-0 price-list">
-              {% for servicio in servicios|slice:":10" %}
-                <li class="price-item d-flex align-items-center justify-content-between">
-                  <span class="service-name">{{ servicio.nombre }}</span>
-                  <span class="service-price">{{ servicio.precio }} €</span>
-                </li>
-              {% empty %}
-                <li class="text-center py-4 text-ink-muted">Todavía no hay servicios cargados.</li>
-              {% endfor %}
-            </ul>
-          </div>
+      <div
+        class="col-lg-6 text-center position-relative hero-glow"
+      >
+        <div class="hero-frame rounded-4">
+          <img
+            src="{% static 'imagenes/cabigote.webp' %}"
+            alt="Identidad visual de CaʼBigote Barber Shop"
+            class="hero-image img-fluid mx-auto
+                   animate-on-load rounded-4
+                   shadow-none border-0"
+            width="640"
+            height="640"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          >
         </div>
       </div>
 
-      <div class="text-center mt-4">
-        <a href="{% url 'services:ver_servicios' %}" class="btn btn-gold btn-lg">
-          Descubre Nuestros Servicios
+    </div>
+  </section>
+
+  {# ───────────── PRESENTACIÓN ───────────── #}
+  <section
+    class="container py-4 py-lg-5"
+    aria-labelledby="home-intro-title"
+  >
+    <div class="row justify-content-center">
+      <div class="col-lg-9 text-center animate-on-load">
+
+        <p class="text-gold fw-semibold text-uppercase small mb-3">
+          El carácter de CaʼBigote
+        </p>
+
+        <h2
+          id="home-intro-title"
+          class="display-6 fw-bold text-ink mb-4"
+        >
+          No es solo un corte.
+          <span class="text-gold">Es tu momento.</span>
+        </h2>
+
+        <p class="lead text-ink-muted mb-0">
+          Creemos en los detalles, en el trabajo bien hecho
+          y en encontrar el estilo que mejor encaja contigo.
+          Tradición barbera con una mirada actual.
+        </p>
+
+      </div>
+    </div>
+  </section>
+
+  {# ───────────── SERVICIOS Y TARIFAS ───────────── #}
+  <section
+    class="container py-5"
+    aria-labelledby="home-services-title"
+  >
+    <div class="text-center mb-4 animate-on-load">
+
+      <p class="text-gold fw-semibold text-uppercase small mb-2">
+        Nuestros servicios
+      </p>
+
+      <h2
+        id="home-services-title"
+        class="display-6 fw-bold text-ink mb-3"
+      >
+        El cuidado está en los detalles
+      </h2>
+
+      <p class="text-ink-muted mb-0">
+        Descubre nuestros servicios y encuentra tu próximo estilo.
+      </p>
+
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-9 col-xl-8">
+
+        <div
+          class="card card-glass card-user-profile
+                 overflow-hidden animate-on-load"
+        >
+
+          <div
+            class="card-header gradiente-header
+                   bg-transparent text-center
+                   p-3 border-0"
+          >
+            <h3 class="h5 fw-bold mb-0 text-ink">
+              <i class="fas fa-scissors me-2 text-gold"
+                 aria-hidden="true"></i>
+              Servicios destacados
+            </h3>
+          </div>
+
+          <div class="price-card-head text-center py-2
+                      text-ink-muted small">
+            Tarifa de servicios
+          </div>
+
+          <ul class="list-unstyled m-0 price-list">
+
+            {% for servicio in servicios|slice:":5" %}
+            <li
+              class="price-item d-flex
+                     align-items-center
+                     justify-content-between gap-3"
+            >
+              <span class="service-name">
+                {{ servicio.nombre }}
+              </span>
+
+              <span class="service-price text-nowrap">
+                {{ servicio.precio }} €
+              </span>
+            </li>
+
+            {% empty %}
+            <li class="text-center py-4 text-ink-muted">
+              Todavía no hay servicios cargados.
+            </li>
+            {% endfor %}
+
+          </ul>
+
+          <div class="text-center p-4">
+            <a
+              href="{% url 'services:ver_servicios' %}"
+              class="btn btn-outline-gold btn-lg"
+            >
+              Ver todos los servicios
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  {# ───────────── EXPERIENCIA ───────────── #}
+  <section
+    class="container py-5"
+    aria-labelledby="home-experience-title"
+  >
+    <div class="text-center mb-4 animate-on-load">
+
+      <p class="text-gold fw-semibold text-uppercase small mb-2">
+        Nuestra filosofía
+      </p>
+
+      <h2
+        id="home-experience-title"
+        class="display-6 fw-bold text-ink"
+      >
+        La experiencia CaʼBigote
+      </h2>
+
+    </div>
+
+    <div class="row g-4">
+
+      <div class="col-md-4">
+        <article
+          class="card card-glass h-100 p-4
+                 text-center animate-on-load"
+        >
+          <div class="mb-3">
+            <i
+              class="fas fa-scissors fa-2x text-gold"
+              aria-hidden="true"
+            ></i>
+          </div>
+
+          <h3 class="h5 fw-bold text-ink mb-3">
+            Precisión
+          </h3>
+
+          <p class="text-ink-muted mb-0">
+            Cada corte y cada arreglo de barba
+            se trabaja prestando atención a los detalles.
+          </p>
+        </article>
+      </div>
+
+      <div class="col-md-4">
+        <article
+          class="card card-glass h-100 p-4
+                 text-center animate-on-load"
+        >
+          <div class="mb-3">
+            <i
+              class="bi bi-person-check fa-2x text-gold"
+              aria-hidden="true"
+            ></i>
+          </div>
+
+          <h3 class="h5 fw-bold text-ink mb-3">
+            Personalidad
+          </h3>
+
+          <p class="text-ink-muted mb-0">
+            Escuchamos lo que buscas para encontrar
+            un estilo que encaje contigo.
+          </p>
+        </article>
+      </div>
+
+      <div class="col-md-4">
+        <article
+          class="card card-glass h-100 p-4
+                 text-center animate-on-load"
+        >
+          <div class="mb-3">
+            <i
+              class="bi bi-stars fa-2x text-gold"
+              aria-hidden="true"
+            ></i>
+          </div>
+
+          <h3 class="h5 fw-bold text-ink mb-3">
+            Tradición y estilo
+          </h3>
+
+          <p class="text-ink-muted mb-0">
+            La esencia de la barbería clásica
+            combinada con una visión contemporánea.
+          </p>
+        </article>
+      </div>
+
+    </div>
+  </section>
+
+  {# ───────────── APP / PWA ───────────── #}
+  <section
+    class="container py-5"
+    aria-labelledby="home-app-title"
+  >
+    <div
+      class="card card-glass p-4 p-lg-5
+             animate-on-load"
+    >
+
+      <div class="row g-4 align-items-center">
+
+        <div
+          class="col-md-6 d-flex justify-content-center
+                 align-items-center gap-3"
+        >
+          <img
+            src="{% static 'imagenes/mockup-laptop.webp' %}"
+            alt="Vista de CaʼBigote desde un portátil"
+            class="mockup-laptop rounded-3
+                   shadow-sm border-0"
+            loading="lazy"
+            decoding="async"
+          >
+
+          <img
+            src="{% static 'imagenes/mockup-phone.webp' %}"
+            alt="Vista de CaʼBigote desde un móvil"
+            class="mockup-phone rounded-3
+                   shadow-sm border-0"
+            loading="lazy"
+            decoding="async"
+          >
+        </div>
+
+        <div class="col-md-6 text-center text-md-start">
+
+          <p
+            class="text-gold fw-semibold
+                   text-uppercase small mb-2"
+          >
+            CaʼBigote en tu dispositivo
+          </p>
+
+          <h2
+            id="home-app-title"
+            class="h2 fw-bold text-ink mb-3"
+          >
+            Tu próxima cita, más cerca.
+          </h2>
+
+          <p class="text-ink-muted mb-4">
+            Accede a tus reservas, recibe recordatorios
+            y gestiona tu perfil desde cualquier dispositivo.
+          </p>
+
+          <button
+            id="btn-instalar"
+            type="button"
+            class="btn btn-outline-gold btn-lg d-none"
+          >
+            <i class="bi bi-download me-2"
+               aria-hidden="true"></i>
+            Instalar CaʼBigote
+          </button>
+
+          <p class="small text-ink-muted mt-3 mb-0">
+            También puedes reservar directamente desde la web.
+          </p>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  {# ───────────── REDES SOCIALES ───────────── #}
+  <section
+    class="container py-5"
+    aria-labelledby="home-social-title"
+  >
+    <div class="text-center mb-4 animate-on-load">
+
+      <p class="text-gold fw-semibold text-uppercase small mb-2">
+        Síguenos de cerca
+      </p>
+
+      <h2
+        id="home-social-title"
+        class="display-6 fw-bold text-ink mb-3"
+      >
+        CaʼBigote en las redes
+      </h2>
+
+      <p class="text-ink-muted mb-0">
+        Un vistazo a nuestro día a día.
+      </p>
+
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-6">
+
+        <div
+          class="card card-glass p-3
+                 animate-on-load"
+        >
+          <div
+            class="instagram-embed rounded-4
+                   overflow-hidden bg-section border-0"
+          >
+            <iframe
+              src="https://www.instagram.com/p/C9ecZGftT6b/embed"
+              title="Publicación de Instagram de CaʼBigote"
+              loading="lazy"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  {# ───────────── CTA FINAL ───────────── #}
+  <section
+    class="container py-5"
+    aria-labelledby="home-cta-title"
+  >
+    <div
+      class="card card-glass card-user-profile
+             text-center p-4 p-lg-5
+             animate-on-load"
+    >
+
+      <p class="text-gold fw-semibold text-uppercase small mb-3">
+        Tu próximo estilo empieza aquí
+      </p>
+
+      <h2
+        id="home-cta-title"
+        class="display-6 fw-bold text-ink mb-3"
+      >
+        ¿Listo para tu próximo corte?
+      </h2>
+
+      <p
+        class="lead text-ink-muted mb-4
+               mx-auto"
+        style="max-width: 38rem;"
+      >
+        Dedícate un momento.
+        Nosotros nos encargamos de los detalles.
+      </p>
+
+      <div>
+        <a
+          href="{% url 'appointments:reservar_cita' %}"
+          class="btn btn-gold btn-lg"
+        >
+          <i class="bi bi-calendar-check me-2"
+             aria-hidden="true"></i>
+          Reservar mi cita
         </a>
       </div>
+
     </div>
   </section>
 
-  <!-- PWA -->
-  <section class="py-5 bg-section" aria-labelledby="pwa-title">
-    <div class="container">
-      <div class="card card-glass p-4 animate-on-load">
-        <div class="row g-4 align-items-center flex-column flex-md-row">
-
-          <div class="col-12 col-md-6 d-flex justify-content-center gap-3">
-            <img
-              src="{% static 'imagenes/mockup-laptop.webp' %}"
-              alt="Vista en portátil"
-              class="mockup-laptop rounded-3 shadow-sm border-0"
-              loading="lazy">
-            <img
-              src="{% static 'imagenes/mockup-phone.webp' %}"
-              alt="Vista en móvil"
-              class="mockup-phone rounded-3 shadow-sm border-0"
-              loading="lazy">
-          </div>
-
-          <div class="col-12 col-md-6 text-center text-md-start animate-on-load">
-            <h3 id="pwa-title" class="fw-bold mb-3 text-ink">¡Ya disponible nuestra App!</h3>
-            <p class="text-ink-muted mb-4">
-              Reserva citas, recibe recordatorios y gestiona tu perfil desde cualquier dispositivo.
-            </p>
-            <button id="btn-instalar" class="btn btn-outline-gold btn-lg d-none">
-              <i class="bi bi-download me-1" aria-hidden="true"></i> Instalar Cabigote
-            </button>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SOCIAL -->
-  <section class="my-5 animate-on-load" aria-labelledby="social-title">
-    <div class="mb-4 card-header gradiente-header bg-transparent text-center p-2 border-0">
-      <h2 id="social-title" class="h4 fw-bold mb-0 text-ink">
-        <i class="fas fa-globe me-2 text-gold" aria-hidden="true"></i>
-        Publicaciones
-      </h2>
-    </div>
-    <div class="row g-4 justify-content-center">
-      <div class="col-12 col-md-6">
-        <div class="instagram-embed rounded-4 shadow-sm mb-4 bg-section border-0">
-          <iframe
-            src="https://www.instagram.com/p/C9ecZGftT6b/embed"
-            title="Publicación de Instagram de Ca’Bigote"
-            allowtransparency="true"
-            allowfullscreen
-            loading="lazy">
-          </iframe>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ABOUT -->
-  <section class="my-3" aria-labelledby="about-title">
-    <div class="card card-glass card-user-profile text-center p-4 animate-on-load">
-      <h3 id="about-title" class="fw-bold mb-3 text-ink">¿Por qué elegirnos?</h3>
-      <p class="lead text-ink-muted">
-        En CaʼBigote cada visita es una experiencia personalizada. Nuestros barberos están
-        dedicados a brindarte el mejor servicio en un ambiente acogedor y moderno.
-      </p>
-      <a href="{% url 'appointments:reservar_cita' %}" class="btn btn-gold btn-lg">Agenda tu Cita</a>
-    </div>
-  </section>
-
-</div>
+</main>
 {% endblock %}
