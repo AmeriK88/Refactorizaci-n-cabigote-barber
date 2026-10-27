@@ -359,6 +359,7 @@ LOGGING = {
         "level": "ERROR",
     },
 
+
     "loggers": {
         # Attempts and locks of django-axes
         "axes": {
@@ -366,24 +367,35 @@ LOGGING = {
             "level": "INFO",
             "propagate": False,
         },
+
         # Security warnings of Django (CSRF, etc.)
         "django.security": {
             "handlers": ["security_file", "console"],
             "level": "WARNING",
             "propagate": False,
         },
+
         # 500 errors in requests
         "django.request": {
             "handlers": ["security_file", "console"],
             "level": "ERROR",
             "propagate": False,
         },
-        # DB warnings/errors (timeouts, disconnects, etc.) sin meter DEBUG
+
+        # DB warnings/errors (timeouts, disconnects, etc.)
         "django.db.backends": {
             "handlers": ["security_file", "console"],
             "level": "WARNING",
             "propagate": False,
-        },    },
+        },
+
+        # reCAPTCHA v3 validation diagnostics
+        "django_recaptcha": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+    },
 
 }
 

@@ -7,7 +7,7 @@ from appointments.models import Cita
 def get_user_profile_dashboard(*, user, year=None):
     """
     READ ONLY (only queries) Profile dashboard.
-    Maintain compatibilitu with template users/perfil_usuario.html.
+    Maintain compatibility with template users/perfil_usuario.html.
     """
     current_year = year or timezone.localdate().year
 

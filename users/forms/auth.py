@@ -1,8 +1,11 @@
+
 from django import forms
 from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+
 from django_recaptcha.fields import ReCaptchaField
+from django_recaptcha.widgets import ReCaptchaV3
 
 from users.services.auth import register_user
 
@@ -10,52 +13,121 @@ from users.services.auth import register_user
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(
         label="Correo electrónico",
-        widget=forms.EmailInput(attrs={"class": "form-control form-control-lg", "autocomplete": "email"}),
+        widget=forms.EmailInput(
+            attrs={
+                "class": "form-control form-control-lg",
+                "autocomplete": "email",
+            }
+        ),
     )
+
     phone = forms.CharField(
         label="Teléfono",
         max_length=15,
-        widget=forms.TextInput(attrs={"class": "form-control form-control-lg", "autocomplete": "tel"}),
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control form-control-lg",
+                "autocomplete": "tel",
+            }
+        ),
     )
+
     nombre = forms.CharField(
         label="Nombre",
         max_length=30,
-        widget=forms.TextInput(attrs={"class": "form-control form-control-lg", "autocomplete": "given-name"}),
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control form-control-lg",
+                "autocomplete": "given-name",
+            }
+        ),
     )
+
     apellido = forms.CharField(
         label="Apellido",
         max_length=30,
-        widget=forms.TextInput(attrs={"class": "form-control form-control-lg", "autocomplete": "family-name"}),
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control form-control-lg",
+                "autocomplete": "family-name",
+            }
+        ),
     )
-    captcha = ReCaptchaField()
+
+    # Google reCAPTCHA v3 — Registro
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            action="register",
+            required_score=0.5,
+        ),
+        error_messages={
+            "required": "No se ha podido verificar la seguridad del formulario.",
+            "invalid": (
+                "No hemos podido verificar que la solicitud sea legítima. "
+                "Inténtalo de nuevo."
+            ),
+        },
+    )
 
     class Meta(UserCreationForm.Meta):  # type: ignore[attr-defined]
         model = User
-        fields = ("username", "email", "phone", "nombre", "apellido", "password1", "password2")
+        fields = (
+            "username",
+            "email",
+            "phone",
+            "nombre",
+            "apellido",
+            "password1",
+            "password2",
+        )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["username"].widget.attrs.update({"class": "form-control form-control-lg", "autocomplete": "username"})
+
+        self.fields["username"].widget.attrs.update(
+            {
+                "class": "form-control form-control-lg",
+                "autocomplete": "username",
+            }
+        )
+
         for pwd in ("password1", "password2"):
-            self.fields[pwd].widget.attrs.update({"class": "form-control form-control-lg", "autocomplete": "new-password"})
+            self.fields[pwd].widget.attrs.update(
+                {
+                    "class": "form-control form-control-lg",
+                    "autocomplete": "new-password",
+                }
+            )
 
     def clean_email(self):
         email = self.cleaned_data["email"]
+
         if User.objects.filter(email=email).exists():
-            raise forms.ValidationError("Este email ya está registrado.")
+            raise forms.ValidationError(
+                "Este email ya está registrado."
+            )
+
         return email
 
     def clean_username(self):
         username = self.cleaned_data["username"]
+
         if username == "admin":
-            raise forms.ValidationError("El nombre de usuario 'admin' está prohibido.")
+            raise forms.ValidationError(
+                "El nombre de usuario 'admin' está prohibido."
+            )
+
         if username in getattr(settings, "BLACKLISTED_USERNAMES", []):
-            raise forms.ValidationError(f"El nombre '{username}' está prohibido.")
+            raise forms.ValidationError(
+                f"El nombre '{username}' está prohibido."
+            )
+
         return username
 
     def save(self, commit=True):
         """
-        Delegamos a service para que el form no tenga lógica de negocio.
+        Delegamos el registro al servicio para mantener
+        la lógica de negocio fuera del formulario.
         """
         return register_user(
             username=self.cleaned_data["username"],
@@ -68,4 +140,17 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class CustomAuthenticationForm(AuthenticationForm):
-    captcha = ReCaptchaField()
+    # Google reCAPTCHA v3 — Inicio de sesión
+    captcha = ReCaptchaField(
+        widget=ReCaptchaV3(
+            action="login",
+            required_score=0.5,
+        ),
+        error_messages={
+            "required": "No se ha podido verificar la seguridad del formulario.",
+            "invalid": (
+                "No hemos podido verificar que la solicitud sea legítima. "
+                "Inténtalo de nuevo."
+            ),
+        },
+    )
