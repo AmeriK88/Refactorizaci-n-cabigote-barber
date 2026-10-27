@@ -1,15 +1,51 @@
-from django.core.mail import send_mail
+# Autor: José Félix Gordo Castaño
+# Licencia: Uso educativo, no comercial
+
 from django.conf import settings
+from django.core.mail import EmailMultiAlternatives, send_mail
+from django.template.loader import render_to_string
 from django.utils import timezone
 
 
 def _formatear_fecha_hora(dt):
-    """
-    Convierte un DateTimeField (aware o UTC) a la zona Atlantic/Canary
-    y devuelve una tupla (dd/mm/aaaa, HH:MM).
-    """
+    """Convierte la fecha de la cita a la zona horaria configurada en Django."""
     local = timezone.localtime(dt)
     return local.strftime("%d/%m/%Y"), local.strftime("%H:%M")
+
+
+def _enviar_email_cliente(
+    destinatario,
+    asunto,
+    mensaje,
+    *,
+    tipo,
+    servicio,
+    fecha,
+    hora,
+    comentario=None,
+):
+    """Envía una alternativa de texto plano y una versión HTML del mismo aviso."""
+    contexto = {
+        "tipo": tipo,
+        "servicio": servicio,
+        "fecha": fecha,
+        "hora": hora,
+        "comentario": comentario or "Sin comentarios",
+    }
+
+    html = render_to_string(
+        "emails/appointment_notification.html",
+        contexto,
+    )
+
+    email = EmailMultiAlternatives(
+        subject=asunto,
+        body=mensaje.strip(),
+        from_email=settings.EMAIL_HOST_USER,
+        to=[destinatario],
+    )
+    email.attach_alternative(html, "text/html")
+    email.send()
 
 
 def enviar_correo_admin(asunto, mensaje):
@@ -25,159 +61,188 @@ def enviar_correo_admin(asunto, mensaje):
         )
 
 
-# ══════════════════════════════════════════════════════════════
-# 1) CONFIRMATION NOTIFICATION
-# ══════════════════════════════════════════════════════════════
+# ============================================================
+# 1. CONFIRMACIÓN DE CITA
+# ============================================================
+
 def enviar_confirmacion_cita(usuario_email, cita):
     fecha_str, hora_str = _formatear_fecha_hora(cita.fecha)
 
-    asunto = "Confirmación de tu cita en Ca´Bigote Barber Shop"
-    mensaje = f"""
-    Estimado usuario,
+    asunto = "Confirmación de tu cita en Ca’Bigote Barber Shop"
 
-    Gracias por reservar una cita con nosotros. Aquí están los detalles de tu cita:
+    mensaje = f"""¡Tu cita está confirmada!
 
-    Servicio : {cita.servicio.nombre}
-    Fecha    : {fecha_str}
-    Hora     : {hora_str}
-    Comentario: {cita.comentario or 'Sin comentarios'}
+Gracias por reservar una cita con nosotros.
 
-    En caso de no poder asistir, puedes editar tu cita desde nuestra app.
+Servicio: {cita.servicio.nombre}
+Fecha: {fecha_str}
+Hora: {hora_str}
+Comentario: {cita.comentario or 'Sin comentarios'}
 
-    ¡Te esperamos!
+Si no puedes asistir, puedes modificar tu cita desde nuestra aplicación.
 
-    Atentamente,
-    Ca´Bigote Barber Shop
+¡Te esperamos!
+Ca’Bigote Barber Shop
 
-    ---
+Dirección: Calle El Rafael 43, Arrecife
+Teléfono: +34 699 85 99 61
+"""
 
-    Dirección: calle el rafael 43, Arrecife
-    Teléfono : +34 699 85 99 61
-    ¡Síguenos para más novedades!
-    """
-    send_mail(asunto, mensaje, settings.EMAIL_HOST_USER, [usuario_email])
+    _enviar_email_cliente(
+        usuario_email,
+        asunto,
+        mensaje,
+        tipo="confirmacion",
+        servicio=cita.servicio.nombre,
+        fecha=fecha_str,
+        hora=hora_str,
+        comentario=cita.comentario,
+    )
 
     mensaje_admin = f"""Un usuario ha reservado una cita:
 
-    Usuario    : {getattr(cita.usuario, 'username', 'Usuario no disponible')}
-    Comentario : {cita.comentario or 'Sin comentarios'}
+Usuario: {getattr(cita.usuario, 'username', 'Usuario no disponible')}
+Comentario: {cita.comentario or 'Sin comentarios'}
+Servicio: {cita.servicio.nombre}
+Fecha: {fecha_str}
+Hora: {hora_str}
+"""
 
-    Servicio : {cita.servicio.nombre}
-    Fecha    : {fecha_str}
-    Hora     : {hora_str}
-    """
-    enviar_correo_admin("Nueva cita reservada en Ca´Bigote", mensaje_admin)
+    enviar_correo_admin(
+        "Nueva cita reservada en Ca’Bigote",
+        mensaje_admin,
+    )
 
 
-# ══════════════════════════════════════════════════════════════
-# 2) DELETE NOTIFICATIONS
-# ══════════════════════════════════════════════════════════════
+# ============================================================
+# 2. CANCELACIÓN DE CITA
+# ============================================================
+
 def enviar_notificacion_eliminacion_cita(usuario_email, cita_detalle):
-    fecha_str, hora_str = _formatear_fecha_hora(cita_detalle["fecha"])
+    fecha_str, hora_str = _formatear_fecha_hora(
+        cita_detalle["fecha"]
+    )
 
-    asunto = "Tu cita en Ca´Bigote Barber Shop ha sido eliminada"
-    mensaje = f"""
-    Estimado usuario,
+    asunto = "Tu cita en Ca’Bigote Barber Shop ha sido cancelada"
 
-    Tu cita para el servicio {cita_detalle['servicio']}
-    el {fecha_str} a las {hora_str} ha sido eliminada correctamente.
+    mensaje = f"""Tu cita ha sido cancelada correctamente.
 
-    Si lo deseas, puedes volver a agendar una cita desde nuestra aplicación.
+Servicio: {cita_detalle['servicio']}
+Fecha: {fecha_str}
+Hora: {hora_str}
 
-    Atentamente,
-    Ca´Bigote Barber Shop
+Si lo deseas, puedes volver a reservar desde nuestra aplicación.
 
-    ---
+Ca’Bigote Barber Shop
+Dirección: Calle El Rafael 43, Arrecife
+Teléfono: +34 699 85 99 61
+"""
 
-    Dirección: calle el rafael 43, Arrecife
-    Teléfono : +34 699 85 99 61
-    ¡Síguenos para más novedades!
-    """
-    send_mail(asunto, mensaje, settings.EMAIL_HOST_USER, [usuario_email])
+    _enviar_email_cliente(
+        usuario_email,
+        asunto,
+        mensaje,
+        tipo="cancelacion",
+        servicio=cita_detalle["servicio"],
+        fecha=fecha_str,
+        hora=hora_str,
+    )
 
-    # ADMIN NOTIFICATIONS
     mensaje_admin = f"""Un usuario ha eliminado una cita:
 
-    Usuario    : {cita_detalle.get('usuario', 'Usuario no disponible')}
-    Comentario : {cita_detalle.get('comentario', 'Sin comentarios')}
+Usuario: {cita_detalle.get('usuario', 'Usuario no disponible')}
+Comentario: {cita_detalle.get('comentario', 'Sin comentarios')}
+Servicio: {cita_detalle['servicio']}
+Fecha: {fecha_str}
+Hora: {hora_str}
+"""
 
-    Servicio : {cita_detalle['servicio']}
-    Fecha    : {fecha_str}
-    Hora     : {hora_str}
-    """
-    enviar_correo_admin("Cita eliminada en Ca´Bigote", mensaje_admin)
+    enviar_correo_admin(
+        "Cita eliminada en Ca’Bigote",
+        mensaje_admin,
+    )
 
 
-# ══════════════════════════════════════════════════════════════
-# 3) UPDATE EMAIL
-# ══════════════════════════════════════════════════════════════
+# ============================================================
+# 3. MODIFICACIÓN DE CITA
+# ============================================================
+
 def enviar_notificacion_modificacion_cita(usuario_email, cita):
     fecha_str, hora_str = _formatear_fecha_hora(cita.fecha)
 
-    asunto = "Tu cita en Ca´Bigote Barber Shop ha sido modificada"
-    mensaje = f"""
-    Estimado usuario,
+    asunto = "Tu cita en Ca’Bigote Barber Shop ha sido modificada"
 
-    Tu cita ha sido modificada. Aquí están los nuevos detalles:
+    mensaje = f"""Tu cita ha sido modificada. Estos son los nuevos detalles:
 
-    Servicio : {cita.servicio.nombre}
-    Nueva fecha : {fecha_str}
-    Nueva hora  : {hora_str}
-    Comentario  : {cita.comentario or 'Sin comentarios'}
+Servicio: {cita.servicio.nombre}
+Nueva fecha: {fecha_str}
+Nueva hora: {hora_str}
+Comentario: {cita.comentario or 'Sin comentarios'}
 
-    Atentamente,
-    Ca´Bigote Barber Shop
+Ca’Bigote Barber Shop
+Dirección: Calle El Rafael 43, Arrecife
+Teléfono: +34 699 85 99 61
+"""
 
-    ---
+    _enviar_email_cliente(
+        usuario_email,
+        asunto,
+        mensaje,
+        tipo="modificacion",
+        servicio=cita.servicio.nombre,
+        fecha=fecha_str,
+        hora=hora_str,
+        comentario=cita.comentario,
+    )
 
-    Dirección: calle el rafael 43, Arrecife
-    Teléfono : +34 699 85 99 61
-    ¡Síguenos para más novedades!
-    """
-    send_mail(asunto, mensaje, settings.EMAIL_HOST_USER, [usuario_email])
-
-    # Notificar a los administradores
     mensaje_admin = f"""Un usuario ha modificado una cita:
 
-    Usuario    : {getattr(cita.usuario, 'username', 'Usuario no disponible')}
-    Comentario : {cita.comentario or 'Sin comentarios'}
+Usuario: {getattr(cita.usuario, 'username', 'Usuario no disponible')}
+Comentario: {cita.comentario or 'Sin comentarios'}
+Servicio: {cita.servicio.nombre}
+Nueva fecha: {fecha_str}
+Nueva hora: {hora_str}
+"""
 
-    Servicio : {cita.servicio.nombre}
-    Nueva fecha : {fecha_str}
-    Nueva hora  : {hora_str}
-    """
-    enviar_correo_admin("Cita modificada en Ca´Bigote", mensaje_admin)
+    enviar_correo_admin(
+        "Cita modificada en Ca’Bigote",
+        mensaje_admin,
+    )
 
 
-# ══════════════════════════════════════════════════════════════
-# 4) REMINDERS
-# ══════════════════════════════════════════════════════════════
+# ============================================================
+# 4. RECORDATORIO DE CITA
+# ============================================================
+
 def enviar_recordatorio_cita(usuario_email, cita):
     fecha_str, hora_str = _formatear_fecha_hora(cita.fecha)
 
-    asunto = "Recordatorio de tu cita en Ca´Bigote Barber Shop"
-    mensaje = f"""
-    Estimado usuario,
+    asunto = "Recordatorio de tu cita en Ca’Bigote Barber Shop"
 
-    Te recordamos que tienes una cita programada para mañana:
+    mensaje = f"""¡Te esperamos mañana!
 
-    Servicio : {cita.servicio.nombre}
-    Fecha    : {fecha_str}
-    Hora     : {hora_str}
-    Comentario: {cita.comentario or 'Sin comentarios'}
+Servicio: {cita.servicio.nombre}
+Fecha: {fecha_str}
+Hora: {hora_str}
+Comentario: {cita.comentario or 'Sin comentarios'}
 
-    Por favor, asegúrate de llegar a tiempo.  
-    Si no puedes asistir, recuerda que puedes modificar tu cita desde nuestra app web.
+Por favor, llega a tiempo. Si no puedes asistir, recuerda que puedes modificar tu cita desde nuestra aplicación.
 
-    ¡Te esperamos!
+Ca’Bigote Barber Shop
+Dirección: Calle El Rafael 43, Arrecife
+Teléfono: +34 699 85 99 61
+"""
 
-    Atentamente,
-    Ca´Bigote Barber Shop
-
-    Dirección: calle el rafael 43, Arrecife
-    Teléfono : +34 699 85 99 61
-    """
-    send_mail(asunto, mensaje, settings.EMAIL_HOST_USER, [usuario_email])
+    _enviar_email_cliente(
+        usuario_email,
+        asunto,
+        mensaje,
+        tipo="recordatorio",
+        servicio=cita.servicio.nombre,
+        fecha=fecha_str,
+        hora=hora_str,
+        comentario=cita.comentario,
+    )
 
 
 # Autor: José Félix Gordo Castaño
