@@ -47,7 +47,7 @@ def login_view(request):
             auth_login(request, user)
             messages.success(request, f"¿¡Que pasó viejito!? ¡Bienvenido de nuevo, {user.username}!")
             return redirect(next_url or "users:perfil_usuario")
-        messages.error(request, "¡Eres un tolete! Nombre de usuario o contraseña incorrectos.")
+        messages.error(request, "¡Eres un tolete! No hemos podido iniciar sesión. Revisa los datos e inténtalo de nuevo.")
     else:
         form = CustomAuthenticationForm(request)
 
